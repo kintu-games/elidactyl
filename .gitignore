@@ -26,4 +26,4 @@ elidactyl-*.tar
 
 /.elixir_ls
 
-
+.env
