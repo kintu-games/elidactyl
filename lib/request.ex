@@ -1,8 +1,9 @@
 defmodule Elidactyl.Request do
   alias HTTPoison.Response
-  alias HTTPoison.Error, as: PoisonError
+  alias HTTPoison.Error, as: HTTPError
   alias Elidactyl.Error
 
+  @spec request(atom, binary, any, [{binary, binary}]) :: {:ok, binary} | {:error, Error.t()}
   def request(http_method, path, data \\ "", headers \\ []) do
     url = Application.get_env(:elidactyl, :pterodactyl_url) <> path
     headers = Keyword.merge(default_headers(), headers)
@@ -31,7 +32,7 @@ defmodule Elidactyl.Request do
     end
   end
 
-  @spec post(any, any, any, any) :: any
+  @spec post(binary, any, list, list) :: any
   def post(url, body, headers \\ [], options \\ []) do
     case Poison.encode(body) do
       {:ok, encoded_body} ->
@@ -41,18 +42,22 @@ defmodule Elidactyl.Request do
     end
   end
 
+  @spec get(binary, list, list) :: any
   def get(url, headers \\ [], options \\ []) do
     HTTPoison.get(url, headers, options)
   end
 
+  @spec delete(binary, list, list) :: any
   def delete(url, headers \\ [], options \\ []) do
     HTTPoison.delete(url, headers, options)
   end
 
+  @spec put(binary, list, list) :: any
   def put(url, body, headers \\ [], options \\ []) do
     HTTPoison.put(url, body, headers, options)
   end
 
+  @spec default_headers() :: list
   defp default_headers do
     token = Application.get_env(:elidactyl, :pterodactyl_auth_token)
 
@@ -63,6 +68,7 @@ defmodule Elidactyl.Request do
     ]
   end
 
+  @spec handle_response({:ok, Response.t()} | {:error, HTTPError.t()}) :: {:ok, binary} |  {:error, Error.t()}
   def handle_response({:ok, %Response{status_code: 200, body: body}}) do
     case Poison.decode(body, keys: :atoms) do
       {:ok, body} ->
@@ -87,7 +93,7 @@ defmodule Elidactyl.Request do
     }
   end
 
-  def handle_response({:error, %PoisonError{reason: reason}}) do
+  def handle_response({:error, %HTTPError{reason: reason}}) do
     {:error, %Error{type: :http_request_failed, message: inspect(reason)}}
   end
 end

@@ -16,7 +16,11 @@ defmodule Elidactyl.MixProject do
     [
       mod: {Elidactyl.Application, [env: Mix.env]},
       applications: applications(Mix.env),
-      extra_applications: [:logger]
+      extra_applications: [:logger],
+      dialyzer: [
+        plt_add_deps: :apps_direct,
+        paths: ["_build/dev/lib/plug/ebin"]
+      ]
     ]
   end
 
@@ -26,6 +30,7 @@ defmodule Elidactyl.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:jason, "~> 1.0"},
       {:poison, "~> 3.1"},
       {:httpoison, "~> 1.6"},
