@@ -67,7 +67,7 @@ defmodule Elidactyl.MockServer do
       "object" => "list"
     }
 
-    success(conn, servers)
+    success(conn, Poison.encode!(servers))
   end
 
   post "/api/client/servers/:id/power" do
@@ -121,17 +121,19 @@ defmodule Elidactyl.MockServer do
       }
     ]}
 
-    success(conn, Poison.encode!(body))
+    success(conn, body)
   end
 
-  defp success(conn, body \\ "") do
+  defp success(conn, body) do
     conn
     |> Plug.Conn.put_resp_content_type("application/json")
-    |> Plug.Conn.send_resp(200, body)
+    |> Plug.Conn.resp(200, Poison.encode!(body))
+    |> Plug.Conn.send_resp()
   end
 
   defp failure(conn, status) do
     conn
-    |> Plug.Conn.send_resp(status, %{message: "error"})
+    |> Plug.Conn.resp(status, "error")
+    |> Plug.Conn.send_resp()
   end
 end

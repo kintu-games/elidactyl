@@ -41,7 +41,6 @@ defmodule Elidactyl.Request do
   end
 
   def get(url, headers \\ [], options \\ []) do
-    IO.inspect(url)
     HTTPoison.get(url, headers, options)
   end
 
@@ -64,7 +63,7 @@ defmodule Elidactyl.Request do
   end
 
   def handle_response({:ok, %Response{status_code: 200, body: body}}) do
-    case Poison.decode(body, keys: :atoms) do
+    lib/request.ex    case Poison.decode(body, keys: :atoms) do
       {:ok, body} ->
         {:ok, body}
       {:error, error} ->
