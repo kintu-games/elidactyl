@@ -1,9 +1,10 @@
 defmodule Elidactyl.Request do
   alias HTTPoison.Response
-  alias HTTPoison.Error
+  alias HTTPoison.Error, as: PoisonError
+  alias Elidactyl.Error
 
   def request(http_method, path, data \\ "", headers \\ []) do
-    url = Application.get_env(:elidactyl, :pterodactyl_url)  <> path
+    url = Application.get_env(:elidactyl, :pterodactyl_url) <> path
     headers = Keyword.merge(default_headers(), headers)
     options = [ssl: [{:versions, [:"tlsv1.2"]}], recv_timeout: 500]
 
@@ -36,7 +37,7 @@ defmodule Elidactyl.Request do
       {:ok, encoded_body} ->
         HTTPoison.post(url, encoded_body, headers, options)
       {:error, error} ->
-        {:error, {:json_encode_failed, error}}
+        {:error, %Error{type: :json_encode_failed, message: inspect(error)}}
     end
   end
 
@@ -63,19 +64,30 @@ defmodule Elidactyl.Request do
   end
 
   def handle_response({:ok, %Response{status_code: 200, body: body}}) do
-    lib/request.ex    case Poison.decode(body, keys: :atoms) do
+    case Poison.decode(body, keys: :atoms) do
       {:ok, body} ->
         {:ok, body}
       {:error, error} ->
-        {:error, {:json_decode_failed, error}}
+        {:error, %Error{type: :json_decode_failed, message: inspect(error)}}
     end
   end
 
-  def handle_response({:ok, %Response{status_code: code, body: body}}) do
-    {:error, {:http_request_failed, code, body}}
+  def handle_response({:ok, %Response{status_code: code, body: body, request_url: url}}) do
+    {
+      :error,
+      %Error{
+        type: :http_request_failed,
+        message: "Request to #{url} returned #{code}",
+        details: %{
+          code: code,
+          body: body,
+          url: url
+        }
+      }
+    }
   end
 
-  def handle_response({:error, %Error{reason: reason}}) do
-    {:error, {:http_request_failed, reason}}
+  def handle_response({:error, %PoisonError{reason: reason}}) do
+    {:error, %Error{type: :http_request_failed, message: inspect(reason)}}
   end
 end

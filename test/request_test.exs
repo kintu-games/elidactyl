@@ -1,6 +1,7 @@
 defmodule Elidactyl.RequestTest do
   use ExUnit.Case
   alias Elidactyl.Request
+  alias Elidactyl.Error
 
   test "basic requests to mocked server" do
     assert {:ok, %{:type => "get"}} == Request.request(:get, "/test", "", [])
@@ -8,7 +9,10 @@ defmodule Elidactyl.RequestTest do
     assert {:ok, %{:type => "delete"}} == Request.request(:delete, "/test", "", [])
     assert {:ok, %{:type => "put"}} == Request.request(:put, "/test", "", [])
 
-    assert {:error, {:http_request_failed, 404, "error"}} ==
+    assert {:error, %Error{type: :http_request_failed, details: %{code: 404, body: "error", url: url}, message: msg}} =
       Request.request(:get, "/test_not_found", "", [])
+    assert msg =~ "404"
+    assert msg =~ "/test_not_found"
+    assert url =~ "/test_not_found"
   end
 end
