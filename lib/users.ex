@@ -3,11 +3,39 @@ defmodule Elidactyl.Users do
     This module is responsible for listing and modifying Pterodactyl users.
   """
   alias Elidactyl.Request
+  alias Elidactyl.Error
+  alias Elidactyl.User
   alias Elidactyl.Response
 
+  @doc """
+    Request all users from server.
+  """
+  @spec list_users() :: {:ok, [%User{}]} | {:error, %Error{}}
   def list_users do
     with {:ok, resp} <- Request.request(:get, "/api/application/users"),
          result when is_list(result) <- Response.parse_response(resp) do
+      {:ok, result}
+    else
+      {:error, _} = error ->
+        error
+    end
+  end
+
+  @spec get_user_by_id(binary | integer) :: %User{}
+  def get_user_by_id(id) do
+    with {:ok, resp} <- Request.request(:get, "/api/application/users/#{id}"),
+         %User{} = result <- Response.parse_response(resp) do
+      {:ok, result}
+    else
+      {:error, _} = error ->
+        error
+    end
+  end
+
+  @spec get_user_by_external_id(binary | integer) :: %User{}
+  def get_user_by_external_id(id) do
+    with {:ok, resp} <- Request.request(:get, "/api/application/users/external/#{id}"),
+         %User{} = result <- Response.parse_response(resp) do
       {:ok, result}
     else
       {:error, _} = error ->

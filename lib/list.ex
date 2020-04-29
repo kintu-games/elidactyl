@@ -3,7 +3,7 @@ defmodule Elidactyl.List do
 
   @derive {Poison.Encoder, only: [:object, :data]}
 
-  defstruct object: "list", data: []
+  defstruct data: []
 
   def parse(%{object: "list", data: data}) do
     Enum.map(data, &Response.parse_response/1)
