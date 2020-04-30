@@ -228,6 +228,10 @@ defmodule Elidactyl.MockServer do
     end
   end
 
+  delete "/api/application/users/:user_id" do
+    success(conn, "OK")
+  end
+
   defp success(conn, body) do
     conn
     |> Plug.Conn.put_resp_content_type("application/json")

@@ -81,7 +81,7 @@ defmodule Elidactyl.Request do
 
     [
       {"Authorization", "Bearer #{token}"},
-      {"Accept", "application/json; charset=utf-8"},
+      {"Accept", "application/vnd.pterodactyl.v1+json; charset=utf-8"},
       {"Content-type", "application/json"}
     ]
   end

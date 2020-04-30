@@ -70,5 +70,15 @@ defmodule Elidactyl.Users do
         error
     end
   end
+
+  @spec delete_user(binary | integer) :: :ok
+  def delete_user(id) do
+    with {:ok, _resp} <- Request.request(:delete, "/api/application/users/#{id}") do
+      :ok
+    else
+      {:error, _} = error ->
+        error
+    end
+  end
 end
 

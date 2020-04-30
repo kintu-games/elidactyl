@@ -97,7 +97,6 @@ defmodule Elidactyl.UsersTest do
   end
 
   test "edit user" do
-#    PATCH https://pterodactyl.app/api/application/users/<user-id>
     params = %{
       email: "email@example.com",
       first_name: "John",
@@ -109,5 +108,9 @@ defmodule Elidactyl.UsersTest do
     assert {:ok, edited_user} = Users.edit_user(1, params)
 
     assert struct(original_user, params) == edited_user
+  end
+
+  test "delete user" do
+    assert :ok = Users.delete_user(1)
   end
 end
