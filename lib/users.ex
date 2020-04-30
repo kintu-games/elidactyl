@@ -42,5 +42,33 @@ defmodule Elidactyl.Users do
         error
     end
   end
+
+
+  @spec create_user(map) :: %User{}
+  def create_user(params) do
+    with %{valid?: true} = changeset <- User.changeset(%User{}, params),
+         %User{} = user <- Ecto.Changeset.apply_changes(changeset),
+         {:ok, resp} <- Request.request(:post, "/api/application/users", user),
+         %User{} = result <- Response.parse_response(resp) do
+      {:ok, result}
+    else
+      {:error, _} = error ->
+        error
+    end
+  end
+
+  @spec edit_user(binary | integer, map) :: %User{}
+  def edit_user(id, params) do
+    with {:ok, %User{} = user} <- get_user_by_id(id),
+         %{valid?: true} = changeset <- User.changeset(user, params),
+         %User{} = user <- Ecto.Changeset.apply_changes(changeset),
+         {:ok, resp} <- Request.request(:patch, "/api/application/users/#{id}", user),
+         %User{} = result <- Response.parse_response(resp) do
+      {:ok, result}
+    else
+      {:error, _} = error ->
+        error
+    end
+  end
 end
 

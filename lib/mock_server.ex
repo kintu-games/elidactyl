@@ -136,11 +136,11 @@ defmodule Elidactyl.MockServer do
     success(conn, body)
   end
 
-  get "/api/application/users/1" do
+  get "/api/application/users/:user_id" do
     body = %User{
-    object: "user",
+      object: "user",
       attributes: %{
-        id: 1,
+        id: user_id,
         external_id: nil,
         uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
         username: "codeco",
@@ -158,12 +158,12 @@ defmodule Elidactyl.MockServer do
     success(conn, body)
   end
 
-  get "/api/application/users/external/10" do
+  get "/api/application/users/external/:external_id" do
     body = %User{
       object: "user",
       attributes: %{
         id: 1,
-        external_id: 10,
+        external_id: external_id,
         uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
         username: "codeco",
         email: "codeco@file.properties",
@@ -180,6 +180,54 @@ defmodule Elidactyl.MockServer do
     success(conn, body)
   end
 
+  post "/api/application/users" do
+    params = conn.params
+    if Map.take(params, ["username", "email", "first_name", "last_name"]) |> Kernel.map_size() == 4 do
+      body = %User{
+        object: "user",
+        attributes:
+          Map.merge(
+            %{
+              id: 2,
+              uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
+              "2fa": false,
+              created_at: "2018-03-18T15:15:17+00:00",
+              updated_at: "2018-10-16T21:51:21+00:00"
+            },
+            params
+          )
+      }
+      success(conn, body)
+    else
+#      success(conn, "mandatory params missing in request #{inspect params}")
+      failure(conn, 500, "mandatory params missing in request #{inspect params}")
+    end
+  end
+
+  patch "/api/application/users/:user_id" do
+    params = conn.params
+    if Map.take(params, ["username", "email", "first_name", "last_name"]) |> Kernel.map_size() == 4 do
+      body = %User{
+        object: "user",
+        attributes:
+          Map.merge(
+            %{
+              id: user_id,
+              uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
+              "2fa": false,
+              created_at: "2018-03-18T15:15:17+00:00",
+              updated_at: "2018-10-16T21:51:21+00:00"
+            },
+            params
+          )
+      }
+      success(conn, body)
+    else
+      #      success(conn, "mandatory params missing in request #{inspect params}")
+      failure(conn, 500, "mandatory params missing in request #{inspect params}")
+    end
+  end
+
   defp success(conn, body) do
     conn
     |> Plug.Conn.put_resp_content_type("application/json")
@@ -187,9 +235,9 @@ defmodule Elidactyl.MockServer do
     |> Plug.Conn.send_resp()
   end
 
-  defp failure(conn, status) do
+  defp failure(conn, status, error_msg \\ "error") do
     conn
-    |> Plug.Conn.resp(status, "error")
+    |> Plug.Conn.resp(status, error_msg)
     |> Plug.Conn.send_resp()
   end
 end
