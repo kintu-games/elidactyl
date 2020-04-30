@@ -22,6 +22,9 @@ defmodule Elidactyl.Request do
 
         :put ->
           put(url, data, headers, options)
+
+        :patch ->
+          patch(url, data, headers, options)
       end
 
     case handle_response(response) do
@@ -52,9 +55,24 @@ defmodule Elidactyl.Request do
     HTTPoison.delete(url, headers, options)
   end
 
-  @spec put(binary, list, list) :: any
+  @spec put(binary, any, list, list) :: any
   def put(url, body, headers \\ [], options \\ []) do
-    HTTPoison.put(url, body, headers, options)
+    case Poison.encode(body) do
+      {:ok, encoded_body} ->
+        HTTPoison.put(url, encoded_body, headers, options)
+      {:error, error} ->
+        {:error, %Error{type: :json_encode_failed, message: inspect(error)}}
+    end
+  end
+
+  @spec patch(binary, any, list, list) :: any
+  def patch(url, body, headers \\ [], options \\ []) do
+    case Poison.encode(body) do
+      {:ok, encoded_body} ->
+        HTTPoison.patch(url, encoded_body, headers, options)
+      {:error, error} ->
+        {:error, %Error{type: :json_encode_failed, message: inspect(error)}}
+    end
   end
 
   @spec default_headers() :: list

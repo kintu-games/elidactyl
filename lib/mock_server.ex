@@ -3,7 +3,8 @@ defmodule Elidactyl.MockServer do
   alias Elidactyl.MockServer.List
   alias Elidactyl.MockServer.User
 
-  plug(Plug.Parsers,
+  plug(
+    Plug.Parsers,
     parsers: [:json],
     pass: ["text/*"],
     json_decoder: Poison
@@ -21,7 +22,11 @@ defmodule Elidactyl.MockServer do
   end
 
   put "/test" do
-    success(conn, %{"type" => "put"})
+    success(conn, %{"type" => "put", "params" => conn.params})
+  end
+
+  patch "/test" do
+    success(conn, %{"type" => "patch", "params" => conn.params})
   end
 
   delete "/test" do
@@ -38,7 +43,10 @@ defmodule Elidactyl.MockServer do
         %{
           "attributes" => %{
             "description" => "",
-            "feature_limits" => %{"allocations" => 5, "databases" => 5},
+            "feature_limits" => %{
+              "allocations" => 5,
+              "databases" => 5
+            },
             "identifier" => "d3aac109",
             "limits" => %{
               "cpu" => 200,
