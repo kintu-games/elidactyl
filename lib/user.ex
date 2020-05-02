@@ -1,5 +1,6 @@
 defmodule Elidactyl.User do
   use Ecto.Schema
+  alias Elidactyl.Utils
 
   @optional [:password, :language, :root_admin, :external_id]
   @mandatory [:username, :email, :first_name, :last_name]
@@ -20,8 +21,8 @@ defmodule Elidactyl.User do
     field :updated_at, :naive_datetime
   end
 
-  def parse(%{object: "user", attributes: attributes}) do
-    struct(__MODULE__, attributes)
+  def parse(%{"object" => "user", "attributes" => attributes}) do
+    struct(__MODULE__, Utils.keys_to_atoms(attributes))
   end
 
   def changeset(struct, params) do

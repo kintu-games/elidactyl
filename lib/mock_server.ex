@@ -136,11 +136,11 @@ defmodule Elidactyl.MockServer do
     success(conn, body)
   end
 
-  get "/api/application/users/:user_id" do
+  get "/api/application/users/:id" do
     body = %User{
       object: "user",
       attributes: %{
-        id: user_id,
+        id: id,
         external_id: nil,
         uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
         username: "codeco",
@@ -182,7 +182,8 @@ defmodule Elidactyl.MockServer do
 
   post "/api/application/users" do
     params = conn.params
-    if Map.take(params, ["username", "email", "first_name", "last_name"]) |> Kernel.map_size() == 4 do
+    if Map.take(params, ["username", "email", "first_name", "last_name"])
+       |> Kernel.map_size() == 4 do
       body = %User{
         object: "user",
         attributes:
@@ -199,20 +200,21 @@ defmodule Elidactyl.MockServer do
       }
       success(conn, body)
     else
-#      success(conn, "mandatory params missing in request #{inspect params}")
+      #      success(conn, "mandatory params missing in request #{inspect params}")
       failure(conn, 500, "mandatory params missing in request #{inspect params}")
     end
   end
 
-  patch "/api/application/users/:user_id" do
+  patch "/api/application/users/:id" do
     params = conn.params
-    if Map.take(params, ["username", "email", "first_name", "last_name"]) |> Kernel.map_size() == 4 do
+    if Map.take(params, ["username", "email", "first_name", "last_name"])
+       |> Kernel.map_size() == 4 do
       body = %User{
         object: "user",
         attributes:
           Map.merge(
             %{
-              id: user_id,
+              id: id,
               uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
               "2fa": false,
               created_at: "2018-03-18T15:15:17+00:00",

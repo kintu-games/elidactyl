@@ -5,7 +5,7 @@ defmodule Elidactyl.List do
 
   defstruct data: []
 
-  def parse(%{object: "list", data: data}) do
+  def parse(%{"object" => "list", "data" => data}) do
     Enum.map(data, &Response.parse_response/1)
   end
 end

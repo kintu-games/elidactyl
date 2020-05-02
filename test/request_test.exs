@@ -4,11 +4,11 @@ defmodule Elidactyl.RequestTest do
   alias Elidactyl.Error
 
   test "basic requests to mocked server" do
-    assert {:ok, %{:type => "get"}} == Request.request(:get, "/test", "", [])
-    assert {:ok, %{:type => "post", :params => %{:_json => "{}"}}} == Request.request(:post, "/test", "{}", [])
-    assert {:ok, %{:type => "delete"}} == Request.request(:delete, "/test", "", [])
-    assert {:ok, %{:type => "put", :params => %{:_json => "{}"}}} == Request.request(:put, "/test", "{}", [])
-    assert {:ok, %{:type => "patch", :params => %{:_json => "{}"}}} == Request.request(:patch, "/test", "{}", [])
+    assert {:ok, %{"type" => "get"}} == Request.request(:get, "/test", "", [])
+    assert {:ok, %{"type" => "post", "params" => %{"_json" => "{}"}}} == Request.request(:post, "/test", "{}", [])
+    assert {:ok, %{"type" => "delete"}} == Request.request(:delete, "/test", "", [])
+    assert {:ok, %{"type" => "put", "params" => %{"_json" => "{}"}}} == Request.request(:put, "/test", "{}", [])
+    assert {:ok, %{"type" => "patch", "params" => %{"_json" => "{}"}}} == Request.request(:patch, "/test", "{}", [])
 
     assert {:error, %Error{type: :http_request_failed, details: %{code: 404, body: "error", url: url}, message: msg}} =
       Request.request(:get, "/test_not_found", "", [])

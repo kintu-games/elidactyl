@@ -88,7 +88,7 @@ defmodule Elidactyl.Request do
 
   @spec handle_response({:ok, Response.t()} | {:error, HTTPError.t()}) :: {:ok, binary} |  {:error, Error.t()}
   def handle_response({:ok, %Response{status_code: 200, body: body}}) do
-    case Poison.decode(body, keys: :atoms) do
+    case Poison.decode(body) do
       {:ok, body} ->
         {:ok, body}
       {:error, error} ->
