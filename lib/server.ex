@@ -1,54 +1,70 @@
 defmodule Elidactyl.Server do
   use Ecto.Schema
-  alias Elidactyl.FailureLimits
-  alias Elidactyl.ServerLimits
-  alias Elidactyl.ServerContainer
+
+  alias Elidactyl.Server.Container
+  alias Elidactyl.Server.FeatureLimits
+  alias Elidactyl.Server.Limits
+
   alias Elidactyl.Utils
 
+  @type t :: %__MODULE__{}
+
   @optional [:password, :language, :root_admin, :external_id]
-  @mandatory [:username, :email, :first_name, :last_name]
+  @mandatory [
+    :name,
+    :user,
+    :limits,
+    :egg,
+    :environment,
+    :feature_limits,
+    :deploy,
+    :start_on_completion,
+    :skip_scripts,
+    :oom_disabled,
+    :startup,
+    :docker_image,
+    :pack,
+    :description
+  ]
 
   @derive {Poison.Encoder, only: @optional ++ @mandatory}
   embedded_schema do
+    field :external_id, :string
     field :uuid, Ecto.UUID
-    field :name, :string
     field :identifier, :string
+    field :name, :string
     field :description, :string
-    field :server_owner, :string
+    field :suspended, :boolean
 
-    embeds_one :limits, ServerLimits do
-      field :memory, :integer
-      field :swap, :integer
-      field :disk, :integer
-      field :io, :integer
-      field :cpu, :integer
-    end
+    embeds_one :limits, Limits
 
-    embeds_one :feature_limits, FailureLimits do
-      field :databases, :integer
-      field :allocations, :integer
-    end
+    embeds_one :feature_limits, FeatureLimits
 
     field :user, :integer
+    field :server_owner, :boolean
     field :node, :integer
     field :allocation, :integer
     field :nest, :integer
     field :egg, :integer
-    field :pack, :string
+    field :pack, :integer
 
-    embeds_one :container, ServerContainer do
-      field :startup_command, :string
-      field :image, :string
-      field :installed, :boolean
-      field :environment, :map
-    end
+    embeds_one :container, Container
 
     field :created_at, :naive_datetime
     field :updated_at, :naive_datetime
   end
 
-
-  def parse(%{"object" => "server", "attributes" => %{"container" => %{"environment" => _}} = attributes}) do
+  @spec parse(map) :: t()
+  def parse(
+        %{
+          "object" => "server",
+          "attributes" => %{
+            "container" => %{
+              "environment" => _
+            }
+          } = attributes
+        }
+      ) do
     {unsafe_value, safe_attributes} = pop_in(attributes, ["container", "environment"])
     server = struct(__MODULE__, Utils.keys_to_atoms(safe_attributes))
     put_in(server, [Access.key!(:container), :environment], unsafe_value)
@@ -57,15 +73,4 @@ defmodule Elidactyl.Server do
   def parse(%{"object" => "server", "attributes" => attributes}) do
     struct(__MODULE__, Utils.keys_to_atoms(attributes))
   end
-
-#  def changeset(struct, params) do
-#    struct
-#    |> Ecto.Changeset.cast(params, @mandatory ++ @optional)
-#    |> Ecto.Changeset.validate_required(@mandatory)
-#    |> Ecto.Changeset.validate_format(:email, ~r/.+@.+\..+/)
-#    |> Ecto.Changeset.validate_length(:external_id, min: 1, max: 255)
-#    |> Ecto.Changeset.validate_length(:username, min: 1, max: 255)
-#    |> Ecto.Changeset.validate_length(:first_name, min: 1, max: 255)
-#    |> Ecto.Changeset.validate_length(:last_name, min: 1, max: 255)
-#  end
 end

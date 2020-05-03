@@ -2,6 +2,7 @@ defmodule Elidactyl.MockServer do
   use Plug.Router
   alias Elidactyl.MockServer.List
   alias Elidactyl.MockServer.User
+  alias Elidactyl.MockServer.Server
 
   plug(
     Plug.Parsers,
@@ -234,11 +235,13 @@ defmodule Elidactyl.MockServer do
     success(conn, "OK")
   end
 
+  #============== SERVERS ================
+
   get "/api/application/servers" do
     body =
-      %{
-        "object" => "list",
-        "data" => [
+      %List{
+        object: "list",
+        data: [
           %{
             "object" => "server",
             "attributes" => %{
@@ -324,7 +327,7 @@ defmodule Elidactyl.MockServer do
             }
           }
         ],
-        "meta" => %{
+        meta: %{
           "pagination" => %{
             "total" => 2,
             "count" => 2,
@@ -338,6 +341,219 @@ defmodule Elidactyl.MockServer do
 
     success(conn, body)
   end
+
+  get "/api/application/servers/:id" do
+  body = %{
+      "object" => "server",
+      "attributes" => %{
+        "id" => 2,
+        "external_id" => nil,
+        "uuid" => "47a7052b-f07e-4845-989d-e876e30960f4",
+        "identifier" => "47a7052b",
+        "name" => "Eat Vegies",
+        "description" => "",
+        "suspended" => false,
+        "limits" => %{
+          "memory" => 2048,
+          "swap" => -1,
+          "disk" => 10000,
+          "io" => 500,
+          "cpu" => 300
+        },
+        "feature_limits" => %{
+          "databases" => 10,
+          "allocations" => 0
+        },
+        "user" => 1,
+        "node" => 2,
+        "allocation" => 3,
+        "nest" => 1,
+        "egg" => 4,
+        "pack" => nil,
+        "container" => %{
+          "startup_command" => "java -Xms128M -Xmx%{%{SERVER_MEMORY}}M -jar %{%{SERVER_JARFILE}}",
+          "image" => "quay.io/pterodactyl/core:java",
+          "installed" => true,
+          "environment" => %{
+            "SERVER_JARFILE" => "server.jar",
+            "VANILLA_VERSION" => "latest",
+            "STARTUP" => "java -Xms128M -Xmx%{%{SERVER_MEMORY}}M -jar %{%{SERVER_JARFILE}}",
+            "P_SERVER_LOCATION" => "test",
+            "P_SERVER_UUID" => "47a7052b-f07e-4845-989d-e876e30960f4"
+          }
+        },
+        "updated_at" => "2018-11-20T14:35:00+00:00",
+        "created_at" => "2018-09-29T22:50:16+00:00"
+      }
+    }
+    success(conn, body)
+  end
+
+  get "/api/application/servers/external/:external_id" do
+    body = %{
+      "object" => "server",
+      "attributes" => %{
+        "id" => 2,
+        "external_id" => 10,
+        "uuid" => "47a7052b-f07e-4845-989d-e876e30960f4",
+        "identifier" => "47a7052b",
+        "name" => "Eat Vegies",
+        "description" => "",
+        "suspended" => false,
+        "limits" => %{
+          "memory" => 2048,
+          "swap" => -1,
+          "disk" => 10000,
+          "io" => 500,
+          "cpu" => 300
+        },
+        "feature_limits" => %{
+          "databases" => 10,
+          "allocations" => 0
+        },
+        "user" => 1,
+        "node" => 2,
+        "allocation" => 3,
+        "nest" => 1,
+        "egg" => 4,
+        "pack" => nil,
+        "container" => %{
+          "startup_command" => "java -Xms128M -Xmx%{%{SERVER_MEMORY}}M -jar %{%{SERVER_JARFILE}}",
+          "image" => "quay.io/pterodactyl/core:java",
+          "installed" => true,
+          "environment" => %{
+            "SERVER_JARFILE" => "server.jar",
+            "VANILLA_VERSION" => "latest",
+            "STARTUP" => "java -Xms128M -Xmx%{%{SERVER_MEMORY}}M -jar %{%{SERVER_JARFILE}}",
+            "P_SERVER_LOCATION" => "test",
+            "P_SERVER_UUID" => "47a7052b-f07e-4845-989d-e876e30960f4"
+          }
+        },
+        "updated_at" => "2018-11-20T14:35:00+00:00",
+        "created_at" => "2018-09-29T22:50:16+00:00"
+      }
+    }
+    success(conn, body)
+  end
+
+  post "/api/application/servers" do
+    params = %{
+      "external_id" => "test_server",
+      "name" => "Test",
+      "user" => 1,
+      "description" => "Test server",
+      "egg" => 15,
+      "pack" => 1,
+      "docker_image" => "quay.io/pterodactyl/core:java-glibc",
+      "startup" => "java -Xms128M -Xmx 1024M -jar server.jar",
+      "limits" => %{
+        "memory" => 512,
+        "swap" => 0,
+        "disk" => 1024,
+        "io" => 500,
+        "cpu" => 100
+      },
+      "feature_limits" => %{
+        "databases" => 1,
+        "allocations" => 2
+      },
+      "environment" => %{
+        "DL_VERSION" => "1.12.2"
+      },
+      "allocation" => %{
+        "default" => 28,
+        "additional" => [
+          3,
+          19
+        ],
+      },
+      "deploy" => %{
+        "locations" => [1],
+        "dedicated_ip" => false,
+        "port_range" => []
+      },
+      "start_on_completion" => true,
+      "skip_scripts" => false,
+      "oom_disabled" => true
+    }
+
+    attributes = %{
+        "id" => 53,
+        "external_id" => "test_server",
+        "uuid" => "d7bcc254-e218-4522-a7fe-9d2d562ad790",
+        "identifier" => "d7bcc254",
+        "name" => "Test",
+        "description" => "Test server",
+        "suspended" => false,
+        "limits" => %{
+          "memory" => 512,
+          "swap" => 0,
+          "disk" => 1024,
+          "io" => 500,
+          "cpu" => 100
+        },
+        "feature_limits" => %{
+          "databases" => 1,
+          "allocations" => 2
+        },
+        "user" => 1,
+        "node" => 1,
+        "allocation" => 28,
+        "nest" => 5,
+        "egg" => 15,
+        "pack" => 1,
+        "container" => %{
+          "startup_command" => "java -Xms128M -Xmx 1024M -jar server.jar",
+          "image" => "quay.io/pterodactyl/core:java-glibc",
+          "installed" => false,
+          "environment" => %{
+            "DL_VERSION" => "1.12.2",
+            "STARTUP" => "java -Xms128M -Xmx 1024M -jar server.jar",
+            "P_SERVER_LOCATION" => "fr.sys",
+            "P_SERVER_UUID" => "d7bcc254-e218-4522-a7fe-9d2d562ad790"
+          }
+        },
+        "updated_at" => "2019-02-23T11:25:35+00:00",
+        "created_at" => "2019-02-23T11:25:35+00:00"
+    }
+    if params != conn.params do
+      success(conn, %Server{attributes: attributes})
+    else
+      #      success(conn, "mandatory params missing in request #{inspect params}")
+      failure(conn, 500, "mandatory params missing in request #{inspect conn.params}")
+    end
+  end
+
+  patch "/api/application/servers/:id" do
+    params = conn.params
+    if Map.take(params, ["servername", "email", "first_name", "last_name"])
+       |> Kernel.map_size() == 4 do
+      body = %User{
+        object: "server",
+        attributes:
+          Map.merge(
+            %{
+              id: id,
+              uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
+              "2fa": false,
+              created_at: "2018-03-18T15:15:17+00:00",
+              updated_at: "2018-10-16T21:51:21+00:00"
+            },
+            params
+          )
+      }
+      success(conn, body)
+    else
+      #      success(conn, "mandatory params missing in request #{inspect params}")
+      failure(conn, 500, "mandatory params missing in request #{inspect params}")
+    end
+  end
+
+  delete "/api/application/servers/:id" do
+    success(conn, "OK")
+  end
+
+
 
   defp success(conn, body) do
     conn
