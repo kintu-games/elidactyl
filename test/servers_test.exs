@@ -258,21 +258,60 @@ defmodule Elidactyl.ServerTest do
              }
   end
 
-  #  test "edit server" do
-  #    params = %{
-  #      email: "email@example.com",
-  #      first_name: "John",
-  #      last_name: "Doe",
-  #      language: "en"
-  #    }
-  #
-  #    assert {:ok, original_server} = Users.get_server_by_id(1)
-  #    assert {:ok, edited_server} = Users.edit_user(1, params)
-  #
-  #    assert struct(original_server, Utils.keys_to_atoms(params)) == edited_server
-  #  end
+  test "update server details" do
+    params = %{
+      external_id: "some_id",
+      name: "New name",
+      user: "1",
+      description: "New description"
+    }
 
-  #  test "delete server" do
-  #    assert :ok = Servers.delete_server(1)
-  #  end
+    assert {:ok, server} = Servers.update_server_details(1, params)
+    assert server ==
+             %Elidactyl.Server{
+               external_id: "some_id",
+               name: "New name",
+               user: 1,
+               description: "New description",
+               server_owner: nil,
+               allocation: 28,
+               container: %{
+                 environment: %{
+                   "DL_VERSION" => "1.12.2",
+                   "P_SERVER_LOCATION" => "fr.sys",
+                   "P_SERVER_UUID" => "d7bcc254-e218-4522-a7fe-9d2d562ad790",
+                   "STARTUP" => "java -Xms128M -Xmx 1024M -jar server.jar"
+                 },
+                 image: "quay.io/pterodactyl/core:java-glibc",
+                 installed: false,
+                 startup_command: "java -Xms128M -Xmx 1024M -jar server.jar"
+               },
+               created_at: "2019-02-23T11:25:35+00:00",
+               egg: 15,
+               feature_limits: %{
+                 allocations: 2,
+                 databases: 1
+               },
+               id: 53,
+               identifier: "d7bcc254",
+               limits: %{
+                 cpu: 100,
+                 disk: 1024,
+                 io: 500,
+                 memory: 512,
+                 swap: 0
+               },
+               nest: 5,
+               node: 1,
+               pack: 1,
+               suspended: false,
+               updated_at: "2019-02-23T11:25:35+00:00",
+               uuid: "d7bcc254-e218-4522-a7fe-9d2d562ad790"
+             }
+
+  end
+
+  test "delete server" do
+    assert :ok = Servers.delete_server(1)
+  end
 end

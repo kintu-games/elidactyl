@@ -5,6 +5,7 @@ defmodule Elidactyl.Servers do
   alias Elidactyl.Response
   alias Elidactyl.Server
   alias Elidactyl.Server.CreateParams
+  alias Elidactyl.Server.UpdateDetailsParams
 
   def list_servers do
     #    GET https://pterodactyl.app/api/application/servers
@@ -53,27 +54,26 @@ defmodule Elidactyl.Servers do
     end
   end
 
-#  @spec edit_server(binary | integer, map) :: %Server{}
-#  def edit_server(id, params) do
-#    with {:ok, %Server{} = server} <- get_server_by_id(id),
-#         %{valid?: true} = changeset <- Server.changeset(server, params),
-#         %Server{} = server <- Ecto.Changeset.apply_changes(changeset),
-#         {:ok, resp} <- Request.request(:patch, "/api/application/servers/#{id}", server),
-#         %Server{} = result <- Response.parse_response(resp) do
-#      {:ok, result}
-#    else
-#      {:error, _} = error ->
-#        error
-#    end
-#  end
-#
-#    @spec delete_server(binary | integer) :: :ok
-#    def delete_server(id) do
-#      with {:ok, _resp} <- Request.request(:delete, "/api/application/servers/#{id}/") do
-#        :ok
-#      else
-#        {:error, _} = error ->
-#          error
-#      end
-#    end
+  @spec update_server_details(integer, map) :: %Server{}
+  def update_server_details(id, params) do
+    with %{valid?: true} = changeset <- UpdateDetailsParams.changeset(%UpdateDetailsParams{}, params),
+         %UpdateDetailsParams{} = details <- Ecto.Changeset.apply_changes(changeset),
+         {:ok, resp} <- Request.request(:post, "/api/application/servers/#{id}/details", details),
+         %Server{} = result <- Response.parse_response(resp) do
+      {:ok, result}
+    else
+      {:error, _} = error ->
+        error
+    end
   end
+
+  @spec delete_server(binary | integer) :: :ok
+  def delete_server(id) do
+    with {:ok, _resp} <- Request.request(:delete, "/api/application/servers/#{id}") do
+      :ok
+    else
+      {:error, _} = error ->
+        error
+    end
+  end
+end

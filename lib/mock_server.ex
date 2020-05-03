@@ -524,6 +524,60 @@ defmodule Elidactyl.MockServer do
     end
   end
 
+  post "/api/application/servers/:id/details" do
+    params = %{
+      external_id: "some_id",
+      name: "New name",
+      user: "1",
+      description: "New description"
+    }
+
+    attributes = %{
+      "id" => 53,
+      "external_id" => "some_id",
+      "uuid" => "d7bcc254-e218-4522-a7fe-9d2d562ad790",
+      "identifier" => "d7bcc254",
+      "name" => "New name",
+      "description" => "New description",
+      "suspended" => false,
+      "limits" => %{
+        "memory" => 512,
+        "swap" => 0,
+        "disk" => 1024,
+        "io" => 500,
+        "cpu" => 100
+      },
+      "feature_limits" => %{
+        "databases" => 1,
+        "allocations" => 2
+      },
+      "user" => 1,
+      "node" => 1,
+      "allocation" => 28,
+      "nest" => 5,
+      "egg" => 15,
+      "pack" => 1,
+      "container" => %{
+        "startup_command" => "java -Xms128M -Xmx 1024M -jar server.jar",
+        "image" => "quay.io/pterodactyl/core:java-glibc",
+        "installed" => false,
+        "environment" => %{
+          "DL_VERSION" => "1.12.2",
+          "STARTUP" => "java -Xms128M -Xmx 1024M -jar server.jar",
+          "P_SERVER_LOCATION" => "fr.sys",
+          "P_SERVER_UUID" => "d7bcc254-e218-4522-a7fe-9d2d562ad790"
+        }
+      },
+      "updated_at" => "2019-02-23T11:25:35+00:00",
+      "created_at" => "2019-02-23T11:25:35+00:00"
+    }
+    if params != conn.params do
+      success(conn, %Server{attributes: attributes})
+    else
+      failure(conn, 500, "mandatory params missing in request #{inspect conn.params}")
+    end
+  end
+
   patch "/api/application/servers/:id" do
     params = conn.params
     if Map.take(params, ["servername", "email", "first_name", "last_name"])
@@ -552,8 +606,6 @@ defmodule Elidactyl.MockServer do
   delete "/api/application/servers/:id" do
     success(conn, "OK")
   end
-
-
 
   defp success(conn, body) do
     conn
