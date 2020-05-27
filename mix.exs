@@ -6,6 +6,8 @@ defmodule Elidactyl.MixProject do
       app: :elidactyl,
       version: "0.1.0",
       elixir: "~> 1.9",
+      description: "API for Pterodactyl game server",
+      package: package(),
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
@@ -39,6 +41,14 @@ defmodule Elidactyl.MixProject do
       {:ecto_sql, ">= 0.0.0"},
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+    ]
+  end
+
+  defp package do
+    [
+      maintainers: ["Roman Berdichevskii"],
+      licenses: ["MIT License"],
+      links: %{"GitHub" => "https://github.com/kintull/elidactyl"}
     ]
   end
 end
