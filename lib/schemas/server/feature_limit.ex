@@ -1,4 +1,4 @@
-defmodule Elidactyl.Server.FeatureLimits do
+defmodule Elidactyl.Schemas.Server.FeatureLimits do
   @moduledoc false
 
   alias Ecto.Changeset

@@ -199,7 +199,7 @@ defmodule Elidactyl.MockServer do
             params
           )
       }
-      success(conn, body)
+      success(conn, body, 201)
     else
       #      success(conn, "mandatory params missing in request #{inspect params}")
       failure(conn, 500, "mandatory params missing in request #{inspect params}")
@@ -232,7 +232,7 @@ defmodule Elidactyl.MockServer do
   end
 
   delete "/api/application/users/:id" do
-    success(conn, "OK")
+    success(conn, "", 204)
   end
 
   #============== SERVERS ================
@@ -607,10 +607,10 @@ defmodule Elidactyl.MockServer do
     success(conn, "OK")
   end
 
-  defp success(conn, body) do
+  defp success(conn, body, code \\ 200) do
     conn
     |> Plug.Conn.put_resp_content_type("application/json")
-    |> Plug.Conn.resp(200, Poison.encode!(body))
+    |> Plug.Conn.resp(code, Poison.encode!(body))
     |> Plug.Conn.send_resp()
   end
 

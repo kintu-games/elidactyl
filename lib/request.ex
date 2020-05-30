@@ -7,7 +7,7 @@ defmodule Elidactyl.Request do
   def request(http_method, path, data \\ "", headers \\ []) do
     url = Application.get_env(:elidactyl, :pterodactyl_url) <> path
     headers = Keyword.merge(default_headers(), headers)
-    options = [ssl: [{:versions, [:"tlsv1.2"]}], recv_timeout: 500]
+    options = [ssl: [{:versions, [:"tlsv1.2"]}], recv_timeout: 30_000]
 
     response =
       case http_method do
@@ -87,7 +87,8 @@ defmodule Elidactyl.Request do
   end
 
   @spec handle_response({:ok, Response.t()} | {:error, HTTPError.t()}) :: {:ok, binary} |  {:error, Error.t()}
-  def handle_response({:ok, %Response{status_code: 200, body: body}}) do
+  def handle_response({:ok, %Response{status_code: 204}}), do: {:ok, ""}
+  def handle_response({:ok, %Response{status_code: code, body: body}}) when code in 200..207 do
     case Poison.decode(body) do
       {:ok, body} ->
         {:ok, body}

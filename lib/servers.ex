@@ -3,9 +3,9 @@ defmodule Elidactyl.Servers do
 
   alias Elidactyl.Request
   alias Elidactyl.Response
-  alias Elidactyl.Server
-  alias Elidactyl.Server.CreateParams
-  alias Elidactyl.Server.UpdateDetailsParams
+  alias Elidactyl.Schemas.Server
+  alias Elidactyl.Schemas.Server.CreateParams
+  alias Elidactyl.Schemas.Server.UpdateDetailsParams
 
   def list_servers do
     #    GET https://pterodactyl.app/api/application/servers

@@ -1,4 +1,4 @@
-defmodule Elidactyl.List do
+defmodule Elidactyl.Schemas.List do
   alias Elidactyl.Response
 
   @spec parse(map) :: list

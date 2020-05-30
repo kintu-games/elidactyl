@@ -4,7 +4,7 @@ defmodule Elidactyl.Users do
   """
   alias Elidactyl.Request
   alias Elidactyl.Error
-  alias Elidactyl.User
+  alias Elidactyl.Schemas.User
   alias Elidactyl.Response
 
   @doc """

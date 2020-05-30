@@ -1,4 +1,4 @@
-defmodule Elidactyl.Server.Allocation do
+defmodule Elidactyl.Schemas.Server.Allocation do
   @moduledoc false
 
   alias Ecto.Changeset

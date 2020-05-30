@@ -1,9 +1,9 @@
-defmodule Elidactyl.Server do
+defmodule Elidactyl.Schemas.Server do
   use Ecto.Schema
 
-  alias Elidactyl.Server.Container
-  alias Elidactyl.Server.FeatureLimits
-  alias Elidactyl.Server.Limits
+  alias Elidactyl.Schemas.Server.Container
+  alias Elidactyl.Schemas.Server.FeatureLimits
+  alias Elidactyl.Schemas.Server.Limits
 
   alias Elidactyl.Utils
 

@@ -1,4 +1,4 @@
-defmodule Elidactyl.Server.UpdateDetailsParams do
+defmodule Elidactyl.Schemas.Server.UpdateDetailsParams do
   @moduledoc false
 
   use Ecto.Schema

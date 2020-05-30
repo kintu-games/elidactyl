@@ -1,7 +1,7 @@
 defmodule Elidactyl.UsersTest do
   use ExUnit.Case
   alias Elidactyl.Users
-  alias Elidactyl.User
+  alias Elidactyl.Schemas.User
 
   test "list users" do
     assert {:ok, users} = Users.list_users()
@@ -77,13 +77,12 @@ defmodule Elidactyl.UsersTest do
 
   test "create user" do
     params = %{
-      external_id: "example_ext_id",
       username: "example",
       email: "example@example.com",
       first_name: "John",
       last_name: "Doe",
       language: "en",
-      is_admin: true
+      root_admin: false
     }
     assert {:ok, user} = Users.create_user(params)
 

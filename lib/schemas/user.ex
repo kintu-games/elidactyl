@@ -1,11 +1,11 @@
-defmodule Elidactyl.User do
+defmodule Elidactyl.Schemas.User do
   use Ecto.Schema
   alias Elidactyl.Utils
 
   @type t :: %__MODULE__{}
 
-  @optional [:password, :language, :root_admin, :external_id]
-  @mandatory [:username, :email, :first_name, :last_name]
+  @optional [:password, :language, :external_id]
+  @mandatory [:username, :email, :first_name, :last_name, :root_admin]
 
   @derive {Poison.Encoder, only: @optional ++ @mandatory}
   embedded_schema do

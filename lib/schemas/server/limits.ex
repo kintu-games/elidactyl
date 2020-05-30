@@ -1,4 +1,4 @@
-defmodule Elidactyl.Server.Limits do
+defmodule Elidactyl.Schemas.Server.Limits do
   @moduledoc false
 
   use Ecto.Schema

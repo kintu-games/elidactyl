@@ -2,7 +2,7 @@ defmodule Elidactyl.ServerTest do
   use ExUnit.Case
 
   alias Elidactyl.Servers
-  alias Elidactyl.Server
+  alias Elidactyl.Schemas.Server
 
   test "list users" do
     assert {:ok, users} = Servers.list_servers()
@@ -216,7 +216,7 @@ defmodule Elidactyl.ServerTest do
     assert {:ok, server} = Servers.create_server(params)
 
     assert server ==
-             %Elidactyl.Server{
+             %Server{
                server_owner: nil,
                allocation: 28,
                container: %{
@@ -268,7 +268,7 @@ defmodule Elidactyl.ServerTest do
 
     assert {:ok, server} = Servers.update_server_details(1, params)
     assert server ==
-             %Elidactyl.Server{
+             %Server{
                external_id: "some_id",
                name: "New name",
                user: 1,

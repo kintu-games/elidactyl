@@ -1,13 +1,13 @@
-defmodule Elidactyl.Server.CreateParams do
+defmodule Elidactyl.Schemas.Server.CreateParams do
   @moduledoc false
 
   use Ecto.Schema
   alias Ecto.Changeset
 
-  alias Elidactyl.Server.FeatureLimits
-  alias Elidactyl.Server.Limits
-  alias Elidactyl.Server.Allocation
-  alias Elidactyl.Server.Deploy
+  alias Elidactyl.Schemas.Server.FeatureLimits
+  alias Elidactyl.Schemas.Server.Limits
+  alias Elidactyl.Schemas.Server.Allocation
+  alias Elidactyl.Schemas.Server.Deploy
 
   @type t :: %__MODULE__{}
 

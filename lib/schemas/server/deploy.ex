@@ -1,4 +1,4 @@
-defmodule Elidactyl.Server.Deploy do
+defmodule Elidactyl.Schemas.Server.Deploy do
   @moduledoc false
 
   alias Ecto.Changeset

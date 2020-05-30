@@ -1,4 +1,4 @@
-defmodule Elidactyl.Server.Container do
+defmodule Elidactyl.Schemas.Server.Container do
   @moduledoc false
 
   alias Ecto.Changeset

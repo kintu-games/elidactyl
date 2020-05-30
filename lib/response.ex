@@ -1,7 +1,7 @@
 defmodule Elidactyl.Response do
-  alias Elidactyl.List
-  alias Elidactyl.Server
-  alias Elidactyl.User
+  alias Elidactyl.Schemas.List
+  alias Elidactyl.Schemas.Server
+  alias Elidactyl.Schemas.User
 
   def parse_response(%{"object" => object} = resp) do
     mod = get_object_mod(object)
