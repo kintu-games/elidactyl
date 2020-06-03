@@ -1,4 +1,11 @@
 import Config
 
-config :elidactyl, :pterodactyl_url, "localhost:8081"
-config :elidactyl, :pterodactyl_auth_token, "asdf"
+# Configure your databases
+#config :elidactyl, Elidactyl.PanelRepo,
+#       username: "ptero",
+#       password: "pterodbpass",
+#       database: "pterodactyl",
+#       hostname: "localhost",
+#       pool_size: 10
+
+import_config "dev.secret.exs"
