@@ -11,11 +11,12 @@ defmodule Elidactyl.Schemas.Server.CreateParams do
 
   @type t :: %__MODULE__{}
 
+  @optional [:pack]
   @mandatory [
     :name,
+    :user,
     :description,
     :egg,
-    :pack,
 
     :docker_image,
     :startup,
@@ -25,13 +26,15 @@ defmodule Elidactyl.Schemas.Server.CreateParams do
     :skip_scripts,
     :oom_disabled
   ]
+  @embedded [:limits, :feature_limits, :allocation, :deploy]
 
 
-  @derive {Poison.Encoder, only: @mandatory}
+  @derive {Poison.Encoder, only: @mandatory ++ @optional ++ @embedded}
 
   embedded_schema do
     field :external_id, :binary
     field :name, :string
+    field :user, :integer
     field :description, :string
     field :egg, :integer
     field :pack, :integer
@@ -53,7 +56,7 @@ defmodule Elidactyl.Schemas.Server.CreateParams do
   @spec changeset(t(), map) :: Changeset.t()
   def changeset(struct, params) do
     struct
-    |> Changeset.cast(params, @mandatory)
+    |> Changeset.cast(params, @mandatory ++ @optional)
     |> Changeset.validate_required(@mandatory)
     |> Changeset.cast_embed(:limits, required: true, with: &limits_changeset/2)
     |> Changeset.cast_embed(:feature_limits, required: true, with: &feature_limits_changeset/2)
@@ -77,7 +80,7 @@ defmodule Elidactyl.Schemas.Server.CreateParams do
 
   @spec limits_changeset(Changeset.t(), map) :: Changeset.t()
   defp limits_changeset(%Limits{} = changeset, params) do
-    Changeset.cast(changeset, params, Limits.__schema__(:fields))
+    Changeset.cast(changeset, params, Limits.__schema__(:fields))  |> IO.inspect()
   end
 
   @spec feature_limits_changeset(Changeset.t(), map) :: Changeset.t()

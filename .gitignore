@@ -27,3 +27,5 @@ elidactyl-*.tar
 /.elixir_ls
 
 .env
+
+config/*.secret.exs

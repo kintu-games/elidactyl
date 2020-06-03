@@ -6,7 +6,9 @@ defmodule Elidactyl.Schemas.Server.UpdateDetailsParams do
 
   @type t :: %__MODULE__{}
   @mandatory [:name, :user]
-  @derive {Poison.Encoder, only: @mandatory}
+  @optional [:external_id, :description]
+
+  @derive {Poison.Encoder, only: @mandatory ++ @optional}
 
   embedded_schema do
     field :external_id, :string

@@ -28,6 +28,7 @@ defmodule Elidactyl.Schemas.Server do
   ]
 
   @derive {Poison.Encoder, only: @optional ++ @mandatory}
+
   embedded_schema do
     field :external_id, :string
     field :uuid, Ecto.UUID

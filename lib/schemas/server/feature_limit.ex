@@ -6,6 +6,8 @@ defmodule Elidactyl.Schemas.Server.FeatureLimits do
 
   @type t :: %__MODULE__{}
 
+  @derive {Poison.Encoder, only: [:databases, :allocations]}
+
   embedded_schema do
     field :databases, :integer
     field :allocations, :integer

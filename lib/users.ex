@@ -10,7 +10,7 @@ defmodule Elidactyl.Users do
   @doc """
     Request all users from server.
   """
-  @spec list_users() :: {:ok, [%User{}]} | {:error, %Error{}}
+  @spec list_users() :: {:ok, [User.t()]} | {:error, Error.t()}
   def list_users do
     with {:ok, resp} <- Request.request(:get, "/api/application/users"),
          result when is_list(result) <- Response.parse_response(resp) do
@@ -21,7 +21,7 @@ defmodule Elidactyl.Users do
     end
   end
 
-  @spec get_user_by_id(binary | integer) :: %User{}
+  @spec get_user_by_id(binary | integer) :: User.t()
   def get_user_by_id(id) do
     with {:ok, resp} <- Request.request(:get, "/api/application/users/#{id}"),
          %User{} = result <- Response.parse_response(resp) do
@@ -32,7 +32,7 @@ defmodule Elidactyl.Users do
     end
   end
 
-  @spec get_user_by_external_id(binary | integer) :: %User{}
+  @spec get_user_by_external_id(binary | integer) :: User.t()
   def get_user_by_external_id(id) do
     with {:ok, resp} <- Request.request(:get, "/api/application/users/external/#{id}"),
          %User{} = result <- Response.parse_response(resp) do
@@ -44,7 +44,7 @@ defmodule Elidactyl.Users do
   end
 
 
-  @spec create_user(map) :: %User{}
+  @spec create_user(map) :: User.t()
   def create_user(params) do
     with %{valid?: true} = changeset <- User.changeset(%User{}, params),
          %User{} = user <- Ecto.Changeset.apply_changes(changeset),
@@ -57,7 +57,7 @@ defmodule Elidactyl.Users do
     end
   end
 
-  @spec edit_user(binary | integer, map) :: %User{}
+  @spec edit_user(binary | integer, map) :: User.t()
   def edit_user(id, params) do
     with {:ok, %User{} = user} <- get_user_by_id(id),
          %{valid?: true} = changeset <- User.changeset(user, params),

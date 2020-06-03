@@ -177,6 +177,7 @@ defmodule Elidactyl.ServerTest do
 
   test "create server" do
     params = %{
+      user: 1,
       allocation: %{
         default: 28,
         additional: [3, 19]

@@ -5,6 +5,9 @@ defmodule Elidactyl.Schemas.Server.Limits do
   alias Ecto.Changeset
 
   @type t :: %__MODULE__{}
+  @mandatory [:memory, :swap, :disk, :io, :cpu]
+
+  @derive {Poison.Encoder, only: @mandatory}
 
   embedded_schema do
     field :memory, :integer
@@ -17,8 +20,8 @@ defmodule Elidactyl.Schemas.Server.Limits do
   @spec changeset(t(), map) :: Changeset.t()
   def changeset(struct, params) do
     struct
-    |> Changeset.cast(params, [:memory, :swap, :disk, :io, :cpu])
-    |> Changeset.validate_required([:memory, :swap, :disk, :io, :cpu])
+    |> Changeset.cast(params, @mandatory)
+    |> Changeset.validate_required(@mandatory)
     |> Changeset.validate_number(:memory, greater_than_or_equal_to: 0)
     |> Changeset.validate_number(:swap, greater_than_or_equal_to: -1)
     |> Changeset.validate_number(:disk, greater_than_or_equal_to: 0)

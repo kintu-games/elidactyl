@@ -3,6 +3,7 @@ defmodule Elidactyl.MockServer do
   alias Elidactyl.MockServer.List
   alias Elidactyl.MockServer.User
   alias Elidactyl.MockServer.Server
+  alias Elidactyl.MockServer.Node.Allocation
 
   plug(
     Plug.Parsers,
@@ -96,7 +97,6 @@ defmodule Elidactyl.MockServer do
 
   get "/api/application/users" do
     body = %List{
-      object: "list",
       data: [
         %User{
           attributes: %{
@@ -605,6 +605,37 @@ defmodule Elidactyl.MockServer do
 
   delete "/api/application/servers/:id" do
     success(conn, "OK")
+  end
+
+  #============== NODES ================
+
+  get "/api/application/nodes/:id/allocations" do
+    if id == "1" do
+      allocations =
+        [
+          %Allocation{
+            attributes: %{
+              alias: "steam",
+              assigned: false,
+              id: 1,
+              ip: "1.2.3.4",
+              port: 1000
+            }
+          },
+          %Allocation{
+            attributes: %{
+              alias: "rcon",
+              assigned: false,
+              id: 2,
+              ip: "1.2.3.4",
+              port: 2000
+            }
+          }
+        ]
+      success(conn, %List{data: allocations})
+    else
+      failure(conn, 404, "not found node #{inspect id}")
+    end
   end
 
   defp success(conn, body, code \\ 200) do

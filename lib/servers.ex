@@ -40,7 +40,6 @@ defmodule Elidactyl.Servers do
     end
   end
 
-
   @spec create_server(map) :: %Server{}
   def create_server(params) do
     with %{valid?: true} = changeset <- CreateParams.changeset(%CreateParams{}, params),
