@@ -5,8 +5,8 @@ config :elidactyl, :pterodactyl_auth_token, "asdf"
 
 # Configure your database
 config :elidactyl, Pterodactyl.PanelRepo,
-       username: "pterodactyl",
-       password: "pterodactyl",
+       username: "root",
+       password: "eqyN23tKAjWUPpeG#aHP4cT@xQ",
        database: "pterodactyl",
        hostname: "localhost",
        pool_size: 10
