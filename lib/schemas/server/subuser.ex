@@ -8,9 +8,11 @@ defmodule Elidactyl.Schemas.Server.Subuser do
 
   @derive {Poison.Encoder, only: [:user_id, :server_id]}
 
-  embedded_schema do
+  schema "subusers" do
     field :user_id, :integer
     field :server_id, :integer
+
+    timestamps(inserted_at: :created_at)
   end
 
   @spec changeset(t(), map) :: Changeset.t()
