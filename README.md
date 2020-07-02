@@ -18,6 +18,13 @@ end
 ```elixir
 config :elidactyl, :pterodactyl_url, "<your_ip_here>"
 config :elidactyl, :pterodactyl_auth_token, "<your_auth_token>"
+
+config :elidactyl, Elidactyl.PanelRepo,
+       username: "root",
+       password: "<your_password>",
+       database: "pterodactyl",
+       hostname: "localhost",
+       pool_size: 10
 ```
 
 Auth token is generated on this page:
