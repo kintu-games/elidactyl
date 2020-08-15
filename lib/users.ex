@@ -1,15 +1,10 @@
 defmodule Elidactyl.Users do
-  @moduledoc """
-    This module is responsible for listing and modifying Pterodactyl users.
-  """
+  @moduledoc false
   alias Elidactyl.Request
   alias Elidactyl.Error
   alias Elidactyl.Schemas.User
   alias Elidactyl.Response
 
-  @doc """
-    Request all users from server.
-  """
   @spec list_users() :: {:ok, [User.t()]} | {:error, Error.t()}
   def list_users do
     with {:ok, resp} <- Request.request(:get, "/api/application/users"),
