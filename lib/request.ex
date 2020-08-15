@@ -3,10 +3,14 @@ defmodule Elidactyl.Request do
   alias HTTPoison.Error, as: HTTPError
   alias Elidactyl.Error
 
-  @spec request(atom, binary, any, [{binary, binary}]) :: {:ok, binary} | {:error, Error.t()}
-  def request(http_method, path, data \\ "", headers \\ []) do
+  @type request_options :: [{:use_client_api, boolean}]
+  @type headers :: [{binary, binary}]
+  @type http_method :: atom
+
+  @spec request(http_method, binary, any, headers, request_options) :: {:ok, binary} | {:error, Error.t()}
+  def request(http_method, path, data \\ "", headers \\ [], opts \\ []) do
     url = Application.get_env(:elidactyl, :pterodactyl_url) <> path
-    headers = Keyword.merge(default_headers(), headers)
+    headers = Keyword.merge(default_headers(opts), headers)
     options = [ssl: [{:versions, [:"tlsv1.2"]}], recv_timeout: 30_000]
 
     response =
@@ -75,9 +79,14 @@ defmodule Elidactyl.Request do
     end
   end
 
-  @spec default_headers() :: list
-  defp default_headers do
-    token = Application.get_env(:elidactyl, :pterodactyl_auth_token)
+  @spec default_headers(map) :: list
+  defp default_headers(opts) do
+    token =
+      if Keyword.get(opts, :use_client_api) do
+        Application.get_env(:elidactyl, :pterodactyl_client_auth_token)
+      else
+        Application.get_env(:elidactyl, :pterodactyl_server_auth_token)
+      end
 
     [
       {"Authorization", "Bearer #{token}"},
