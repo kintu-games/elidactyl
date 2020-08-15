@@ -80,7 +80,7 @@ defmodule Elidactyl.Schemas.Server.CreateParams do
 
   @spec limits_changeset(Changeset.t(), map) :: Changeset.t()
   defp limits_changeset(%Limits{} = changeset, params) do
-    Changeset.cast(changeset, params, Limits.__schema__(:fields))  |> IO.inspect()
+    Changeset.cast(changeset, params, Limits.__schema__(:fields))
   end
 
   @spec feature_limits_changeset(Changeset.t(), map) :: Changeset.t()

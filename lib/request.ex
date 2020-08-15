@@ -39,7 +39,6 @@ defmodule Elidactyl.Request do
   def post(url, body, headers \\ [], options \\ []) do
     case Poison.encode(body) do
       {:ok, encoded_body} ->
-        IO.inspect(Poison.decode!(encoded_body))
         HTTPoison.post(url, encoded_body, headers, options)
       {:error, error} ->
         {:error, %Error{type: :json_encode_failed, message: inspect(error)}}
