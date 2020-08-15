@@ -1,4 +1,5 @@
 defmodule Elidactyl.Request do
+  @moduledoc false
   alias HTTPoison.Response
   alias HTTPoison.Error, as: HTTPError
   alias Elidactyl.Error

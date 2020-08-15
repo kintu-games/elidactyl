@@ -1,7 +1,5 @@
 defmodule Elidactyl.Client do
-  @moduledoc """
-  Retrieves all servers that the user has access to, along with information about them.
-  """
+  @moduledoc false
 
   alias Elidactyl.Request
   alias Elidactyl.Response

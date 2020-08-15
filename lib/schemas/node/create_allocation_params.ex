@@ -1,4 +1,6 @@
 defmodule Elidactyl.Schemas.Node.CreateAllocationParams do
+  @moduledoc false
+
   use Ecto.Schema
   alias Elidactyl.Utils
 

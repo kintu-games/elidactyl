@@ -4,7 +4,7 @@ defmodule Elidactyl.MixProject do
   def project do
     [
       app: :elidactyl,
-      version: "0.1.2",
+      version: "0.2.1",
       elixir: "~> 1.9",
       description: "API for Pterodactyl game server",
       package: package(),

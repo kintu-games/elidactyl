@@ -1,9 +1,12 @@
 defmodule Elidactyl.MockServer do
-  use Plug.Router
+  @moduledoc false
+
   alias Elidactyl.MockServer.List
   alias Elidactyl.MockServer.User
   alias Elidactyl.MockServer.Server
   alias Elidactyl.MockServer.Node.Allocation
+
+  use Plug.Router
 
   plug(
     Plug.Parsers,

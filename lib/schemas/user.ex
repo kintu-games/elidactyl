@@ -1,4 +1,6 @@
 defmodule Elidactyl.Schemas.User do
+  @moduledoc false
+
   use Ecto.Schema
   alias Elidactyl.Utils
 

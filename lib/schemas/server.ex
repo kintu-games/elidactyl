@@ -1,10 +1,11 @@
 defmodule Elidactyl.Schemas.Server do
+  @moduledoc false
+
   use Ecto.Schema
 
   alias Elidactyl.Schemas.Server.Container
   alias Elidactyl.Schemas.Server.FeatureLimits
   alias Elidactyl.Schemas.Server.Limits
-
   alias Elidactyl.Utils
 
   @type t :: %__MODULE__{}

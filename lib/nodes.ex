@@ -1,8 +1,5 @@
 defmodule Elidactyl.Nodes do
-  @moduledoc """
-  This module is responsible for working with Pterodactyl
-  nodes including node allocations.
-  """
+  @moduledoc false
 
   alias Elidactyl.Request
   alias Elidactyl.Error

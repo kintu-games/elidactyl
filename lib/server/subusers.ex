@@ -1,7 +1,5 @@
 defmodule Elidactyl.Servers.Subusers do
-  @moduledoc """
-  Module allows to modify server's subusers.
-  """
+  @moduledoc false
 
   alias Elidactyl.PanelRepo, as: Repo
   alias Elidactyl.Schemas.User

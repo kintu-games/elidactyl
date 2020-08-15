@@ -1,4 +1,6 @@
 defmodule Elidactyl.Response do
+  @moduledoc false
+
   alias Elidactyl.Schemas.List
   alias Elidactyl.Schemas.Server
   alias Elidactyl.Schemas.User

@@ -1,5 +1,6 @@
 defmodule Elidactyl.Users do
   @moduledoc false
+
   alias Elidactyl.Request
   alias Elidactyl.Error
   alias Elidactyl.Schemas.User

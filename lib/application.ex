@@ -1,4 +1,5 @@
 defmodule Elidactyl.Application do
+  @moduledoc false
   use Application
 
   alias Elidactyl.Repo.Supervisor, as: Repo

@@ -1,4 +1,6 @@
 defmodule Elidactyl.Utils do
+  @moduledoc false
+
   def keys_to_atoms(attributes) when is_map(attributes) do
     Map.new(attributes, &reduce_keys_to_atoms/1)
   end

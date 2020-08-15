@@ -2,6 +2,8 @@
 
 Elixir API client to Pterodactyl - opensource dedicated game server managment system
 
+You can find documentation here https://hexdocs.pm/elidactyl/Elidactyl.html
+
 ## Installation
 
 Add `elidactyl` to your list of dependencies in `mix.exs`:
@@ -9,32 +11,31 @@ Add `elidactyl` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:elidactyl, "~> 0.1.0"}
+    {:elidactyl, "~> 0.2.0"}
   ]
 end
 ```
 
 ## Configuration
 ```elixir
-config :elidactyl, :pterodactyl_url, "<your_ip_here>"
-config :elidactyl, :pterodactyl_auth_token, "<your_auth_token>"
+config :elidactyl, :pterodactyl_url, "<pterodactyl_ip:port>"
+config :elidactyl, :pterodactyl_server_auth_token, "<pterodactyl_global_auth_token>"
+# You can generate global API token at this page:
+# https://<pterodactyl_url>/admin/api
 
 config :elidactyl, Elidactyl.PanelRepo,
-       username: "root",
-       password: "<your_password>",
-       database: "pterodactyl",
-       hostname: "localhost",
+       username: "<pterodactyl_mysql_username>",
+       password: "<pterodactyl_mysql_password>",
+       database: "<pterodactyl_mysql_db_name>",
+       hostname: "<pterodactyl_mysql_db_hostname>",
        pool_size: 10
 ```
 
-Auth token is generated on this page:
-`http://<your_ip_here>/account/api`
-
 ## How to use
 
-# List available servers
+### List available servers
 ```elixir
-iex(1)> Elidactyl.Client.list_all_servers()
+iex> Elidactyl.list_all_servers()
 {:ok,
  [
    %Elidactyl.Server{
@@ -62,12 +63,10 @@ iex(1)> Elidactyl.Client.list_all_servers()
 }
 ```
 
-## Users
-
-# List all users
+### List all users
 
 ```elixir
-iex(2)> Elidactyl.Users.list_users
+iex> Elidactyl.get_all_users()
 {:ok,
  [
    %Elidactyl.Schemas.User{
@@ -88,7 +87,7 @@ iex(2)> Elidactyl.Users.list_users
  ]}
 ```
 
-# Create user
+### Create user
 ```elixir
 iex(2)> params = 
   %{
@@ -119,10 +118,3 @@ iex(3)> Elidactyl.Users.create_user(params)
    uuid: "219e20e3-3975-44b4-ae63-fa79137fdb99"
  }}
 ```
-
-
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/elidactyl](https://hexdocs.pm/elidactyl).
-
