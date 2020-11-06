@@ -122,6 +122,7 @@ defmodule Elidactyl.MockedServer.Router.Application.Servers do
 
     success(conn, body)
   end
+
   get "/api/application/servers/:id" do
     body = %{
       "object" => "server",
