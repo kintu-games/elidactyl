@@ -1,12 +1,12 @@
-defmodule Elidactyl.MockServer do
+defmodule Elidactyl.MockedServer.Router.Application.Servers do
   @moduledoc false
 
-  alias Elidactyl.MockServer.List
-  alias Elidactyl.MockServer.User
-  alias Elidactyl.MockServer.Server
-  alias Elidactyl.MockServer.Node.Allocation
-
   use Plug.Router
+  import Elidactyl.MockedServer.Router.Utils
+
+  alias Elidactyl.MockedServer.ExternalSchema.List
+  alias Elidactyl.MockedServer.ExternalSchema.Server
+  alias Elidactyl.MockedServer.ExternalSchema.User
 
   plug(
     Plug.Parsers,
@@ -17,228 +17,6 @@ defmodule Elidactyl.MockServer do
 
   plug(:match)
   plug(:dispatch)
-
-  get "/test" do
-    success(conn, %{"type" => "get"})
-  end
-
-  post "/test" do
-    success(conn, %{"type" => "post", "params" => conn.params})
-  end
-
-  put "/test" do
-    success(conn, %{"type" => "put", "params" => conn.params})
-  end
-
-  patch "/test" do
-    success(conn, %{"type" => "patch", "params" => conn.params})
-  end
-
-  delete "/test" do
-    success(conn, %{"type" => "delete"})
-  end
-
-  get "/test_not_found" do
-    failure(conn, 404)
-  end
-
-  get "/api/client" do
-    servers = %{
-      "data" => [
-        %{
-          "attributes" => %{
-            "description" => "",
-            "feature_limits" => %{
-              "allocations" => 5,
-              "databases" => 5
-            },
-            "identifier" => "d3aac109",
-            "limits" => %{
-              "cpu" => 200,
-              "disk" => 5000,
-              "io" => 500,
-              "memory" => 1024,
-              "swap" => 0
-            },
-            "name" => "Survival",
-            "server_owner" => true,
-            "uuid" => "d3aac109-e5a0-4331-b03e-3454f7e136dc"
-          },
-          "object" => "server"
-        }
-      ],
-      "meta" => %{
-        "pagination" => %{
-          "count" => 1,
-          "current_page" => 1,
-          "links" => [],
-          "per_page" => 25,
-          "total" => 1,
-          "total_pages" => 1
-        }
-      },
-      "object" => "list"
-    }
-
-    success(conn, Poison.encode!(servers))
-  end
-
-  post "/api/client/servers/:id/power" do
-    case conn.params do
-      %{"signal" => "start"} ->
-        success(conn, "")
-
-      %{"signal" => "stop"} ->
-        success(conn, "")
-
-      _ ->
-        failure(conn, 404)
-    end
-  end
-
-  #============== USERS ================
-
-  get "/api/application/users" do
-    body = %List{
-      data: [
-        %User{
-          attributes: %{
-            id: 1,
-            external_id: nil,
-            uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
-            username: "codeco",
-            email: "codeco@file.properties",
-            first_name: "Rihan",
-            last_name: "Arfan",
-            language: "en",
-            root_admin: true,
-            "2fa": false,
-            created_at: "2018-03-18T15:15:17+00:00",
-            updated_at: "2018-10-16T21:51:21+00:00"
-          }
-        },
-        %User{
-          object: "user",
-          attributes: %{
-            id: 4,
-            external_id: nil,
-            uuid: "f253663c-5a45-43a8-b280-3ea3c752b931",
-            username: "wardledeboss",
-            email: "wardle315@gmail.com",
-            first_name: "Harvey",
-            last_name: "Wardle",
-            language: "en",
-            root_admin: false,
-            "2fa": false,
-            created_at: "2018-09-29T17:59:45+00:00",
-            updated_at: "2018-10-02T18:59:03+00:00"
-          }
-        }
-      ]
-    }
-
-    success(conn, body)
-  end
-
-  get "/api/application/users/:id" do
-    body = %User{
-      object: "user",
-      attributes: %{
-        id: id,
-        external_id: nil,
-        uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
-        username: "codeco",
-        email: "codeco@file.properties",
-        first_name: "Rihan",
-        last_name: "Arfan",
-        language: "en",
-        root_admin: true,
-        "2fa": false,
-        created_at: "2018-03-18T15:15:17+00:00",
-        updated_at: "2018-10-16T21:51:21+00:00"
-      }
-    }
-
-    success(conn, body)
-  end
-
-  get "/api/application/users/external/:external_id" do
-    body = %User{
-      object: "user",
-      attributes: %{
-        id: 1,
-        external_id: external_id,
-        uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
-        username: "codeco",
-        email: "codeco@file.properties",
-        first_name: "Rihan",
-        last_name: "Arfan",
-        language: "en",
-        root_admin: true,
-        "2fa": false,
-        created_at: "2018-03-18T15:15:17+00:00",
-        updated_at: "2018-10-16T21:51:21+00:00"
-      }
-    }
-
-    success(conn, body)
-  end
-
-  post "/api/application/users" do
-    params = conn.params
-    if Map.take(params, ["username", "email", "first_name", "last_name"])
-       |> Kernel.map_size() == 4 do
-      body = %User{
-        object: "user",
-        attributes:
-          Map.merge(
-            %{
-              id: 2,
-              uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
-              "2fa": false,
-              created_at: "2018-03-18T15:15:17+00:00",
-              updated_at: "2018-10-16T21:51:21+00:00"
-            },
-            params
-          )
-      }
-      success(conn, body, 201)
-    else
-      #      success(conn, "mandatory params missing in request #{inspect params}")
-      failure(conn, 500, "mandatory params missing in request #{inspect params}")
-    end
-  end
-
-  patch "/api/application/users/:id" do
-    params = conn.params
-    if Map.take(params, ["username", "email", "first_name", "last_name"])
-       |> Kernel.map_size() == 4 do
-      body = %User{
-        object: "user",
-        attributes:
-          Map.merge(
-            %{
-              id: id,
-              uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
-              "2fa": false,
-              created_at: "2018-03-18T15:15:17+00:00",
-              updated_at: "2018-10-16T21:51:21+00:00"
-            },
-            params
-          )
-      }
-      success(conn, body)
-    else
-      #      success(conn, "mandatory params missing in request #{inspect params}")
-      failure(conn, 500, "mandatory params missing in request #{inspect params}")
-    end
-  end
-
-  delete "/api/application/users/:id" do
-    success(conn, "", 204)
-  end
-
-  #============== SERVERS ================
 
   get "/api/application/servers" do
     body =
@@ -344,9 +122,8 @@ defmodule Elidactyl.MockServer do
 
     success(conn, body)
   end
-
   get "/api/application/servers/:id" do
-  body = %{
+    body = %{
       "object" => "server",
       "attributes" => %{
         "id" => 2,
@@ -481,43 +258,43 @@ defmodule Elidactyl.MockServer do
     }
 
     attributes = %{
-        "id" => 53,
-        "external_id" => "test_server",
-        "uuid" => "d7bcc254-e218-4522-a7fe-9d2d562ad790",
-        "identifier" => "d7bcc254",
-        "name" => "Test",
-        "description" => "Test server",
-        "suspended" => false,
-        "limits" => %{
-          "memory" => 512,
-          "swap" => 0,
-          "disk" => 1024,
-          "io" => 500,
-          "cpu" => 100
-        },
-        "feature_limits" => %{
-          "databases" => 1,
-          "allocations" => 2
-        },
-        "user" => 1,
-        "node" => 1,
-        "allocation" => 28,
-        "nest" => 5,
-        "egg" => 15,
-        "pack" => 1,
-        "container" => %{
-          "startup_command" => "java -Xms128M -Xmx 1024M -jar server.jar",
-          "image" => "quay.io/pterodactyl/core:java-glibc",
-          "installed" => false,
-          "environment" => %{
-            "DL_VERSION" => "1.12.2",
-            "STARTUP" => "java -Xms128M -Xmx 1024M -jar server.jar",
-            "P_SERVER_LOCATION" => "fr.sys",
-            "P_SERVER_UUID" => "d7bcc254-e218-4522-a7fe-9d2d562ad790"
-          }
-        },
-        "updated_at" => "2019-02-23T11:25:35+00:00",
-        "created_at" => "2019-02-23T11:25:35+00:00"
+      "id" => 53,
+      "external_id" => "test_server",
+      "uuid" => "d7bcc254-e218-4522-a7fe-9d2d562ad790",
+      "identifier" => "d7bcc254",
+      "name" => "Test",
+      "description" => "Test server",
+      "suspended" => false,
+      "limits" => %{
+        "memory" => 512,
+        "swap" => 0,
+        "disk" => 1024,
+        "io" => 500,
+        "cpu" => 100
+      },
+      "feature_limits" => %{
+        "databases" => 1,
+        "allocations" => 2
+      },
+      "user" => 1,
+      "node" => 1,
+      "allocation" => 28,
+      "nest" => 5,
+      "egg" => 15,
+      "pack" => 1,
+      "container" => %{
+        "startup_command" => "java -Xms128M -Xmx 1024M -jar server.jar",
+        "image" => "quay.io/pterodactyl/core:java-glibc",
+        "installed" => false,
+        "environment" => %{
+          "DL_VERSION" => "1.12.2",
+          "STARTUP" => "java -Xms128M -Xmx 1024M -jar server.jar",
+          "P_SERVER_LOCATION" => "fr.sys",
+          "P_SERVER_UUID" => "d7bcc254-e218-4522-a7fe-9d2d562ad790"
+        }
+      },
+      "updated_at" => "2019-02-23T11:25:35+00:00",
+      "created_at" => "2019-02-23T11:25:35+00:00"
     }
     if params != conn.params do
       success(conn, %Server{attributes: attributes})
@@ -610,47 +387,4 @@ defmodule Elidactyl.MockServer do
     success(conn, "OK")
   end
 
-  #============== NODES ================
-
-  get "/api/application/nodes/:id/allocations" do
-    if id == "1" do
-      allocations =
-        [
-          %Allocation{
-            attributes: %{
-              alias: "steam",
-              assigned: false,
-              id: 1,
-              ip: "1.2.3.4",
-              port: 1000
-            }
-          },
-          %Allocation{
-            attributes: %{
-              alias: "rcon",
-              assigned: false,
-              id: 2,
-              ip: "1.2.3.4",
-              port: 2000
-            }
-          }
-        ]
-      success(conn, %List{data: allocations})
-    else
-      failure(conn, 404, "not found node #{inspect id}")
-    end
-  end
-
-  defp success(conn, body, code \\ 200) do
-    conn
-    |> Plug.Conn.put_resp_content_type("application/json")
-    |> Plug.Conn.resp(code, Poison.encode!(body))
-    |> Plug.Conn.send_resp()
-  end
-
-  defp failure(conn, status, error_msg \\ "error") do
-    conn
-    |> Plug.Conn.resp(status, error_msg)
-    |> Plug.Conn.send_resp()
-  end
 end

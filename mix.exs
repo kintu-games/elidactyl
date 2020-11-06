@@ -4,9 +4,10 @@ defmodule Elidactyl.MixProject do
   def project do
     [
       app: :elidactyl,
-      version: "0.2.1",
+      version: "0.3.0",
       elixir: "~> 1.9",
-      description: "API for Pterodactyl game server",
+      elixirc_paths: elixirc_paths(Mix.env),
+      description: "Elixir API for Pterodactyl game panel",
       package: package(),
       start_permanent: Mix.env() == :prod,
       deps: deps()
@@ -39,8 +40,7 @@ defmodule Elidactyl.MixProject do
       {:httpoison, "~> 1.6"},
       {:plug_cowboy, "~> 2.0"},
       {:observer_cli, "~> 1.5"},
-      {:ecto_sql, ">= 0.0.0"},
-      {:myxql, "~> 0.4.0"}
+      {:ecto_sql, ">= 0.0.0"}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
     ]
@@ -53,4 +53,7 @@ defmodule Elidactyl.MixProject do
       links: %{"GitHub" => "https://github.com/kintull/elidactyl"}
     ]
   end
+
+  defp elixirc_paths(:test), do: ["lib","test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 end

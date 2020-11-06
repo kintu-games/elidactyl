@@ -1,4 +1,4 @@
-defmodule Elidactyl.MockServer.Server do
+defmodule Elidactyl.MockedServer.ExternalSchema.Server do
   @moduledoc false
   defstruct object: "server", attributes: %{}
 end

@@ -11,7 +11,7 @@ Add `elidactyl` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:elidactyl, "~> 0.2.0"}
+    {:elidactyl, "~> 0.3.0"}
   ]
 end
 ```
@@ -22,13 +22,6 @@ config :elidactyl, :pterodactyl_url, "<pterodactyl_ip:port>"
 config :elidactyl, :pterodactyl_server_auth_token, "<pterodactyl_global_auth_token>"
 # You can generate global API token at this page:
 # https://<pterodactyl_url>/admin/api
-
-config :elidactyl, Elidactyl.PanelRepo,
-       username: "<pterodactyl_mysql_username>",
-       password: "<pterodactyl_mysql_password>",
-       database: "<pterodactyl_mysql_db_name>",
-       hostname: "<pterodactyl_mysql_db_hostname>",
-       pool_size: 10
 ```
 
 ## How to use

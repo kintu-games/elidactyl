@@ -1,4 +1,4 @@
-defmodule Elidactyl.MockServer.Node.Allocation do
+defmodule Elidactyl.MockedServer.ExternalSchema.Node.Allocation do
   @moduledoc false
   defstruct object: "allocation", attributes: %{}
 end
