@@ -4,7 +4,7 @@ defmodule Elidactyl.UsersTest do
   alias Elidactyl.Schemas.User
 
   test "list users" do
-    assert {:ok, users} = Users.list_users()
+    assert {:ok, users} = Users.all()
     assert [
              %User{
                id: 1,
@@ -38,7 +38,7 @@ defmodule Elidactyl.UsersTest do
   end
 
   test "get user by id" do
-    assert {:ok, user} = Users.get_user_by_id(1)
+    assert {:ok, user} = Users.get_by_id(1)
 
     %User{
       id: "1",
@@ -57,7 +57,7 @@ defmodule Elidactyl.UsersTest do
   end
 
   test "get user by external id" do
-    assert {:ok, user} = Users.get_user_by_external_id(10)
+    assert {:ok, user} = Users.get_by_external_id(10)
 
     %User{
       id: 1,
@@ -84,7 +84,7 @@ defmodule Elidactyl.UsersTest do
       language: "en",
       root_admin: false
     }
-    assert {:ok, user} = Users.create_user(params)
+    assert {:ok, user} = Users.create(params)
 
     assert struct(%User{
       id: 2,
@@ -103,13 +103,13 @@ defmodule Elidactyl.UsersTest do
       language: "en"
     }
 
-    assert {:ok, original_user} = Users.get_user_by_id(1)
-    assert {:ok, edited_user} = Users.edit_user(1, params)
+    assert {:ok, original_user} = Users.get_by_id(1)
+    assert {:ok, edited_user} = Users.update(1, params)
 
     assert struct(original_user, params) == edited_user
   end
 
   test "delete user" do
-    assert :ok = Users.delete_user(1)
+    assert :ok = Users.delete(1)
   end
 end
