@@ -81,7 +81,8 @@ defmodule Elidactyl.UsersTest do
       email: "example@example.com",
       first_name: "John",
       last_name: "Doe",
-      language: "en"
+      language: "en",
+      root_admin: true
     }
     assert {:ok, user} = Users.create(params)
 
@@ -90,7 +91,8 @@ defmodule Elidactyl.UsersTest do
       uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
       "2fa": false,
       created_at: "2018-03-18T15:15:17+00:00",
-      updated_at: "2018-10-16T21:51:21+00:00"
+      updated_at: "2018-10-16T21:51:21+00:00",
+      root_admin: true
     }, params) == user
   end
 

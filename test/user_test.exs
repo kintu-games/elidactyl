@@ -9,7 +9,8 @@ defmodule Elidactyl.UserTest do
         username: "example",
         email: "example@example.com",
         first_name: "John",
-        last_name: "Doe"
+        last_name: "Doe",
+        language: "en"
       })
   end
 
