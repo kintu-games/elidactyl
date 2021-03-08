@@ -11,20 +11,13 @@ defmodule Elidactyl.Schemas.Server.CreateParams do
 
   @type t :: %__MODULE__{}
 
-  @optional [:pack]
+  @optional [:pack, :oom_disabled, :description, :name, :start_on_completion, :skip_scripts]
   @mandatory [
-    :name,
     :user,
-    :description,
     :egg,
-
     :docker_image,
     :startup,
-    :environment,
-
-    :start_on_completion,
-    :skip_scripts,
-    :oom_disabled
+    :environment
   ]
   @embedded [:limits, :feature_limits, :allocation, :deploy]
 
@@ -61,7 +54,7 @@ defmodule Elidactyl.Schemas.Server.CreateParams do
     |> Changeset.cast_embed(:limits, required: true, with: &limits_changeset/2)
     |> Changeset.cast_embed(:feature_limits, required: true, with: &feature_limits_changeset/2)
     |> Changeset.cast_embed(:allocation, required: true, with: &allocation_changeset/2)
-    |> Changeset.cast_embed(:deploy, required: true, with: &deploy_changeset/2)
+    |> Changeset.cast_embed(:deploy, required: false, with: &deploy_changeset/2)
     |> Changeset.validate_length(:external_id, min: 1, max: 191)
     |> Changeset.validate_length(:name, min: 1, max: 255)
     |> Changeset.validate_number(:pack, greater_than_or_equal_to: 0)

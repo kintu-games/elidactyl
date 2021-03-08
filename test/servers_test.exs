@@ -1,87 +1,79 @@
 defmodule Elidactyl.ServerTest do
   use ExUnit.Case
 
-  alias Elidactyl.Servers
+  alias Elidactyl.Application.Servers
   alias Elidactyl.Schemas.Server
+  alias Elidactyl.Schemas.Server.Database
 
-  test "list users" do
+  test "list servers" do
     assert {:ok, users} = Servers.list_servers()
     assert [
              %Server{
-               pack: nil,
-               allocation: 3,
-               container: %{
-                 environment: %{
-                   "P_SERVER_LOCATION" => "test",
-                   "P_SERVER_UUID" => "47a7052b-f07e-4845-989d-e876e30960f4",
-                   "SERVER_JARFILE" => "server.jar",
-                   "STARTUP" => "java -Xms128M -Xmx%{%{SERVER_MEMORY}}M -jar %{%{SERVER_JARFILE}}",
-                   "VANILLA_VERSION" => "latest"
-                 },
-                 image: "quay.io/pterodactyl/core:java",
-                 installed: true,
-                 startup_command: "java -Xms128M -Xmx%{%{SERVER_MEMORY}}M -jar %{%{SERVER_JARFILE}}"
-               },
-               created_at: "2018-09-29T22:50:16+00:00",
-               description: "",
-               egg: 4,
-               feature_limits: %{
-                 allocations: 0,
-                 databases: 10
-               },
-               id: 2,
-               identifier: "47a7052b",
+               id: 5,
+               external_id: "RemoteId1",
+               uuid: "1a7ce997-259b-452e-8b4e-cecc464142ca",
+               identifier: "1a7ce997",
+               name: "Wuhu Island",
+               description: "Matt from Wii Sports",
+               suspended: false,
                limits: %{
-                 cpu: 300,
-                 disk: 10000,
+                 memory: 512,
+                 swap: 0,
+                 disk: 200,
                  io: 500,
-                 memory: 2048,
-                 swap: -1
+                 cpu: 0,
+                 threads: nil
                },
-               name: "Eat Vegies",
-               nest: 1,
-               node: 2,
-               updated_at: "2018-11-20T14:35:00+00:00",
+               feature_limits: %{
+                 databases: 5,
+                 allocations: 5,
+                 backups: 2
+               },
                user: 1,
-               suspended: false,
-               uuid: "47a7052b-f07e-4845-989d-e876e30960f4"
-             },
-             %Server{
-               pack: nil,
-               allocation: 4,
-               container: %{
-                 environment: %{
-                   "P_SERVER_LOCATION" => "test",
-                   "P_SERVER_UUID" => "6d1567c5-08d4-4ecb-8d5d-0ce1ba6b0b99",
-                   "STARTUP" => "./parkertron"
-                 },
-                 image: "quay.io/parkervcp/pterodactyl-images:parkertron",
-                 installed: true,
-                 startup_command: "./parkertron"
-               },
-               created_at: "2018-11-10T19:51:23+00:00",
-               description: "t",
-               egg: 15,
-               feature_limits: %{
-                 allocations: 0,
-                 databases: 0
-               },
-               id: 6,
-               identifier: "6d1567c5",
-               limits: %{
-                 cpu: 200,
-                 disk: 5000,
-                 io: 500,
-                 memory: 0,
-                 swap: -1
-               },
-               name: "Wow",
+               node: 1,
+               allocation: 1,
                nest: 1,
-               node: 2,
-               updated_at: "2018-11-10T19:52:13+00:00",
-               user: 5,
-               suspended: false,
-               uuid: "6d1567c5-08d4-4ecb-8d5d-0ce1ba6b0b99"
+               egg: 5,
+               pack: nil,
+               container: %{
+                 startup_command: "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                 image: "quay.io\/pterodactyl\/core:java",
+                 installed: true,
+                 environment: %{
+                   "SERVER_JARFILE" => "server.jar",
+                   "VANILLA_VERSION" => "latest",
+                   "STARTUP" => "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                   "P_SERVER_LOCATION" => "Test",
+                   "P_SERVER_UUID" => "1a7ce997-259b-452e-8b4e-cecc464142ca"
+                 }
+               },
+               updated_at: "2020-06-13T04:20:53+00:00",
+               created_at: "2019-12-23T06:46:27+00:00",
+               databases: [
+                 %Database{
+                   id: 1,
+                   server: 5,
+                   host: 4,
+                   database: "s5_perms",
+                   username: "u5_QsIAp1jhvS",
+                   remote: "%",
+                   max_connections: 0,
+                   created_at: "2020-06-12T23:00:13+01:00",
+                   updated_at: "2020-06-12T23:00:13+01:00"
+                 },
+                 %Database{
+                   id: 2,
+                   server: 5,
+                   host: 4,
+                   database: "s5_coreprotect",
+                   username: "u5_2jtJx1nO1d",
+                   remote: "%",
+                   max_connections: 0,
+                   created_at: "2020-06-12T23:00:20+01:00",
+                   updated_at: "2020-06-12T23:00:20+01:00"
+                 }
+               ]
+
              }
            ] == users
   end
@@ -89,111 +81,60 @@ defmodule Elidactyl.ServerTest do
   test "get server by id" do
     assert {:ok, server} = Servers.get_server_by_id(1)
 
-    %Server{
-      pack: nil,
-      allocation: 3,
-      container: %{
-        environment: %{
-          "P_SERVER_LOCATION" => "test",
-          "P_SERVER_UUID" => "47a7052b-f07e-4845-989d-e876e30960f4",
-          "SERVER_JARFILE" => "server.jar",
-          "STARTUP" => "java -Xms128M -Xmx%{%{SERVER_MEMORY}}M -jar %{%{SERVER_JARFILE}}",
-          "VANILLA_VERSION" => "latest"
-        },
-        image: "quay.io/pterodactyl/core:java",
-        installed: true,
-        startup_command: "java -Xms128M -Xmx%{%{SERVER_MEMORY}}M -jar %{%{SERVER_JARFILE}}"
-      },
-      created_at: "2018-09-29T22:50:16+00:00",
-      description: "",
-      egg: 4,
-      feature_limits: %{
-        allocations: 0,
-        databases: 10
-      },
-      id: 2,
-      identifier: "47a7052b",
-      limits: %{
-        cpu: 300,
-        disk: 10000,
-        io: 500,
-        memory: 2048,
-        swap: -1
-      },
-      name: "Eat Vegies",
-      nest: 1,
-      node: 2,
-      updated_at: "2018-11-20T14:35:00+00:00",
-      user: 1,
-      suspended: false,
-      uuid: "47a7052b-f07e-4845-989d-e876e30960f4"
-    } = server
-  end
-
-  test "get server by external id" do
-    assert {:ok, server} = Servers.get_server_by_external_id(10)
-
-    %Server{
-      pack: nil,
-      allocation: 3,
-      container: %{
-        environment: %{
-          "P_SERVER_LOCATION" => "test",
-          "P_SERVER_UUID" => "47a7052b-f07e-4845-989d-e876e30960f4",
-          "SERVER_JARFILE" => "server.jar",
-          "STARTUP" => "java -Xms128M -Xmx%{%{SERVER_MEMORY}}M -jar %{%{SERVER_JARFILE}}",
-          "VANILLA_VERSION" => "latest"
-        },
-        image: "quay.io/pterodactyl/core:java",
-        installed: true,
-        startup_command: "java -Xms128M -Xmx%{%{SERVER_MEMORY}}M -jar %{%{SERVER_JARFILE}}"
-      },
-      created_at: "2018-09-29T22:50:16+00:00",
-      description: "",
-      egg: 4,
-      feature_limits: %{
-        allocations: 0,
-        databases: 10
-      },
-      id: 2,
-      external_id: 10,
-      identifier: "47a7052b",
-      limits: %{
-        cpu: 300,
-        disk: 10000,
-        io: 500,
-        memory: 2048,
-        swap: -1
-      },
-      name: "Eat Vegies",
-      nest: 1,
-      node: 2,
-      updated_at: "2018-11-20T14:35:00+00:00",
-      user: 1,
-      suspended: false,
-      uuid: "47a7052b-f07e-4845-989d-e876e30960f4"
-    } = server
+    assert %Server{
+             id: 5,
+             external_id: "RemoteId1",
+             uuid: "1a7ce997-259b-452e-8b4e-cecc464142ca",
+             identifier: "1a7ce997",
+             name: "Gaming",
+             description: "Matt from Wii Sports",
+             suspended: false,
+             limits: %{
+               memory: 512,
+               swap: 0,
+               disk: 200,
+               io: 500,
+               cpu: 0,
+               threads: nil
+             },
+             feature_limits: %{
+               databases: 5,
+               allocations: 5,
+               backups: 2
+             },
+             user: 1,
+             node: 1,
+             allocation: 1,
+             nest: 1,
+             egg: 5,
+             pack: nil,
+             container: %{
+               startup_command: "java -Xms128M -Xmx2014M -jar server.jar",
+               image: "quay.io\/pterodactyl\/core:java",
+               installed: true,
+               environment: %{
+                 "SERVER_JARFILE" => "server.jar",
+                 "VANILLA_VERSION" => "latest",
+                 "STARTUP" => "java -Xms128M -Xmx2014M -jar server.jar",
+                 "P_SERVER_LOCATION" => "GB",
+                 "P_SERVER_UUID" => "1a7ce997-259b-452e-8b4e-cecc464142ca",
+                 "P_SERVER_ALLOCATION_LIMIT" => 5
+               }
+             },
+             updated_at: "2020-11-04T21:11:26+00:00",
+             created_at: "2019-12-23T06:46:27+00:00"
+           }
+           == server
   end
 
   test "create server" do
     params = %{
       user: 1,
-      allocation: %{
-        default: 28,
-        additional: [3, 19]
-      },
-      startup: "java -Xms128M -Xmx 1024M -jar server.jar",
+      egg: 15,
       docker_image: "quay.io/pterodactyl/core:java-glibc",
+      startup: "java -Xms128M -Xmx 1024M -jar server.jar",
       environment: %{
         "DL_VERSION" => "1.12.2"
-      },
-
-      description: "Test server",
-      egg: 15,
-      external_id: "test_server",
-      feature_limits: %{
-        databases: 1,
-        allocations: 2
       },
       limits: %{
         memory: 512,
@@ -202,113 +143,98 @@ defmodule Elidactyl.ServerTest do
         io: 500,
         cpu: 100
       },
-      name: "Test",
-      pack: 1,
-      deploy: %{
-        locations: [1],
-        dedicated_ip: false,
-        port_range: []
+      feature_limits: %{
+        databases: 1,
+        backups: 1
       },
-
-      start_on_completion: true,
-      skip_scripts: false,
-      oom_disabled: true
+      allocation: %{
+        default: 28,
+        additional: [3, 19]
+      }
     }
     assert {:ok, server} = Servers.create_server(params)
 
-    assert server ==
-             %Server{
-               server_owner: nil,
-               allocation: 28,
-               container: %{
-                 environment: %{
-                   "DL_VERSION" => "1.12.2",
-                   "P_SERVER_LOCATION" => "fr.sys",
-                   "P_SERVER_UUID" => "d7bcc254-e218-4522-a7fe-9d2d562ad790",
-                   "STARTUP" => "java -Xms128M -Xmx 1024M -jar server.jar"
-                 },
-                 image: "quay.io/pterodactyl/core:java-glibc",
-                 installed: false,
-                 startup_command: "java -Xms128M -Xmx 1024M -jar server.jar"
+    assert server == %Server{
+             allocation: 17,
+             container: %{
+               environment: %{
+                 "BUNGEE_VERSION" => "latest",
+                 "P_SERVER_ALLOCATION_LIMIT" => 0,
+                 "P_SERVER_LOCATION" => "GB",
+                 "P_SERVER_UUID" => "d557c19c-8b21-4456-a9e5-181beda429f4",
+                 "SERVER_JARFILE" => "server.jar",
+                 "STARTUP" => "java -Xms128M -Xmx128M -jar server.jar"
                },
-               created_at: "2019-02-23T11:25:35+00:00",
-               description: "Test server",
-               egg: 15,
-               external_id: "test_server",
-               feature_limits: %{
-                 allocations: 2,
-                 databases: 1
-               },
-               id: 53,
-               identifier: "d7bcc254",
-               limits: %{
-                 cpu: 100,
-                 disk: 1024,
-                 io: 500,
-                 memory: 512,
-                 swap: 0
-               },
-               name: "Test",
-               nest: 5,
-               node: 1,
-               pack: 1,
-               suspended: false,
-               updated_at: "2019-02-23T11:25:35+00:00",
-               user: 1,
-               uuid: "d7bcc254-e218-4522-a7fe-9d2d562ad790"
-             }
+               image: "quay.io/pterodactyl/core =>java",
+               installed: false,
+               startup_command: "java -Xms128M -Xmx128M -jar server.jar"
+             },
+             created_at: "2020-10-29T01:38:59+00:00",
+             databases: [],
+             description: "",
+             egg: 1,
+             external_id: nil,
+             feature_limits: %{allocations: 0, backups: 1, databases: 5},
+             id: 7,
+             identifier: "d557c19c",
+             limits: %{cpu: 100, disk: 512, io: 500, memory: 128, swap: 0, threads: nil},
+             name: "Building",
+             nest: 1,
+             node: 1,
+             pack: nil,
+             server_owner: nil,
+             suspended: false,
+             updated_at: "2020-10-29T01:38:59+00:00",
+             user: 1,
+             uuid: "d557c19c-8b21-4456-a9e5-181beda429f4"
+           }
+
   end
 
   test "update server details" do
     params = %{
-      external_id: "some_id",
-      name: "New name",
-      user: "1",
-      description: "New description"
+      name: "Gaming",
+      user: 1,
+      external_id: "RemoteID1",
+      description: "Matt from Wii Sports"
     }
 
     assert {:ok, server} = Servers.update_server_details(1, params)
-    assert server ==
-             %Server{
-               external_id: "some_id",
-               name: "New name",
-               user: 1,
-               description: "New description",
-               server_owner: nil,
-               allocation: 28,
-               container: %{
-                 environment: %{
-                   "DL_VERSION" => "1.12.2",
-                   "P_SERVER_LOCATION" => "fr.sys",
-                   "P_SERVER_UUID" => "d7bcc254-e218-4522-a7fe-9d2d562ad790",
-                   "STARTUP" => "java -Xms128M -Xmx 1024M -jar server.jar"
-                 },
-                 image: "quay.io/pterodactyl/core:java-glibc",
-                 installed: false,
-                 startup_command: "java -Xms128M -Xmx 1024M -jar server.jar"
+    assert server == %Server{
+             allocation: 1,
+             container: %{
+               environment: %{
+                 "P_SERVER_ALLOCATION_LIMIT" => 5,
+                 "P_SERVER_LOCATION" => "GB",
+                 "P_SERVER_UUID" => "1a7ce997-259b-452e-8b4e-cecc464142ca",
+                 "SERVER_JARFILE" => "server.jar",
+                 "STARTUP" => "java -Xms128M -Xmx2048M -jar server.jar",
+                 "VANILLA_VERSION" => "latest"
                },
-               created_at: "2019-02-23T11:25:35+00:00",
-               egg: 15,
-               feature_limits: %{
-                 allocations: 2,
-                 databases: 1
-               },
-               id: 53,
-               identifier: "d7bcc254",
-               limits: %{
-                 cpu: 100,
-                 disk: 1024,
-                 io: 500,
-                 memory: 512,
-                 swap: 0
-               },
-               nest: 5,
-               node: 1,
-               pack: 1,
-               suspended: false,
-               updated_at: "2019-02-23T11:25:35+00:00",
-               uuid: "d7bcc254-e218-4522-a7fe-9d2d562ad790"
-             }
+               image: "quay.io/pterodactyl/core:java",
+               installed: true,
+               startup_command: "java -Xms128M -Xmx2014M -jar server.jar"
+             },
+             created_at: "2019-12-23T06:46:27+00:00",
+             databases: [],
+             description: "Matt from Wii Sports",
+             egg: 5,
+             external_id: "RemoteID1",
+             feature_limits: %{allocations: 5, backups: 2, databases: 5},
+             id: 5,
+             identifier: "1a7ce997",
+             limits: %{cpu: 0, disk: 200, io: 500, memory: 512, swap: 0, threads: nil},
+             name: "Gaming",
+             nest: 1,
+             node: 1,
+             pack: nil,
+             server_owner: nil,
+             suspended: false,
+             updated_at: "2020-11-04T21:11:26+00:00",
+             user: 1,
+             uuid: "1a7ce997-259b-452e-8b4e-cecc464142ca"
+           }
+
 
   end
 

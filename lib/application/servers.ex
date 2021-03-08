@@ -1,4 +1,4 @@
-defmodule Elidactyl.Servers do
+defmodule Elidactyl.Application.Servers do
   @moduledoc false
 
   alias Elidactyl.Request
@@ -57,7 +57,7 @@ defmodule Elidactyl.Servers do
   def update_server_details(id, params) do
     with %{valid?: true} = changeset <- UpdateDetailsParams.changeset(%UpdateDetailsParams{}, params),
          %UpdateDetailsParams{} = details <- Ecto.Changeset.apply_changes(changeset),
-         {:ok, resp} <- Request.request(:post, "/api/application/servers/#{id}/details", details),
+         {:ok, resp} <- Request.request(:patch, "/api/application/servers/#{id}/details", details),
          %Server{} = result <- Response.parse_response(resp) do
       {:ok, result}
     else

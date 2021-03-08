@@ -18,7 +18,7 @@ defmodule Elidactyl.Schemas.Server.Container do
   @spec changeset(t(), map) :: Changeset.t()
   def changeset(struct, params) do
     struct
-    |> Changeset.cast(params, [:startup_command, :image, :environment])
+    |> Changeset.cast(params, [:startup_command, :image, :environment, :installed])
     |> Changeset.validate_required([:startup_command, :image, :environment])
   end
 end

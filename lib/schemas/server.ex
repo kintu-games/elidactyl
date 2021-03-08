@@ -6,26 +6,24 @@ defmodule Elidactyl.Schemas.Server do
   alias Elidactyl.Schemas.Server.Container
   alias Elidactyl.Schemas.Server.FeatureLimits
   alias Elidactyl.Schemas.Server.Limits
+  alias Elidactyl.Schemas.Server.Database
+  alias Elidactyl.Schemas.List
   alias Elidactyl.Utils
 
   @type t :: %__MODULE__{}
 
-  @optional [:password, :language, :root_admin, :external_id]
+  @optional [:password, :language, :root_admin, :external_id, :description, :oom_disabled, :description, :name]
   @mandatory [
-    :name,
     :user,
     :limits,
     :egg,
     :environment,
     :feature_limits,
-    :deploy,
     :start_on_completion,
     :skip_scripts,
-    :oom_disabled,
     :startup,
     :docker_image,
-    :pack,
-    :description
+    :pack
   ]
 
   @derive {Poison.Encoder, only: @optional ++ @mandatory}
@@ -41,6 +39,7 @@ defmodule Elidactyl.Schemas.Server do
     embeds_one :limits, Limits
 
     embeds_one :feature_limits, FeatureLimits
+    embeds_many :databases, Database
 
     field :user, :integer
     field :server_owner, :boolean
@@ -68,7 +67,17 @@ defmodule Elidactyl.Schemas.Server do
         }
       ) do
     {unsafe_value, safe_attributes} = pop_in(attributes, ["container", "environment"])
+    {_, safe_attributes} = pop_in(safe_attributes, ["relationships"])
     server = struct(__MODULE__, Utils.keys_to_atoms(safe_attributes))
+
+    server =
+      if attributes["relationships"] do
+        parsed_databases = List.parse(attributes["relationships"]["databases"])
+        put_in(server, [Access.key!(:databases)], parsed_databases)
+      else
+        server
+      end
+
     put_in(server, [Access.key!(:container), :environment], unsafe_value)
   end
 

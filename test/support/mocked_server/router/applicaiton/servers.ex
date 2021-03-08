@@ -4,8 +4,6 @@ defmodule Elidactyl.MockedServer.Router.Application.Servers do
   use Plug.Router
   import Elidactyl.MockedServer.Router.Utils
 
-  alias Elidactyl.MockedServer.ExternalSchema.List
-  alias Elidactyl.MockedServer.ExternalSchema.Server
   alias Elidactyl.MockedServer.ExternalSchema.User
 
   plug(
@@ -19,154 +17,151 @@ defmodule Elidactyl.MockedServer.Router.Application.Servers do
   plug(:dispatch)
 
   get "/api/application/servers" do
-    body =
-      %List{
-        object: "list",
-        data: [
-          %{
-            "object" => "server",
-            "attributes" => %{
-              "id" => 2,
-              "external_id" => nil,
-              "uuid" => "47a7052b-f07e-4845-989d-e876e30960f4",
-              "identifier" => "47a7052b",
-              "name" => "Eat Vegies",
-              "description" => "",
-              "suspended" => false,
-              "limits" => %{
-                "memory" => 2048,
-                "swap" => -1,
-                "disk" => 10000,
-                "io" => 500,
-                "cpu" => 300
-              },
-              "feature_limits" => %{
-                "databases" => 10,
-                "allocations" => 0
-              },
-              "user" => 1,
-              "node" => 2,
-              "allocation" => 3,
-              "nest" => 1,
-              "egg" => 4,
-              "pack" => nil,
-              "container" => %{
-                "startup_command" => "java -Xms128M -Xmx%{%{SERVER_MEMORY}}M -jar %{%{SERVER_JARFILE}}",
-                "image" => "quay.io/pterodactyl/core:java",
-                "installed" => true,
-                "environment" => %{
-                  "SERVER_JARFILE" => "server.jar",
-                  "VANILLA_VERSION" => "latest",
-                  "STARTUP" => "java -Xms128M -Xmx%{%{SERVER_MEMORY}}M -jar %{%{SERVER_JARFILE}}",
-                  "P_SERVER_LOCATION" => "test",
-                  "P_SERVER_UUID" => "47a7052b-f07e-4845-989d-e876e30960f4"
-                }
-              },
-              "updated_at" => "2018-11-20T14:35:00+00:00",
-              "created_at" => "2018-09-29T22:50:16+00:00"
+    body = %{
+      "object" => "list",
+      "data" => [
+        %{
+          "object" => "server",
+          "attributes" => %{
+            "id" => 5,
+            "external_id" => "RemoteId1",
+            "uuid" => "1a7ce997-259b-452e-8b4e-cecc464142ca",
+            "identifier" => "1a7ce997",
+            "name" => "Wuhu Island",
+            "description" => "Matt from Wii Sports",
+            "suspended" => false,
+            "limits" => %{
+              "memory" => 512,
+              "swap" => 0,
+              "disk" => 200,
+              "io" => 500,
+              "cpu" => 0,
+              "threads" => nil
+            },
+            "feature_limits" => %{
+              "databases" => 5,
+              "allocations" => 5,
+              "backups" => 2
+            },
+            "user" => 1,
+            "node" => 1,
+            "allocation" => 1,
+            "nest" => 1,
+            "egg" => 5,
+            "pack" => nil,
+            "container" => %{
+              "startup_command" => "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+              "image" => "quay.io\/pterodactyl\/core:java",
+              "installed" => true,
+              "environment" => %{
+                "SERVER_JARFILE" => "server.jar",
+                "VANILLA_VERSION" => "latest",
+                "STARTUP" => "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                "P_SERVER_LOCATION" => "Test",
+                "P_SERVER_UUID" => "1a7ce997-259b-452e-8b4e-cecc464142ca"
+              }
+            },
+            "updated_at" => "2020-06-13T04:20:53+00:00",
+            "created_at" => "2019-12-23T06:46:27+00:00",
+            "relationships" => %{
+              "databases" => %{
+                "object" => "list",
+                "data" => [
+                  %{
+                    "object" => "databases",
+                    "attributes" => %{
+                      "id" => 1,
+                      "server" => 5,
+                      "host" => 4,
+                      "database" => "s5_perms",
+                      "username" => "u5_QsIAp1jhvS",
+                      "remote" => "%",
+                      "max_connections" => 0,
+                      "created_at" => "2020-06-12T23:00:13+01:00",
+                      "updated_at" => "2020-06-12T23:00:13+01:00"
+                    }
+                  },
+                  %{
+                    "object" => "databases",
+                    "attributes" => %{
+                      "id" => 2,
+                      "server" => 5,
+                      "host" => 4,
+                      "database" => "s5_coreprotect",
+                      "username" => "u5_2jtJx1nO1d",
+                      "remote" => "%",
+                      "max_connections" => 0,
+                      "created_at" => "2020-06-12T23:00:20+01:00",
+                      "updated_at" => "2020-06-12T23:00:20+01:00"
+                    }
+                  }
+                ]
+              }
             }
-          },
-          %{
-            "object" => "server",
-            "attributes" => %{
-              "id" => 6,
-              "external_id" => nil,
-              "uuid" => "6d1567c5-08d4-4ecb-8d5d-0ce1ba6b0b99",
-              "identifier" => "6d1567c5",
-              "name" => "Wow",
-              "description" => "t",
-              "suspended" => false,
-              "limits" => %{
-                "memory" => 0,
-                "swap" => -1,
-                "disk" => 5000,
-                "io" => 500,
-                "cpu" => 200
-              },
-              "feature_limits" => %{
-                "databases" => 0,
-                "allocations" => 0
-              },
-              "user" => 5,
-              "node" => 2,
-              "allocation" => 4,
-              "nest" => 1,
-              "egg" => 15,
-              "pack" => nil,
-              "container" => %{
-                "startup_command" => "./parkertron",
-                "image" => "quay.io/parkervcp/pterodactyl-images:parkertron",
-                "installed" => true,
-                "environment" => %{
-                  "STARTUP" => "./parkertron",
-                  "P_SERVER_LOCATION" => "test",
-                  "P_SERVER_UUID" => "6d1567c5-08d4-4ecb-8d5d-0ce1ba6b0b99"
-                }
-              },
-              "updated_at" => "2018-11-10T19:52:13+00:00",
-              "created_at" => "2018-11-10T19:51:23+00:00"
-            }
-          }
-        ],
-        meta: %{
-          "pagination" => %{
-            "total" => 2,
-            "count" => 2,
-            "per_page" => 50,
-            "current_page" => 1,
-            "total_pages" => 1,
-            "links" => []
           }
         }
+      ],
+      "meta" => %{
+        "pagination" => %{
+          "total" => 1,
+          "count" => 1,
+          "per_page" => 50,
+          "current_page" => 1,
+          "total_pages" => 1,
+          "links" => %{}
+        }
       }
-
+    }
     success(conn, body)
   end
 
   get "/api/application/servers/:id" do
     body = %{
-      "object" => "server",
-      "attributes" => %{
-        "id" => 2,
-        "external_id" => nil,
-        "uuid" => "47a7052b-f07e-4845-989d-e876e30960f4",
-        "identifier" => "47a7052b",
-        "name" => "Eat Vegies",
-        "description" => "",
-        "suspended" => false,
-        "limits" => %{
-          "memory" => 2048,
-          "swap" => -1,
-          "disk" => 10000,
-          "io" => 500,
-          "cpu" => 300
+      object: "server",
+      attributes: %{
+        id: 5,
+        external_id: "RemoteId1",
+        uuid: "1a7ce997-259b-452e-8b4e-cecc464142ca",
+        identifier: "1a7ce997",
+        name: "Gaming",
+        description: "Matt from Wii Sports",
+        suspended: false,
+        limits: %{
+          memory: 512,
+          swap: 0,
+          disk: 200,
+          io: 500,
+          cpu: 0,
+          threads: nil
         },
-        "feature_limits" => %{
-          "databases" => 10,
-          "allocations" => 0
+        feature_limits: %{
+          databases: 5,
+          allocations: 5,
+          backups: 2
         },
-        "user" => 1,
-        "node" => 2,
-        "allocation" => 3,
-        "nest" => 1,
-        "egg" => 4,
-        "pack" => nil,
-        "container" => %{
-          "startup_command" => "java -Xms128M -Xmx%{%{SERVER_MEMORY}}M -jar %{%{SERVER_JARFILE}}",
-          "image" => "quay.io/pterodactyl/core:java",
-          "installed" => true,
-          "environment" => %{
+        user: 1,
+        node: 1,
+        allocation: 1,
+        nest: 1,
+        egg: 5,
+        container: %{
+          startup_command: "java -Xms128M -Xmx2014M -jar server.jar",
+          image: "quay.io\/pterodactyl\/core:java",
+          installed: true,
+          environment: %{
             "SERVER_JARFILE" => "server.jar",
             "VANILLA_VERSION" => "latest",
-            "STARTUP" => "java -Xms128M -Xmx%{%{SERVER_MEMORY}}M -jar %{%{SERVER_JARFILE}}",
-            "P_SERVER_LOCATION" => "test",
-            "P_SERVER_UUID" => "47a7052b-f07e-4845-989d-e876e30960f4"
+            "STARTUP" => "java -Xms128M -Xmx2014M -jar server.jar",
+            "P_SERVER_LOCATION" => "GB",
+            "P_SERVER_UUID" => "1a7ce997-259b-452e-8b4e-cecc464142ca",
+            "P_SERVER_ALLOCATION_LIMIT" => 5
           }
         },
-        "updated_at" => "2018-11-20T14:35:00+00:00",
-        "created_at" => "2018-09-29T22:50:16+00:00"
+        updated_at: "2020-11-04T21:11:26+00:00",
+        created_at: "2019-12-23T06:46:27+00:00"
       }
     }
+
     success(conn, body)
   end
 
@@ -174,218 +169,155 @@ defmodule Elidactyl.MockedServer.Router.Application.Servers do
     body = %{
       "object" => "server",
       "attributes" => %{
-        "id" => 2,
-        "external_id" => 10,
-        "uuid" => "47a7052b-f07e-4845-989d-e876e30960f4",
-        "identifier" => "47a7052b",
-        "name" => "Eat Vegies",
-        "description" => "",
+        "id" => 5,
+        "external_id" => "RemoteId1",
+        "uuid" => "1a7ce997-259b-452e-8b4e-cecc464142ca",
+        "identifier" => "1a7ce997",
+        "name" => "Gaming",
+        "description" => "Matt from Wii Sports",
         "suspended" => false,
         "limits" => %{
-          "memory" => 2048,
-          "swap" => -1,
-          "disk" => 10000,
+          "memory" => 512,
+          "swap" => 0,
+          "disk" => 200,
           "io" => 500,
-          "cpu" => 300
+          "cpu" => 0,
+          "threads" => nil
         },
         "feature_limits" => %{
-          "databases" => 10,
-          "allocations" => 0
+          "databases" => 5,
+          "allocations" => 5,
+          "backups" => 2
         },
         "user" => 1,
-        "node" => 2,
-        "allocation" => 3,
+        "node" => 1,
+        "allocation" => 1,
         "nest" => 1,
-        "egg" => 4,
+        "egg" => 5,
         "pack" => nil,
         "container" => %{
-          "startup_command" => "java -Xms128M -Xmx%{%{SERVER_MEMORY}}M -jar %{%{SERVER_JARFILE}}",
-          "image" => "quay.io/pterodactyl/core:java",
+          "startup_command" => "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+          "image" => "quay.io\/pterodactyl\/core =>java",
           "installed" => true,
           "environment" => %{
             "SERVER_JARFILE" => "server.jar",
             "VANILLA_VERSION" => "latest",
-            "STARTUP" => "java -Xms128M -Xmx%{%{SERVER_MEMORY}}M -jar %{%{SERVER_JARFILE}}",
-            "P_SERVER_LOCATION" => "test",
-            "P_SERVER_UUID" => "47a7052b-f07e-4845-989d-e876e30960f4"
+            "STARTUP" => "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+            "P_SERVER_LOCATION" => "GB",
+            "P_SERVER_UUID" => "1a7ce997-259b-452e-8b4e-cecc464142ca",
+            "P_SERVER_ALLOCATION_LIMIT" => 5
           }
         },
-        "updated_at" => "2018-11-20T14:35:00+00:00",
-        "created_at" => "2018-09-29T22:50:16+00:00"
+        "updated_at" => "2020-07-19T15:22:39+00:00",
+        "created_at" => "2019-12-23T06:46:27+00:00"
       }
     }
+
     success(conn, body)
   end
 
   post "/api/application/servers" do
-    params = %{
-      "external_id" => "test_server",
-      "name" => "Test",
-      "user" => 1,
-      "description" => "Test server",
-      "egg" => 15,
-      "pack" => 1,
-      "docker_image" => "quay.io/pterodactyl/core:java-glibc",
-      "startup" => "java -Xms128M -Xmx 1024M -jar server.jar",
-      "limits" => %{
-        "memory" => 512,
-        "swap" => 0,
-        "disk" => 1024,
-        "io" => 500,
-        "cpu" => 100
-      },
-      "feature_limits" => %{
-        "databases" => 1,
-        "allocations" => 2
-      },
-      "environment" => %{
-        "DL_VERSION" => "1.12.2"
-      },
-      "allocation" => %{
-        "default" => 28,
-        "additional" => [
-          3,
-          19
-        ],
-      },
-      "deploy" => %{
-        "locations" => [1],
-        "dedicated_ip" => false,
-        "port_range" => []
-      },
-      "start_on_completion" => true,
-      "skip_scripts" => false,
-      "oom_disabled" => true
-    }
-
-    attributes = %{
-      "id" => 53,
-      "external_id" => "test_server",
-      "uuid" => "d7bcc254-e218-4522-a7fe-9d2d562ad790",
-      "identifier" => "d7bcc254",
-      "name" => "Test",
-      "description" => "Test server",
-      "suspended" => false,
-      "limits" => %{
-        "memory" => 512,
-        "swap" => 0,
-        "disk" => 1024,
-        "io" => 500,
-        "cpu" => 100
-      },
-      "feature_limits" => %{
-        "databases" => 1,
-        "allocations" => 2
-      },
-      "user" => 1,
-      "node" => 1,
-      "allocation" => 28,
-      "nest" => 5,
-      "egg" => 15,
-      "pack" => 1,
-      "container" => %{
-        "startup_command" => "java -Xms128M -Xmx 1024M -jar server.jar",
-        "image" => "quay.io/pterodactyl/core:java-glibc",
-        "installed" => false,
-        "environment" => %{
-          "DL_VERSION" => "1.12.2",
-          "STARTUP" => "java -Xms128M -Xmx 1024M -jar server.jar",
-          "P_SERVER_LOCATION" => "fr.sys",
-          "P_SERVER_UUID" => "d7bcc254-e218-4522-a7fe-9d2d562ad790"
-        }
-      },
-      "updated_at" => "2019-02-23T11:25:35+00:00",
-      "created_at" => "2019-02-23T11:25:35+00:00"
-    }
-    if params != conn.params do
-      success(conn, %Server{attributes: attributes})
-    else
-      #      success(conn, "mandatory params missing in request #{inspect params}")
-      failure(conn, 500, "mandatory params missing in request #{inspect conn.params}")
-    end
-  end
-
-  post "/api/application/servers/:id/details" do
-    params = %{
-      external_id: "some_id",
-      name: "New name",
-      user: "1",
-      description: "New description"
-    }
-
-    attributes = %{
-      "id" => 53,
-      "external_id" => "some_id",
-      "uuid" => "d7bcc254-e218-4522-a7fe-9d2d562ad790",
-      "identifier" => "d7bcc254",
-      "name" => "New name",
-      "description" => "New description",
-      "suspended" => false,
-      "limits" => %{
-        "memory" => 512,
-        "swap" => 0,
-        "disk" => 1024,
-        "io" => 500,
-        "cpu" => 100
-      },
-      "feature_limits" => %{
-        "databases" => 1,
-        "allocations" => 2
-      },
-      "user" => 1,
-      "node" => 1,
-      "allocation" => 28,
-      "nest" => 5,
-      "egg" => 15,
-      "pack" => 1,
-      "container" => %{
-        "startup_command" => "java -Xms128M -Xmx 1024M -jar server.jar",
-        "image" => "quay.io/pterodactyl/core:java-glibc",
-        "installed" => false,
-        "environment" => %{
-          "DL_VERSION" => "1.12.2",
-          "STARTUP" => "java -Xms128M -Xmx 1024M -jar server.jar",
-          "P_SERVER_LOCATION" => "fr.sys",
-          "P_SERVER_UUID" => "d7bcc254-e218-4522-a7fe-9d2d562ad790"
-        }
-      },
-      "updated_at" => "2019-02-23T11:25:35+00:00",
-      "created_at" => "2019-02-23T11:25:35+00:00"
-    }
-    if params != conn.params do
-      success(conn, %Server{attributes: attributes})
-    else
-      failure(conn, 500, "mandatory params missing in request #{inspect conn.params}")
-    end
-  end
-
-  patch "/api/application/servers/:id" do
-    params = conn.params
-    if Map.take(params, ["servername", "email", "first_name", "last_name"])
-       |> Kernel.map_size() == 4 do
-      body = %User{
-        object: "server",
-        attributes:
-          Map.merge(
-            %{
-              id: id,
-              uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
-              "2fa": false,
-              created_at: "2018-03-18T15:15:17+00:00",
-              updated_at: "2018-10-16T21:51:21+00:00"
-            },
-            params
-          )
+    server = %{
+      "object" => "server",
+      "attributes" => %{
+        "id" => 7,
+        "external_id" => nil,
+        "uuid" => "d557c19c-8b21-4456-a9e5-181beda429f4",
+        "identifier" => "d557c19c",
+        "name" => "Building",
+        "description" => "",
+        "suspended" => false,
+        "limits" => %{
+          "memory" => 128,
+          "swap" => 0,
+          "disk" => 512,
+          "io" => 500,
+          "cpu" => 100,
+          "threads" => nil
+        },
+        "feature_limits" => %{
+          "databases" => 5,
+          "allocations" => 0,
+          "backups" => 1
+        },
+        "user" => 1,
+        "node" => 1,
+        "allocation" => 17,
+        "nest" => 1,
+        "egg" => 1,
+        "container" => %{
+          "startup_command" => "java -Xms128M -Xmx128M -jar server.jar",
+          "image" => "quay.io\/pterodactyl\/core =>java",
+          "installed" => false,
+          "environment" => %{
+            "BUNGEE_VERSION" => "latest",
+            "SERVER_JARFILE" => "server.jar",
+            "STARTUP" => "java -Xms128M -Xmx128M -jar server.jar",
+            "P_SERVER_LOCATION" => "GB",
+            "P_SERVER_UUID" => "d557c19c-8b21-4456-a9e5-181beda429f4",
+            "P_SERVER_ALLOCATION_LIMIT" => 0
+          }
+        },
+        "updated_at" => "2020-10-29T01:38:59+00:00",
+        "created_at" => "2020-10-29T01:38:59+00:00"
       }
-      success(conn, body)
-    else
-      #      success(conn, "mandatory params missing in request #{inspect params}")
-      failure(conn, 500, "mandatory params missing in request #{inspect params}")
-    end
+    }
+
+    success(conn, server)
+  end
+
+  patch "/api/application/servers/:id/details" do
+    server = %{
+      "object" => "server",
+      "attributes" => %{
+        "id" => 5,
+        "external_id" => "RemoteID1",
+        "uuid" => "1a7ce997-259b-452e-8b4e-cecc464142ca",
+        "identifier" => "1a7ce997",
+        "name" => "Gaming",
+        "description" => "Matt from Wii Sports",
+        "suspended" => false,
+        "limits" => %{
+          "memory" => 512,
+          "swap" => 0,
+          "disk" => 200,
+          "io" => 500,
+          "cpu" => 0,
+          "threads" => nil
+        },
+        "feature_limits" => %{
+          "databases" => 5,
+          "allocations" => 5,
+          "backups" => 2
+        },
+        "user" => 1,
+        "node" => 1,
+        "allocation" => 1,
+        "nest" => 1,
+        "egg" => 5,
+        "container" => %{
+          "startup_command" => "java -Xms128M -Xmx2014M -jar server.jar",
+          "image" => "quay.io\/pterodactyl\/core:java",
+          "installed" => true,
+          "environment" => %{
+            "SERVER_JARFILE" => "server.jar",
+            "VANILLA_VERSION" => "latest",
+            "STARTUP" => "java -Xms128M -Xmx2048M -jar server.jar",
+            "P_SERVER_LOCATION" => "GB",
+            "P_SERVER_UUID" => "1a7ce997-259b-452e-8b4e-cecc464142ca",
+            "P_SERVER_ALLOCATION_LIMIT" => 5
+          }
+        },
+        "updated_at" => "2020-11-04T21:11:26+00:00",
+        "created_at" => "2019-12-23T06:46:27+00:00"
+      }
+    }
+
+    success(conn, server)
   end
 
   delete "/api/application/servers/:id" do
-    success(conn, "OK")
+    success(conn, "OK", 204)
   end
 
 end

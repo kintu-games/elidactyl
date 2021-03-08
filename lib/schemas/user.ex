@@ -6,8 +6,8 @@ defmodule Elidactyl.Schemas.User do
 
   @type t :: %__MODULE__{}
 
-  @optional [:password, :language, :external_id]
-  @mandatory [:username, :email, :first_name, :last_name, :root_admin]
+  @optional [:password, :external_id]
+  @mandatory [:username, :email, :first_name, :last_name, :root_admin, :language]
 
   @derive {Poison.Encoder, only: @optional ++ @mandatory}
   embedded_schema do

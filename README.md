@@ -92,7 +92,7 @@ iex(2)> params =
     root_admin: false,
     username: "example"
   }
-iex(3)> Elidactyl.Users.create_user(params)
+iex(3)> Elidactyl.Application.Users.create_user(params)
 
 {:ok,
  %Elidactyl.Schemas.User{

@@ -3,8 +3,8 @@ defmodule Elidactyl do
   API for Pterodactyl panel
   """
 
-  alias Elidactyl.Users
-  alias Elidactyl.Servers
+  alias Elidactyl.Application.Users
+  alias Elidactyl.Application.Servers
 
   @doc ~S"""
   Get all users.
@@ -70,77 +70,47 @@ defmodule Elidactyl do
 
   ## Examples
       iex> Elidactyl.get_all_servers()
-      {:ok,
-             [
-               %Elidactyl.Schemas.Server{
-                 allocation: 3,
-                 container: %{
-                   environment: %{
-                     "P_SERVER_LOCATION" => "test",
-                     "P_SERVER_UUID" => "47a7052b-f07e-4845-989d-e876e30960f4",
-                     "SERVER_JARFILE" => "server.jar",
-                     "STARTUP" => "java -Xms128M -Xmx%{%{SERVER_MEMORY}}M -jar %{%{SERVER_JARFILE}}",
-                     "VANILLA_VERSION" => "latest"
-                   },
-                   image: "quay.io/pterodactyl/core:java",
-                   installed: true,
-                   startup_command: "java -Xms128M -Xmx%{%{SERVER_MEMORY}}M -jar %{%{SERVER_JARFILE}}"
-                 },
-                 created_at: "2018-09-29T22:50:16+00:00",
-                 description: "",
-                 egg: 4,
-                 external_id: nil,
-                 feature_limits: %{allocations: 0, databases: 10},
-                 id: 2,
-                 identifier: "47a7052b",
-                 limits: %{
-                   cpu: 300,
-                   disk: 10000,
-                   io: 500,
-                   memory: 2048,
-                   swap: -1
-                 },
-                 name: "Eat Vegies",
-                 nest: 1,
-                 node: 2,
-                 pack: nil,
-                 server_owner: nil,
-                 suspended: false,
-                 updated_at: "2018-11-20T14:35:00+00:00",
-                 user: 1,
-                 uuid: "47a7052b-f07e-4845-989d-e876e30960f4"
-               },
-               %Elidactyl.Schemas.Server{
-                 allocation: 4,
-                 container: %{
-                   environment: %{
-                     "P_SERVER_LOCATION" => "test",
-                     "P_SERVER_UUID" => "6d1567c5-08d4-4ecb-8d5d-0ce1ba6b0b99",
-                     "STARTUP" => "./parkertron"
-                   },
-                   image: "quay.io/parkervcp/pterodactyl-images:parkertron",
-                   installed: true,
-                   startup_command: "./parkertron"
-                 },
-                 created_at: "2018-11-10T19:51:23+00:00",
-                 description: "t",
-                 egg: 15,
-                 external_id: nil,
-                 feature_limits: %{allocations: 0, databases: 0},
-                 id: 6,
-                 identifier: "6d1567c5",
-                 limits: %{cpu: 200, disk: 5000, io: 500, memory: 0, swap: -1},
-                 name: "Wow",
-                 nest: 1,
-                 node: 2,
-                 pack: nil,
-                 server_owner: nil,
-                 suspended: false,
-                 updated_at: "2018-11-10T19:52:13+00:00",
-                 user: 5,
-                 uuid: "6d1567c5-08d4-4ecb-8d5d-0ce1ba6b0b99"
-               }
-             ]}
+      {
+        :ok,
+        [
+          %Elidactyl.Schemas.Server{
+            allocation: 1,
+            container: %{
+              environment: %{
+                "P_SERVER_LOCATION" => "Test",
+                "P_SERVER_UUID" => "1a7ce997-259b-452e-8b4e-cecc464142ca",
+                "SERVER_JARFILE" => "server.jar",
+                "STARTUP" => "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                "VANILLA_VERSION" => "latest"
+              },
+              image: "quay.io/pterodactyl/core:java",
+              installed: true,
+              startup_command: "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}"
+            },
+            created_at: "2019-12-23T06:46:27+00:00",
+            databases: [
+              %Elidactyl.Schemas.Server.Database{created_at: "2020-06-12T23:00:13+01:00", database: "s5_perms", host: 4, id: 1, max_connections: 0, remote: "%", server: 5, updated_at: "2020-06-12T23:00:13+01:00", username: "u5_QsIAp1jhvS"},
+              %Elidactyl.Schemas.Server.Database{created_at: "2020-06-12T23:00:20+01:00", database: "s5_coreprotect", host: 4, id: 2, max_connections: 0, remote: "%", server: 5, updated_at: "2020-06-12T23:00:20+01:00", username: "u5_2jtJx1nO1d"}
+            ],
+            description: "Matt from Wii Sports",
+            egg: 5,
+            external_id: "RemoteId1",
+            feature_limits: %{allocations: 5, databases: 5, backups: 2},
+            id: 5,
+            identifier: "1a7ce997",
+            limits: %{cpu: 0, disk: 200, io: 500, memory: 512, swap: 0, threads: nil},
+            name: "Wuhu Island",
+            nest: 1,
+            node: 1,
+            pack: nil,
+            server_owner: nil,
+            suspended: false,
+            updated_at: "2020-06-13T04:20:53+00:00",
+            user: 1,
+            uuid: "1a7ce997-259b-452e-8b4e-cecc464142ca"
+          }
+        ]
+      }
   """
   def get_all_servers() do
     Servers.list_servers()
@@ -151,43 +121,67 @@ defmodule Elidactyl do
 
   ## Examples
       iex> params = %{
-      ...>  user: 1,
-      ...>  allocation: %{
-      ...>    default: 28,
-      ...>    additional: [3, 19]
-      ...>  },
-      ...>  startup: "java -Xms128M -Xmx 1024M -jar server.jar",
+      ...> user: 1,
+      ...> egg: 15,
       ...>  docker_image: "quay.io/pterodactyl/core:java-glibc",
-      ...>  environment: %{
-      ...>    "DL_VERSION" => "1.12.2"
-      ...>  },
-      ...>  description: "Test server",
-      ...>  egg: 15,
-      ...>  external_id: "test_server",
-      ...>  feature_limits: %{
-      ...>    databases: 1,
-      ...>    allocations: 2
-      ...>  },
-      ...>  limits: %{
-      ...>    memory: 512,
-      ...>    swap: 0,
-      ...>    disk: 1024,
-      ...>    io: 500,
-      ...>    cpu: 100
-      ...>  },
-      ...>  name: "Test",
-      ...>  pack: 1,
-      ...>  deploy: %{
-      ...>    locations: [1],
-      ...>    dedicated_ip: false,
-      ...>    port_range: []
-      ...>  },
-      ...>  start_on_completion: true,
-      ...>  skip_scripts: false,
-      ...>  oom_disabled: true
+      ...> startup: "java -Xms128M -Xmx 1024M -jar server.jar",
+      ...> environment: %{
+      ...>   "DL_VERSION" => "1.12.2"
+      ...> },
+      ...> limits: %{
+      ...>   memory: 512,
+      ...>   swap: 0,
+      ...>   disk: 1024,
+      ...>   io: 500,
+      ...>   cpu: 100
+      ...> },
+      ...> feature_limits: %{
+      ...>   databases: 1,
+      ...>   backups: 1
+      ...> },
+      ...> allocation: %{
+      ...>   default: 28,
+      ...>   additional: [3, 19]
       ...> }
+      ...>}
       iex> Elidactyl.create_server(params)
-      {:ok, %Elidactyl.Schemas.Server{allocation: 28, container: %{environment: %{"DL_VERSION" => "1.12.2","P_SERVER_LOCATION" => "fr.sys","P_SERVER_UUID" => "d7bcc254-e218-4522-a7fe-9d2d562ad790","STARTUP" => "java -Xms128M -Xmx 1024M -jar server.jar"}, image: "quay.io/pterodactyl/core:java-glibc", installed: false, startup_command: "java -Xms128M -Xmx 1024M -jar server.jar"}, created_at: "2019-02-23T11:25:35+00:00", description: "Test server", egg: 15, external_id: "test_server", feature_limits: %{allocations: 2, databases: 1}, id: 53, identifier: "d7bcc254", limits: %{cpu: 100, disk: 1024, io: 500, memory: 512, swap: 0}, name: "Test", nest: 5, node: 1, pack: 1, server_owner: nil, suspended: false, updated_at: "2019-02-23T11:25:35+00:00", user: 1, uuid: "d7bcc254-e218-4522-a7fe-9d2d562ad790"}}
+      {
+        :ok,
+        %Elidactyl.Schemas.Server{
+          allocation: 17,
+          container: %{
+            environment: %{
+              "P_SERVER_LOCATION" => "GB",
+              "P_SERVER_UUID" => "d557c19c-8b21-4456-a9e5-181beda429f4",
+              "STARTUP" => "java -Xms128M -Xmx128M -jar server.jar",
+              "BUNGEE_VERSION" => "latest",
+              "P_SERVER_ALLOCATION_LIMIT" => 0,
+              "SERVER_JARFILE" => "server.jar"
+            },
+            image: "quay.io/pterodactyl/core =>java",
+            installed: false,
+            startup_command: "java -Xms128M -Xmx128M -jar server.jar"
+          },
+          created_at: "2020-10-29T01:38:59+00:00",
+          databases: [],
+          description: "",
+          egg: 1,
+          external_id: nil,
+          feature_limits: %{allocations: 0, databases: 5, backups: 1},
+          id: 7,
+          identifier: "d557c19c",
+          limits: %{cpu: 100, disk: 512, io: 500, memory: 128, swap: 0, threads: nil},
+          name: "Building",
+          nest: 1,
+          node: 1,
+          pack: nil,
+          server_owner: nil,
+          suspended: false,
+          updated_at: "2020-10-29T01:38:59+00:00",
+          user: 1,
+          uuid: "d557c19c-8b21-4456-a9e5-181beda429f4"
+        }
+      }
   """
   def create_server(params) do
     Servers.create_server(params)
