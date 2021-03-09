@@ -6,7 +6,7 @@ defmodule Elidactyl.Schemas.Server.Subuser.Permission do
 
   @type t :: %__MODULE__{}
 
-  @derive {Poison.Encoder, only: [:user_id, :server_id]}
+  @derive {Jason.Encoder, only: [:user_id, :server_id]}
 
   schema "permissions" do
     field :subuser_id, :integer

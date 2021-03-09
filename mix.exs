@@ -35,8 +35,7 @@ defmodule Elidactyl.MixProject do
     [
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
-      {:jason, "~> 1.0"},
-      {:poison, "~> 3.1"},
+      {:jason, "~> 1.2"},
       {:httpoison, "~> 1.6"},
       {:plug_cowboy, "~> 2.0"},
       {:observer_cli, "~> 1.5"},

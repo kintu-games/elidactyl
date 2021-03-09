@@ -11,7 +11,7 @@ defmodule Elidactyl.Request do
   @spec request(http_method, binary, any, headers, request_options) :: {:ok, binary} | {:error, Error.t()}
   def request(http_method, path, data \\ "", headers \\ [], opts \\ []) do
     url = Application.get_env(:elidactyl, :pterodactyl_url) <> path
-    headers = Keyword.merge(default_headers(opts), headers)
+    headers = opts |> default_headers() |> merge_headers(headers)
     options = [ssl: [{:versions, [:"tlsv1.2"]}], recv_timeout: 30_000]
 
     response =
@@ -42,7 +42,7 @@ defmodule Elidactyl.Request do
 
   @spec post(binary, any, list, list) :: any
   def post(url, body, headers \\ [], options \\ []) do
-    case Poison.encode(body) do
+    case Jason.encode(body) do
       {:ok, encoded_body} ->
         HTTPoison.post(url, encoded_body, headers, options)
       {:error, error} ->
@@ -62,7 +62,7 @@ defmodule Elidactyl.Request do
 
   @spec put(binary, any, list, list) :: any
   def put(url, body, headers \\ [], options \\ []) do
-    case Poison.encode(body) do
+    case Jason.encode(body) do
       {:ok, encoded_body} ->
         HTTPoison.put(url, encoded_body, headers, options)
       {:error, error} ->
@@ -72,7 +72,7 @@ defmodule Elidactyl.Request do
 
   @spec patch(binary, any, list, list) :: any
   def patch(url, body, headers \\ [], options \\ []) do
-    case Poison.encode(body) do
+    case Jason.encode(body) do
       {:ok, encoded_body} ->
         HTTPoison.patch(url, encoded_body, headers, options)
       {:error, error} ->
@@ -80,7 +80,7 @@ defmodule Elidactyl.Request do
     end
   end
 
-  @spec default_headers(map) :: list
+  @spec default_headers(Keyword.t()) :: [{String.t(), String.t()}]
   defp default_headers(opts) do
     token =
       if Keyword.get(opts, :use_client_api) do
@@ -96,10 +96,10 @@ defmodule Elidactyl.Request do
     ]
   end
 
-  @spec handle_response({:ok, Response.t()} | {:error, HTTPError.t()}) :: {:ok, binary} |  {:error, Error.t()}
+  @spec handle_response({:ok, Response.t()} | {:error, HTTPError.t()}) :: {:ok, any()} |  {:error, Error.t()}
   def handle_response({:ok, %Response{status_code: 204}}), do: {:ok, ""}
   def handle_response({:ok, %Response{status_code: code, body: body}}) when code in 200..207 do
-    case Poison.decode(body) do
+    case Jason.decode(body) do
       {:ok, body} ->
         {:ok, body}
       {:error, error} ->
@@ -124,5 +124,12 @@ defmodule Elidactyl.Request do
 
   def handle_response({:error, %HTTPError{reason: reason}}) do
     {:error, %Error{type: :http_request_failed, message: inspect(reason)}}
+  end
+
+  defp merge_headers(a, b) do
+    a
+    |> Enum.into(%{})
+    |> Map.merge(Enum.into(b, %{}))
+    |> Enum.into([])
   end
 end

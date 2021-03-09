@@ -9,7 +9,8 @@ defmodule Elidactyl.Schemas.User do
   @optional [:password, :external_id]
   @mandatory [:username, :email, :first_name, :last_name, :root_admin, :language]
 
-  @derive {Poison.Encoder, only: @optional ++ @mandatory}
+  @derive {Jason.Encoder, only: @optional ++ @mandatory}
+
   embedded_schema do
     field :external_id, :string
     field :uuid, Ecto.UUID
@@ -30,7 +31,7 @@ defmodule Elidactyl.Schemas.User do
     struct(__MODULE__, Utils.keys_to_atoms(attributes))
   end
 
-  @spec changeset(t(), map) :: Changeset.t()
+  @spec changeset(t(), map) :: Ecto.Changeset.t()
   def changeset(struct, params) do
     struct
     |> Ecto.Changeset.cast(params, @mandatory ++ @optional)

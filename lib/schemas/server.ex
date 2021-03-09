@@ -12,7 +12,7 @@ defmodule Elidactyl.Schemas.Server do
 
   @type t :: %__MODULE__{}
 
-  @optional [:password, :language, :root_admin, :external_id, :description, :oom_disabled, :description, :name]
+  @optional [:password, :language, :root_admin, :external_id, :description, :oom_disabled, :name]
   @mandatory [
     :user,
     :limits,
@@ -26,7 +26,7 @@ defmodule Elidactyl.Schemas.Server do
     :pack
   ]
 
-  @derive {Poison.Encoder, only: @optional ++ @mandatory}
+  @derive {Jason.Encoder, only: @optional ++ @mandatory}
 
   embedded_schema do
     field :external_id, :string
