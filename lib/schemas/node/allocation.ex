@@ -9,7 +9,8 @@ defmodule Elidactyl.Schemas.Node.Allocation do
   @optional []
   @mandatory []
 
-  @derive {Poison.Encoder, only: @optional ++ @mandatory}
+  @derive {Jason.Encoder, only: @optional ++ @mandatory}
+
   embedded_schema do
     field :ip, :string
     field :alias, :string
@@ -22,7 +23,7 @@ defmodule Elidactyl.Schemas.Node.Allocation do
     struct(__MODULE__, Utils.keys_to_atoms(attributes))
   end
 
-  @spec changeset(t(), map) :: Changeset.t()
+  @spec changeset(t(), map) :: Ecto.Changeset.t()
   def changeset(struct, params) do
     struct
     |> Ecto.Changeset.cast(params, @mandatory ++ @optional)

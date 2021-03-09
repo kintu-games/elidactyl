@@ -22,7 +22,7 @@ defmodule Elidactyl.Schemas.Server.CreateParams do
   @embedded [:limits, :feature_limits, :allocation, :deploy]
 
 
-  @derive {Poison.Encoder, only: @mandatory ++ @optional ++ @embedded}
+  @derive {Jason.Encoder, only: @mandatory ++ @optional ++ @embedded}
 
   embedded_schema do
     field :external_id, :binary
@@ -46,7 +46,7 @@ defmodule Elidactyl.Schemas.Server.CreateParams do
     field :oom_disabled, :boolean
   end
 
-  @spec changeset(t(), map) :: Changeset.t()
+  @spec changeset(%__MODULE__{}, map) :: Changeset.t()
   def changeset(struct, params) do
     struct
     |> Changeset.cast(params, @mandatory ++ @optional)
@@ -61,22 +61,22 @@ defmodule Elidactyl.Schemas.Server.CreateParams do
     |> Changeset.validate_length(:docker_image, max: 255)
   end
 
-  @spec allocation_changeset(Changeset.t(), map) :: Changeset.t()
+  @spec allocation_changeset(Allocation.t(), map) :: Changeset.t()
   defp allocation_changeset(%Allocation{} = changeset, params) do
     Changeset.cast(changeset, params, Allocation.__schema__(:fields))
   end
 
-  @spec deploy_changeset(Changeset.t(), map) :: Changeset.t()
+  @spec deploy_changeset(Deploy.t(), map) :: Changeset.t()
   defp deploy_changeset(%Deploy{} = changeset, params) do
     Changeset.cast(changeset, params, Deploy.__schema__(:fields))
   end
 
-  @spec limits_changeset(Changeset.t(), map) :: Changeset.t()
+  @spec limits_changeset(Limits.t(), map) :: Changeset.t()
   defp limits_changeset(%Limits{} = changeset, params) do
     Changeset.cast(changeset, params, Limits.__schema__(:fields))
   end
 
-  @spec feature_limits_changeset(Changeset.t(), map) :: Changeset.t()
+  @spec feature_limits_changeset(FeatureLimits.t(), map) :: Changeset.t()
   defp feature_limits_changeset(%FeatureLimits{} = changeset, params) do
     Changeset.cast(changeset, params, FeatureLimits.__schema__(:fields))
   end

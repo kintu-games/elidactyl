@@ -241,4 +241,7 @@ defmodule Elidactyl.ServerTest do
   test "delete server" do
     assert :ok = Servers.delete_server(1)
   end
+
+  test "update server build info" do
+  end
 end

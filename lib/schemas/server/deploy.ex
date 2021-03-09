@@ -6,7 +6,7 @@ defmodule Elidactyl.Schemas.Server.Deploy do
 
   @type t :: %__MODULE__{}
 
-  @derive {Poison.Encoder, only: [:locations, :dedicated_ip, :port_range]}
+  @derive {Jason.Encoder, only: [:locations, :dedicated_ip, :port_range]}
 
   embedded_schema do
     field :locations, {:array, :integer}

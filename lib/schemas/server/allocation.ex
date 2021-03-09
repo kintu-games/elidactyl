@@ -6,7 +6,7 @@ defmodule Elidactyl.Schemas.Server.Allocation do
 
   @type t :: %__MODULE__{}
 
-  @derive {Poison.Encoder, only: [:default, :additional]}
+  @derive {Jason.Encoder, only: [:default, :additional]}
 
   embedded_schema do
     field :default, :integer

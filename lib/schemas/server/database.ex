@@ -8,7 +8,7 @@ defmodule Elidactyl.Schemas.Server.Database do
   @type t :: %__MODULE__{}
   @mandatory [:server, :host, :database, :username, :remote, :max_connections]
 
-  @derive {Poison.Encoder, only: @mandatory}
+  @derive {Jason.Encoder, only: @mandatory}
 
   embedded_schema do
     field :server, :integer

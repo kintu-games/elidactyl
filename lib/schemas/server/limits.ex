@@ -7,7 +7,7 @@ defmodule Elidactyl.Schemas.Server.Limits do
   @type t :: %__MODULE__{}
   @mandatory [:memory, :swap, :disk, :io, :cpu]
 
-  @derive {Poison.Encoder, only: @mandatory}
+  @derive {Jason.Encoder, only: @mandatory}
 
   embedded_schema do
     field :memory, :integer

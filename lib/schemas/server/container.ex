@@ -6,7 +6,7 @@ defmodule Elidactyl.Schemas.Server.Container do
 
   @type t :: %__MODULE__{}
 
-  @derive {Poison.Encoder, only: [:startup_command, :image, :environment, :installed]}
+  @derive {Jason.Encoder, only: [:startup_command, :image, :environment, :installed]}
 
   embedded_schema do
     field :startup_command, :string

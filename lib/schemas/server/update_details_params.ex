@@ -8,7 +8,7 @@ defmodule Elidactyl.Schemas.Server.UpdateDetailsParams do
   @mandatory [:name, :user]
   @optional [:external_id, :description]
 
-  @derive {Poison.Encoder, only: @mandatory ++ @optional}
+  @derive {Jason.Encoder, only: @mandatory ++ @optional}
 
   embedded_schema do
     field :external_id, :string
