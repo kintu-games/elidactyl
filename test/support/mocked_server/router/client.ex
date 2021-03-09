@@ -8,7 +8,7 @@ defmodule Elidactyl.MockedServer.Router.Client do
     Plug.Parsers,
     parsers: [:json],
     pass: ["text/*"],
-    json_decoder: Poison
+    json_decoder: Jason
   )
 
   plug(:match)
@@ -52,6 +52,6 @@ defmodule Elidactyl.MockedServer.Router.Client do
       "object" => "list"
     }
 
-    success(conn, Poison.encode!(servers))
+    success(conn, Jason.encode!(servers))
   end
 end

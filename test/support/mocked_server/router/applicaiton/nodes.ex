@@ -11,7 +11,7 @@ defmodule Elidactyl.MockedServer.Router.Application.Nodes do
     Plug.Parsers,
     parsers: [:json],
     pass: ["text/*"],
-    json_decoder: Poison
+    json_decoder: Jason
   )
 
   plug(:match)

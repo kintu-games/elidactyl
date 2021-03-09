@@ -4,13 +4,11 @@ defmodule Elidactyl.MockedServer.Router.Application.Servers do
   use Plug.Router
   import Elidactyl.MockedServer.Router.Utils
 
-  alias Elidactyl.MockedServer.ExternalSchema.User
-
   plug(
     Plug.Parsers,
     parsers: [:json],
     pass: ["text/*"],
-    json_decoder: Poison
+    json_decoder: Jason
   )
 
   plug(:match)
@@ -317,7 +315,7 @@ defmodule Elidactyl.MockedServer.Router.Application.Servers do
   end
 
   delete "/api/application/servers/:id" do
-    success(conn, "OK", 204)
+    success(conn, "", 204)
   end
 
   patch "/api/application/servers/:id/build" do
