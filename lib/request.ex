@@ -6,9 +6,9 @@ defmodule Elidactyl.Request do
 
   @type request_options :: [{:use_client_api, boolean}]
   @type headers :: [{binary, binary}]
-  @type http_method :: atom
+  @type http_method :: :get | :post | :delete | :put | :patch
 
-  @spec request(http_method, binary, any, headers, request_options) :: {:ok, binary} | {:error, Error.t()}
+  @spec request(http_method(), binary(), any(), headers(), request_options()) :: {:ok, any()} | {:error, Error.t()}
   def request(http_method, path, data \\ "", headers \\ [], opts \\ []) do
     url = Application.get_env(:elidactyl, :pterodactyl_url) <> path
     headers = opts |> default_headers() |> merge_headers(headers)
