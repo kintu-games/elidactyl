@@ -23,8 +23,8 @@ erl_crash.dump
 elidactyl-*.tar
 
 /.DS_Store
-
 /.elixir_ls
+/tmp
 
 .env
 .tool-versions
