@@ -243,5 +243,63 @@ defmodule Elidactyl.ServerTest do
   end
 
   test "update server build info" do
+    params = %{
+      allocation: 1,
+      memory: 512,
+      swap: 0,
+      disk: 200,
+      io: 500,
+      cpu: 0,
+      threads: nil,
+      feature_limits: %{
+        databases: 5,
+        allocations: 5,
+        backups: 2,
+      },
+    }
+
+    assert {:ok, server} = Servers.update_server_build_info(1, params)
+    assert server == %Server{
+             id: 5,
+             external_id: "RemoteID1",
+             uuid: "1a7ce997-259b-452e-8b4e-cecc464142ca",
+             identifier: "1a7ce997",
+             name: "Gaming",
+             description: "Matt from Wii Sports",
+             suspended: false,
+             limits: %{
+               memory: 512,
+               swap: 0,
+               disk: 200,
+               io: 500,
+               cpu: 0,
+               threads: nil,
+             },
+             feature_limits: %{
+               databases: 5,
+               allocations: 5,
+               backups: 2,
+             },
+             user: 1,
+             node: 1,
+             allocation: 1,
+             nest: 1,
+             egg: 5,
+             container: %{
+               environment: %{
+                 "P_SERVER_ALLOCATION_LIMIT" => 5,
+                 "P_SERVER_LOCATION" => "GB",
+                 "P_SERVER_UUID" => "1a7ce997-259b-452e-8b4e-cecc464142ca",
+                 "SERVER_JARFILE" => "server.jar",
+                 "STARTUP" => "java -Xms128M -Xmx2048M -jar server.jar",
+                 "VANILLA_VERSION" => "latest"
+               },
+               image: "quay.io/pterodactyl/core:java",
+               installed: true,
+               startup_command: "java -Xms128M -Xmx2014M -jar server.jar"
+             },
+             updated_at: "2020-11-04T21:11:26+00:00",
+             created_at: "2019-12-23T06:46:27+00:00",
+           }
   end
 end
