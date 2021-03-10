@@ -8,6 +8,7 @@ defmodule Elidactyl.Application.Servers do
   alias Elidactyl.Schemas.Server.CreateParams
   alias Elidactyl.Schemas.Server.UpdateDetailsParams
   alias Elidactyl.Schemas.Server.UpdateBuildInfoParams
+  alias Elidactyl.Schemas.Server.UpdateStartupParams
 
   def list_servers do
     #    GET https://pterodactyl.app/api/application/servers
@@ -82,6 +83,19 @@ defmodule Elidactyl.Application.Servers do
   def update_server_build_info(id, params) do
     with %{valid?: true} = changeset <- UpdateBuildInfoParams.changeset(%UpdateBuildInfoParams{}, params),
          %UpdateBuildInfoParams{} = params <- Ecto.Changeset.apply_changes(changeset),
+         {:ok, resp} <- Request.request(:patch, "/api/application/servers/#{id}/build", params),
+         %Server{} = result <- Response.parse_response(resp) do
+      {:ok, result}
+    else
+      {:error, _} = error -> error
+      %Ecto.Changeset{} = changeset -> {:error, Error.from_changeset(changeset)}
+    end
+  end
+
+  @spec update_server_startup(integer, map) :: {:ok, %Server{}} | {:error, Error.t}
+  def update_server_startup(id, params) do
+    with %{valid?: true} = changeset <- UpdateStartupParams.changeset(%UpdateStartupParams{}, params),
+         %UpdateStartupParams{} = params <- Ecto.Changeset.apply_changes(changeset),
          {:ok, resp} <- Request.request(:patch, "/api/application/servers/#{id}/build", params),
          %Server{} = result <- Response.parse_response(resp) do
       {:ok, result}
