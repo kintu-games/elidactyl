@@ -317,6 +317,9 @@ defmodule Elidactyl.MockedServer.Router.Application.Servers do
   delete "/api/application/servers/:id" do
     success(conn, "", 204)
   end
+  delete "/api/application/servers/:id/force" do
+    success(conn, "", 204)
+  end
 
   patch "/api/application/servers/:id/build" do
     server = %{
@@ -416,5 +419,17 @@ defmodule Elidactyl.MockedServer.Router.Application.Servers do
     }
 
     success(conn, server)
+  end
+
+  post "/api/application/servers/:id/suspend" do
+    success(conn, "", 204)
+  end
+
+  post "/api/application/servers/:id/unsuspend" do
+    success(conn, "", 204)
+  end
+
+  post "/api/application/servers/:id/reinstall" do
+    success(conn, "", 204)
   end
 end
