@@ -139,6 +139,7 @@ defmodule Elidactyl.ServerTest do
 
   test "delete server" do
     assert :ok = Servers.delete_server(1)
+    assert :ok = Servers.delete_server(1, true)
   end
 
   test "update server build info" do
@@ -175,5 +176,17 @@ defmodule Elidactyl.ServerTest do
 
     assert {:ok, server} = Servers.update_server_startup(1, params)
     assert server == ServerResponse.build()
+  end
+
+  test "suspend server" do
+    assert :ok = Servers.suspend_server(1)
+  end
+
+  test "unsuspend server" do
+    assert :ok = Servers.unsuspend_server(1)
+  end
+
+  test "reinstall server" do
+    assert :ok = Servers.reinstall_server(1)
   end
 end
