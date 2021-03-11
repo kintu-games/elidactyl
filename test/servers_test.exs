@@ -160,4 +160,20 @@ defmodule Elidactyl.ServerTest do
     assert {:ok, server} = Servers.update_server_build_info(1, params)
     assert server == ServerResponse.build()
   end
+
+  test "update server startup info" do
+    params = %{
+      startup: "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+      environment: %{
+        "SERVER_JARFILE" => "server.jar",
+        "VANILLA_VERSION" => "latest",
+      },
+      egg: 5,
+      image: "quay.io/pterodactyl/core:java",
+      skip_scripts: false
+    }
+
+    assert {:ok, server} = Servers.update_server_startup(1, params)
+    assert server == ServerResponse.build()
+  end
 end

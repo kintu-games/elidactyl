@@ -43,10 +43,11 @@ defmodule Elidactyl.Schemas.Server.UpdateBuildInfoParams do
 
   defp cast_threads(%Changeset{} = changeset, params) do
     case Map.get(params, "threads", Map.get(params, :threads)) do
+      nil                               -> changeset
       ""                                -> changeset
       threads when is_integer(threads)  -> Changeset.put_change(changeset, :threads, "#{threads}")
       threads when is_binary(threads)   -> Changeset.put_change(changeset, :threads, threads)
-      _                                 -> changeset
+      _                                 -> put_thread_error(changeset)
     end
   end
 
