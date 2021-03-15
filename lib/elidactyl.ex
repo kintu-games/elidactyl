@@ -117,7 +117,7 @@ defmodule Elidactyl do
   end
 
   @doc ~S"""
-  Creating a new server with given params
+  Create a new server with given params
 
   ## Examples
       iex> params = %{
@@ -190,7 +190,7 @@ defmodule Elidactyl do
   @doc ~S"""
   Delete a server using internal pterodactyl server id.
 
-    ## Examples
+  ## Examples
       iex> Elidactyl.delete_server(1)
       :ok
   """
