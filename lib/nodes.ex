@@ -34,4 +34,15 @@ defmodule Elidactyl.Nodes do
       _ -> {:error, %Error{type: :invalid_response, message: "Error while parsing response"}}
     end
   end
+
+  @spec list() :: {:ok, []}
+  def list do
+    with {:ok, resp} <- Request.request(:get, "/api/application/nodes"),
+         nodes when is_list(nodes) <- Response.parse_response(resp) do
+      {:ok, nodes}
+    else
+      {:error, _} = error -> error
+      _ -> {:error, %Error{type: :invalid_response, message: "Error while parsing response"}}
+    end
+  end
 end
