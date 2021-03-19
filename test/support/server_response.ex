@@ -4,6 +4,7 @@ defmodule Elidactyl.ServerResponse do
   """
 
   alias Elidactyl.Schemas.Server
+  alias Elidactyl.Schemas.Server.Container
 
   @limits %{memory: 512, swap: 0, disk: 200, io: 500, cpu: 0, threads: nil}
   @limits_keys Map.keys(@limits)
@@ -52,12 +53,15 @@ defmodule Elidactyl.ServerResponse do
   @spec container() :: map
   @spec container(map | nil) :: map
   def container do
-    Map.put(@container, :environment, environment())
+    struct(Container, Map.put(@container, :environment, environment()))
   end
   def container(%{} = overrides) do
-    container()
-    |> Map.merge(Map.take(overrides, @container_keys))
-    |> update_in(~w[environment]a, & Map.get(overrides, :environment, &1))
+    container =
+      container()
+      |> Map.from_struct()
+      |> Map.merge(Map.take(overrides, @container_keys))
+      |> update_in(~w[environment]a, & Map.get(overrides, :environment, &1))
+    struct(Container, container)
   end
   def container(_), do: container()
 

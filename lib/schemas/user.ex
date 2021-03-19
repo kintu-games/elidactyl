@@ -2,7 +2,11 @@ defmodule Elidactyl.Schemas.User do
   @moduledoc false
 
   use Ecto.Schema
+
   alias Elidactyl.Utils
+  alias Elidactyl.Response.Parser
+
+  @behaviour Parser
 
   @type t :: %__MODULE__{}
 
@@ -26,11 +30,6 @@ defmodule Elidactyl.Schemas.User do
     field :updated_at, :naive_datetime
   end
 
-  @spec parse(map) :: t()
-  def parse(%{"object" => "user", "attributes" => attributes}) do
-    struct(__MODULE__, Utils.keys_to_atoms(attributes))
-  end
-
   @spec changeset(t(), map) :: Ecto.Changeset.t()
   def changeset(struct, params) do
     struct
@@ -41,5 +40,10 @@ defmodule Elidactyl.Schemas.User do
     |> Ecto.Changeset.validate_length(:username, min: 1, max: 255)
     |> Ecto.Changeset.validate_length(:first_name, min: 1, max: 255)
     |> Ecto.Changeset.validate_length(:last_name, min: 1, max: 255)
+  end
+
+  @impl Parser
+  def parse(%{"object" => "user", "attributes" => attributes}) do
+    struct(__MODULE__, Utils.keys_to_atoms(attributes))
   end
 end

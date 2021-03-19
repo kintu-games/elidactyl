@@ -2,12 +2,18 @@ defmodule Elidactyl.Schemas.Server.Container do
   @moduledoc false
 
   alias Ecto.Changeset
+  alias Elidactyl.Utils
+  alias Elidactyl.Response.Parser
+
   use Ecto.Schema
+
+  @behaviour Parser
 
   @type t :: %__MODULE__{}
 
   @derive {Jason.Encoder, only: [:startup_command, :image, :environment, :installed]}
 
+  @primary_key false
   embedded_schema do
     field :startup_command, :string
     field :image, :string
@@ -20,5 +26,10 @@ defmodule Elidactyl.Schemas.Server.Container do
     struct
     |> Changeset.cast(params, [:startup_command, :image, :environment, :installed])
     |> Changeset.validate_required([:startup_command, :image, :environment])
+  end
+
+  @impl Parser
+  def parse(%{} = attributes) do
+    struct(__MODULE__, Utils.keys_to_atoms(attributes, ~w[environment]))
   end
 end

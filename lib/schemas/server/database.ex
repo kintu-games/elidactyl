@@ -2,8 +2,12 @@ defmodule Elidactyl.Schemas.Server.Database do
   @moduledoc false
 
   use Ecto.Schema
+
   alias Ecto.Changeset
   alias Elidactyl.Utils
+  alias Elidactyl.Response.Parser
+
+  @behaviour Parser
 
   @type t :: %__MODULE__{}
   @mandatory [:server, :host, :database, :username, :remote, :max_connections]
@@ -30,6 +34,7 @@ defmodule Elidactyl.Schemas.Server.Database do
     |> Changeset.validate_number(:max_connections, greater_than_or_equal_to: 0)
   end
 
+  @impl Parser
   def parse(%{"object" => "databases", "attributes" => attributes}) do
     struct(__MODULE__, Utils.keys_to_atoms(attributes))
   end

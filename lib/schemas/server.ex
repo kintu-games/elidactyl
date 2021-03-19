@@ -7,26 +7,18 @@ defmodule Elidactyl.Schemas.Server do
   alias Elidactyl.Schemas.Server.FeatureLimits
   alias Elidactyl.Schemas.Server.Limits
   alias Elidactyl.Schemas.Server.Database
-  alias Elidactyl.Schemas.List
   alias Elidactyl.Utils
+  alias Elidactyl.Response
+  alias Elidactyl.Response.Parser
+
+  @behaviour Parser
 
   @type t :: %__MODULE__{}
 
-  @optional [:password, :language, :root_admin, :external_id, :description, :oom_disabled, :name]
-  @mandatory [
-    :user,
-    :limits,
-    :egg,
-    :environment,
-    :feature_limits,
-    :start_on_completion,
-    :skip_scripts,
-    :startup,
-    :docker_image,
-    :pack
-  ]
+  @optional ~w[password language root_admin external_id description oom_disabled name]a
+  @mandatory ~w[user limits egg environment feature_limits start_on_completion skip_scripts startup docker_image pack]a
 
-  @derive {Jason.Encoder, only: @optional ++ @mandatory}
+  @derive {Jason.Encoder, only: @optional ++ @mandatory ++ ~w[allocation]a}
 
   embedded_schema do
     field :external_id, :string
@@ -37,7 +29,6 @@ defmodule Elidactyl.Schemas.Server do
     field :suspended, :boolean
 
     embeds_one :limits, Limits
-
     embeds_one :feature_limits, FeatureLimits
     embeds_many :databases, Database
 
@@ -55,33 +46,33 @@ defmodule Elidactyl.Schemas.Server do
     field :updated_at, :naive_datetime
   end
 
-  @spec parse(map) :: t()
-  def parse(
-        %{
-          "object" => "server",
-          "attributes" => %{
-            "container" => %{
-              "environment" => _
-            }
-          } = attributes
-        }
-      ) do
-    {unsafe_value, safe_attributes} = pop_in(attributes, ["container", "environment"])
-    {_, safe_attributes} = pop_in(safe_attributes, ["relationships"])
-    server = struct(__MODULE__, Utils.keys_to_atoms(safe_attributes))
-
-    server =
-      if attributes["relationships"] do
-        parsed_databases = List.parse(attributes["relationships"]["databases"])
-        put_in(server, [Access.key!(:databases)], parsed_databases)
-      else
-        server
-      end
-
-    put_in(server, [Access.key!(:container), :environment], unsafe_value)
-  end
-
+  @impl Parser
   def parse(%{"object" => "server", "attributes" => attributes}) do
-    struct(__MODULE__, Utils.keys_to_atoms(attributes))
+    attributes =
+      attributes
+      |> parse_container()
+      |> parse_relationships()
+      |> Map.drop(~w[relationships])
+      |> Utils.keys_to_atoms(~w[container])
+    struct(__MODULE__, attributes)
   end
+
+  defp parse_container(%{"container" => %{} = cont} = attributes) do
+    cont = Response.parse_response(cont, Container)
+    Map.put(attributes, "container", cont)
+  end
+  defp parse_container(%{"container" => _} = attributes), do: Map.delete(attributes, "container")
+  defp parse_container(attributes), do: attributes
+
+  @relationships_atoms ~w[databases]a
+  @relationships Enum.map(@relationships_atoms, &to_string/1)
+  defp parse_relationships(%{"relationships" => %{} = rels} = attributes) do
+    rels =
+      rels
+      |> Map.take(@relationships)
+      |> Enum.into(%{}, fn {k, v} -> {String.to_existing_atom(k), Response.parse_response(v)} end)
+    Map.put(attributes, "databases", Map.get(rels, :databases, []))
+  end
+  defp parse_relationships(%{"relationships" => _} = attributes), do: Map.delete(attributes, "relationships")
+  defp parse_relationships(attributes), do: attributes
 end
