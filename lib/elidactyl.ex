@@ -75,7 +75,7 @@ defmodule Elidactyl do
         [
           %Elidactyl.Schemas.Server{
             allocation: 1,
-            container: %{
+            container: %Elidactyl.Schemas.Server.Container{
               environment: %{
                 "P_SERVER_LOCATION" => "Test",
                 "P_SERVER_UUID" => "1a7ce997-259b-452e-8b4e-cecc464142ca",
@@ -149,7 +149,7 @@ defmodule Elidactyl do
         :ok,
         %Elidactyl.Schemas.Server{
           allocation: 17,
-          container: %{
+          container: %Elidactyl.Schemas.Server.Container{
             environment: %{
               "P_SERVER_LOCATION" => "GB",
               "P_SERVER_UUID" => "d557c19c-8b21-4456-a9e5-181beda429f4",

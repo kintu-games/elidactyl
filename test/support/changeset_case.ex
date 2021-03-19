@@ -3,7 +3,7 @@ defmodule Elidactyl.ChangesetCase do
 
   using do
     quote do
-      import Elidactyl.ChangesetCase, only: [
+      import unquote(__MODULE__), only: [
         assert_invalid: 2, assert_invalid: 3,
         assert_valid: 1, assert_valid: 2
       ]

@@ -1,5 +1,10 @@
 defmodule Elidactyl.Schemas.Node do
+  @moduledoc false
+
   alias Elidactyl.Utils
+  alias Elidactyl.Response.Parser
+
+  @behaviour Parser
 
   defstruct ~w[
     id uuid public name description location_id fqdn scheme behind_proxy maintenance_mode
@@ -8,7 +13,7 @@ defmodule Elidactyl.Schemas.Node do
 
   @type t :: %__MODULE__{}
 
-  @spec parse(map) :: t()
+  @impl Parser
   def parse(%{"object" => "node", "attributes" => attributes}) do
     struct(__MODULE__, Utils.keys_to_atoms(attributes))
   end

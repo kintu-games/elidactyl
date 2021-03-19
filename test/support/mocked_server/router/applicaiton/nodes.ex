@@ -7,15 +7,9 @@ defmodule Elidactyl.MockedServer.Router.Application.Nodes do
   alias Elidactyl.MockedServer.ExternalSchema.List
   alias Elidactyl.MockedServer.ExternalSchema.Node.Allocation
 
-  plug(
-    Plug.Parsers,
-    parsers: [:json],
-    pass: ["text/*"],
-    json_decoder: Jason
-  )
-
-  plug(:match)
-  plug(:dispatch)
+  plug Plug.Parsers, parsers: [:json], pass: ["text/*"], json_decoder: Jason
+  plug :match
+  plug :dispatch
 
   get "/api/application/nodes/:id/allocations" do
     if id == "1" do

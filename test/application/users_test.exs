@@ -1,4 +1,4 @@
-defmodule Elidactyl.UsersTest do
+defmodule Elidactyl.Application.UsersTest do
   use ExUnit.Case
   alias Elidactyl.Application.Users
   alias Elidactyl.Schemas.User
