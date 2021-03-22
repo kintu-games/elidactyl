@@ -7,25 +7,61 @@ defmodule Elidactyl.MockedServer.Router.Application.Nests do
   alias Elidactyl.MockedServer
   alias Elidactyl.MockedServer.ExternalSchema.List, as: ExternalList
   alias Elidactyl.MockedServer.ExternalSchema.NullResource
+  alias Elidactyl.MockedServer.ExternalSchema.Nest
+  alias Elidactyl.MockedServer.ExternalSchema.Nest.Egg
 
   plug Plug.Parsers, parsers: [:json], pass: ["text/*"], json_decoder: Jason
   plug :match
   plug :dispatch
 
-  get "/api/application/nests/:id/eggs" do
-    {id, ""} = Integer.parse(id)
+  get "/api/application/nests/:nest_id/eggs" do
+    {nest_id, ""} = Integer.parse(nest_id)
     %{query_params: params} = conn = Plug.Conn.fetch_query_params(conn)
     include = parse_include(params["include"])
     list = MockedServer.list(:egg)
     eggs =
       list.data
-      |> Enum.filter(& match?(%{attributes: %{nest: ^id}}, &1))
-      |> add_nest(include)
-      |> add_servers(include)
-      |> add_config(include)
-      |> add_script(include)
-      |> add_variables(include)
+      |> Enum.filter(& match?(%{attributes: %{nest: ^nest_id}}, &1))
+      |> add_references(include)
     success(conn, %{list | data: eggs})
+  end
+
+  get "/api/application/nests/:nest_id/eggs/:egg_id" do
+    {nest_id, ""} = Integer.parse(nest_id)
+    {egg_id, ""} = Integer.parse(egg_id)
+    %{query_params: params} = conn = Plug.Conn.fetch_query_params(conn)
+    include = parse_include(params["include"])
+    with {:ok, _} <- find_nest(nest_id),
+         {:ok, %Egg{attributes: %{nest: ^nest_id}} = egg} <- find_egg(egg_id) do
+      [egg] = add_references([egg], include)
+      success(conn, egg)
+    else
+      {:error, status, error} -> failure(conn, status, error)
+      {:ok, %Egg{}} -> failure(conn, 404, "not found egg #{egg_id} in nest #{nest_id}")
+    end
+  end
+
+  defp find_nest(nest_id) do
+    case MockedServer.get(:nest, nest_id) do
+      %Nest{} = nest -> {:ok, nest}
+      _              -> {:error, 404, "not found nest #{nest_id}"}
+    end
+  end
+
+  defp find_egg(egg_id) do
+    case MockedServer.get(:egg, egg_id) do
+      %Egg{} = egg -> {:ok, egg}
+      _            -> {:error, 404, "not found egg #{egg_id}"}
+    end
+  end
+
+  defp add_references(eggs, include) do
+    eggs
+    |> add_nest(include)
+    |> add_servers(include)
+    |> add_config(include)
+    |> add_script(include)
+    |> add_variables(include)
   end
 
   defp add_nest(eggs, %{"nest" => true}) do
