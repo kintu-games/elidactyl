@@ -11,10 +11,20 @@ defmodule Elidactyl.Application.Nests do
 
   @spec list_eggs(id) :: {:ok, [Egg.t]} | {:error, Error.t}
   @spec list_eggs(id, egg_includes) :: {:ok, [Egg.t]} | {:error, Error.t}
-  def list_eggs(id, includes \\ []) do
+  def list_eggs(nest_id, includes \\ []) do
     includes = make_includes(includes)
-    with {:ok, resp} <- Request.request(:get, "/api/application/nests/#{id}/eggs#{includes}"),
+    with {:ok, resp} <- Request.request(:get, "/api/application/nests/#{nest_id}/eggs#{includes}"),
          result when is_list(result) <- Response.parse_response(resp) do
+      {:ok, result}
+    end
+  end
+
+  @spec egg(id, id) :: {:ok, Egg.t} | {:error, Error.t}
+  @spec egg(id, id, egg_includes) :: {:ok, Egg.t} | {:error, Error.t}
+  def egg(nest_id, egg_id, includes \\ []) do
+    includes = make_includes(includes)
+    with {:ok, resp} <- Request.request(:get, "/api/application/nests/#{nest_id}/eggs/#{egg_id}#{includes}"),
+         %Egg{} = result <- Response.parse_response(resp) do
       {:ok, result}
     end
   end
