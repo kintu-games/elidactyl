@@ -36,6 +36,7 @@ defmodule Elidactyl.Schemas.User do
     |> Ecto.Changeset.cast(params, @mandatory ++ @optional)
     |> Ecto.Changeset.validate_required(@mandatory)
     |> Ecto.Changeset.validate_format(:email, ~r/.+@.+\..+/)
+    |> Ecto.Changeset.validate_length(:email, min: 1, max: 255)
     |> Ecto.Changeset.validate_length(:external_id, min: 1, max: 255)
     |> Ecto.Changeset.validate_length(:username, min: 1, max: 255)
     |> Ecto.Changeset.validate_length(:first_name, min: 1, max: 255)

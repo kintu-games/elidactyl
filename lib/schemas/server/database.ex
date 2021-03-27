@@ -10,20 +10,19 @@ defmodule Elidactyl.Schemas.Server.Database do
   @behaviour Parser
 
   @type t :: %__MODULE__{}
-  @mandatory [:server, :host, :database, :username, :remote, :max_connections]
+  @mandatory ~w[host database remote]a
 
   @derive {Jason.Encoder, only: @mandatory}
 
   embedded_schema do
-    field :server, :integer
     field :host, :integer
-    field :database, :integer
-    field :username, :integer
-    field :remote, :integer
-    field :max_connections, :integer
-
-    field :created_at, :naive_datetime
-    field :updated_at, :naive_datetime
+    field :database, :string
+    field :remote, :string
+    field :server, :integer, virtual: true
+    field :username, :string, virtual: true
+    field :max_connections, :integer, virtual: true
+    field :created_at, :naive_datetime, virtual: true
+    field :updated_at, :naive_datetime, virtual: true
   end
 
   @spec changeset(t(), map) :: Changeset.t()
@@ -31,7 +30,6 @@ defmodule Elidactyl.Schemas.Server.Database do
     struct
     |> Changeset.cast(params, @mandatory)
     |> Changeset.validate_required(@mandatory)
-    |> Changeset.validate_number(:max_connections, greater_than_or_equal_to: 0)
   end
 
   @impl Parser

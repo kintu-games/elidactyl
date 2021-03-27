@@ -8,26 +8,9 @@ defmodule Elidactyl.Schemas.Node.Allocation do
 
   @behaviour Parser
 
+  defstruct ~w[id ip alias port notes assigned]a
+
   @type t :: %__MODULE__{}
-
-  @optional []
-  @mandatory []
-
-  @derive {Jason.Encoder, only: @optional ++ @mandatory}
-
-  embedded_schema do
-    field :ip, :string
-    field :alias, :string
-    field :port, :string
-    field :assigned, :boolean
-  end
-
-  @spec changeset(t(), map) :: Ecto.Changeset.t()
-  def changeset(struct, params) do
-    struct
-    |> Ecto.Changeset.cast(params, @mandatory ++ @optional)
-    |> Ecto.Changeset.validate_required(@mandatory)
-  end
 
   @impl Parser
   def parse(%{"object" => "allocation", "attributes" => attributes}) do

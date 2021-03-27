@@ -5,7 +5,8 @@ defmodule Elidactyl.Schemas.Server.Limits do
   alias Ecto.Changeset
 
   @type t :: %__MODULE__{}
-  @mandatory [:memory, :swap, :disk, :io, :cpu]
+
+  @mandatory ~w[memory swap disk io cpu]a
 
   @derive {Jason.Encoder, only: @mandatory}
 

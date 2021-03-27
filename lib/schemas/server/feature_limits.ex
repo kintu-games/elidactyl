@@ -6,7 +6,9 @@ defmodule Elidactyl.Schemas.Server.FeatureLimits do
 
   @type t :: %__MODULE__{}
 
-  @derive {Jason.Encoder, only: [:databases, :allocations, :backups]}
+  @mandatory ~w[databases allocations backups]a
+
+  @derive {Jason.Encoder, only: @mandatory}
 
   embedded_schema do
     field :databases, :integer
@@ -17,8 +19,8 @@ defmodule Elidactyl.Schemas.Server.FeatureLimits do
   @spec changeset(t(), map) :: Changeset.t()
   def changeset(struct, params) do
     struct
-    |> Changeset.cast(params, [:databases, :allocations, :backups])
-    |> Changeset.validate_required([:databases, :allocations, :backups])
+    |> Changeset.cast(params, @mandatory)
+    |> Changeset.validate_required(@mandatory)
     |> Changeset.validate_number(:databases, greater_than_or_equal_to: 0)
     |> Changeset.validate_number(:allocations, greater_than_or_equal_to: 0)
     |> Changeset.validate_number(:backups, greater_than_or_equal_to: 0)

@@ -36,6 +36,12 @@ defmodule Elidactyl.Schemas.Server.UpdateBuildInfoParamsTest do
       assert_invalid(changeset, :feature_limits, error_message == "can't be blank")
     end
 
+    test "allows optional fields to not present" do
+      %UpdateBuildInfoParams{}
+      |> changeset(Map.drop(@valid, ~w[threads]a))
+      |> assert_valid()
+    end
+
     test "validates fields types" do
       %{allocation: "a"} |> build_changeset() |> assert_invalid(:allocation)
       %{memory: "a"} |> build_changeset() |> assert_invalid(:memory)
