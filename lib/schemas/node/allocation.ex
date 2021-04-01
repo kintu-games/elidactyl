@@ -1,8 +1,6 @@
 defmodule Elidactyl.Schemas.Node.Allocation do
   @moduledoc false
 
-  use Ecto.Schema
-
   alias Elidactyl.Utils
   alias Elidactyl.Response.Parser
 

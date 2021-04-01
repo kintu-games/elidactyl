@@ -11,6 +11,10 @@ defmodule Elidactyl.Response do
   alias Elidactyl.Schemas.Server.Database
   alias Elidactyl.Schemas.Server.SubuserV1
   alias Elidactyl.Schemas.User
+  alias Elidactyl.Schemas.Node.Allocation
+  alias Elidactyl.Schemas.Nest
+  alias Elidactyl.Schemas.Nest.Egg
+  alias Elidactyl.Schemas.Nest.EggVariable
 
   @type json_map :: %{binary => any}
 
