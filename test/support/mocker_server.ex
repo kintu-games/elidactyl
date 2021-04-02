@@ -77,6 +77,7 @@ defmodule Elidactyl.MockedServer do
   @spec storage_delete(:persistent_term.key) :: :ok
   def storage_delete(key) do
     :persistent_term.erase(key(key))
+    :ok
   end
 
   @spec storage_update(:persistent_term.key, any, (any -> :persistent_term.value)) :: :ok

@@ -18,7 +18,7 @@ defmodule Elidactyl.Factory do
     |> String.slice(0..(size - 1))
   end
   def build(map, attributes) when map in @maps do
-    Map.merge(defaults(map), Enum.into(attributes, %{}), &deep_merge/3)
+    Map.merge(defaults(map), normalize_attributes(attributes), &deep_merge/3)
   end
 
   @spec defaults(atom) :: map
@@ -206,4 +206,13 @@ defmodule Elidactyl.Factory do
       }
     ] |> Enum.random()
   end
+
+  defp normalize_attributes(attributes) do
+    Enum.into(attributes, %{}, &atomize_keys/1)
+  end
+
+  defp atomize_keys({"environment", v}), do: {:environment, v}
+  defp atomize_keys({k, v}) when is_binary(k) and is_map(v), do: {String.to_existing_atom(k), normalize_attributes(v)}
+  defp atomize_keys({k, v}) when is_binary(k), do: {String.to_existing_atom(k), v}
+  defp atomize_keys(pair), do: pair
 end
