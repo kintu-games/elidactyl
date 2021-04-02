@@ -100,7 +100,7 @@ defmodule Elidactyl.Application.Servers do
   def update_server_startup(id, params) do
     with %{valid?: true} = changeset <- UpdateStartupParams.changeset(%UpdateStartupParams{}, params),
          %UpdateStartupParams{} = params <- Ecto.Changeset.apply_changes(changeset),
-         {:ok, resp} <- Request.request(:patch, "/api/application/servers/#{id}/build", params),
+         {:ok, resp} <- Request.request(:patch, "/api/application/servers/#{id}/startup", params),
          %Server{} = result <- Response.parse_response(resp) do
       {:ok, result}
     else

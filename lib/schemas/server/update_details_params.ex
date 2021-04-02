@@ -20,7 +20,7 @@ defmodule Elidactyl.Schemas.Server.UpdateDetailsParams do
   @spec changeset(t(), map) :: Changeset.t()
   def changeset(struct, params) do
     struct
-    |> Changeset.cast(params, @mandatory)
+    |> Changeset.cast(params, @mandatory ++ @optional)
     |> Changeset.validate_required(@mandatory)
     |> Changeset.validate_length(:external_id, min: 1, max: 191)
     |> Changeset.validate_length(:name, min: 1, max: 255)
