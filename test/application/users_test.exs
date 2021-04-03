@@ -1,116 +1,90 @@
 defmodule Elidactyl.Application.UsersTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
+  use Elidactyl.RequestCase
+
+  alias Elidactyl.MockedServer
   alias Elidactyl.Application.Users
   alias Elidactyl.Schemas.User
 
-  test "list users" do
-    assert {:ok, users} = Users.all()
-    assert [
-             %User{
-               id: 1,
-               external_id: nil,
-               uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
-               username: "codeco",
-               email: "codeco@file.properties",
-               first_name: "Rihan",
-               last_name: "Arfan",
-               language: "en",
-               root_admin: true,
-               "2fa": false,
-               created_at: "2018-03-18T15:15:17+00:00",
-               updated_at: "2018-10-16T21:51:21+00:00"
-             },
-             %User{
-               id: 4,
-               external_id: nil,
-               uuid: "f253663c-5a45-43a8-b280-3ea3c752b931",
-               username: "wardledeboss",
-               email: "wardle315@gmail.com",
-               first_name: "Harvey",
-               last_name: "Wardle",
-               language: "en",
-               root_admin: false,
-               "2fa": false,
-               created_at: "2018-09-29T17:59:45+00:00",
-               updated_at: "2018-10-02T18:59:03+00:00"
-             }
-           ] == users
+  setup do
+    %{attributes: user1} = MockedServer.put(:user)
+    %{attributes: user2} = MockedServer.put(:user)
+    %{user1: user1, user2: user2}
   end
 
-  test "get user by id" do
-    assert {:ok, user} = Users.get_by_id(1)
-
-    %User{
-      id: "1",
-      external_id: nil,
-      uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
-      username: "codeco",
-      email: "codeco@file.properties",
-      first_name: "Rihan",
-      last_name: "Arfan",
-      language: "en",
-      root_admin: true,
-      "2fa": false,
-      created_at: "2018-03-18T15:15:17+00:00",
-      updated_at: "2018-10-16T21:51:21+00:00"
-    } = user
+  describe "all/0" do
+    test "lists users", %{user1: %{id: id1}, user2: %{id: id2}} do
+      assert {:ok, users} = Users.all()
+      assert length(users) == 2
+      assert Enum.any?(users, & &1.id == id1)
+      assert Enum.any?(users, & &1.id == id2)
+    end
   end
 
-  test "get user by external id" do
-    assert {:ok, user} = Users.get_by_external_id(10)
+  describe "get_by_id/1" do
+    test "gets user by id", %{user1: %{id: id}} do
+      assert {:ok, %User{} = user} = Users.get_by_id(id)
 
-    %User{
-      id: 1,
-      external_id: "10",
-      uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
-      username: "codeco",
-      email: "codeco@file.properties",
-      first_name: "Rihan",
-      last_name: "Arfan",
-      language: "en",
-      root_admin: true,
-      "2fa": false,
-      created_at: "2018-03-18T15:15:17+00:00",
-      updated_at: "2018-10-16T21:51:21+00:00"
-    } = user
+      assert user.id == id
+      assert is_binary(user.uuid)
+      assert is_binary(user.username)
+      assert is_binary(user.email)
+      assert is_binary(user.first_name)
+      assert is_binary(user.last_name)
+      assert user.language == "en"
+      assert is_boolean(user.root_admin)
+      assert is_boolean(user."2fa")
+    end
   end
 
-  test "create user" do
-    params = %{
-      username: "example",
-      email: "example@example.com",
-      first_name: "John",
-      last_name: "Doe",
-      language: "en",
-      root_admin: true
-    }
-    assert {:ok, user} = Users.create(params)
-
-    assert struct(%User{
-      id: 2,
-      uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
-      "2fa": false,
-      created_at: "2018-03-18T15:15:17+00:00",
-      updated_at: "2018-10-16T21:51:21+00:00",
-      root_admin: true
-    }, params) == user
+  describe "get_by_external_id/1" do
+    test "gets user by external id", %{user1: %{external_id: id}} do
+      assert {:ok, %User{}} = Users.get_by_external_id(id)
+    end
   end
 
-  test "edit user" do
-    params = %{
-      email: "email@example.com",
-      first_name: "John",
-      last_name: "Doe",
-      language: "en"
-    }
-
-    assert {:ok, original_user} = Users.get_by_id(1)
-    assert {:ok, edited_user} = Users.update(1, params)
-
-    assert struct(original_user, params) == edited_user
+  describe "create/1" do
+    test "creates user" do
+      params = %{
+        username: "example",
+        email: "example@example.com",
+        first_name: "John",
+        last_name: "Doe",
+        language: "en",
+        root_admin: true
+      }
+      assert {:ok, user} = Users.create(params)
+      assert is_integer(user.id)
+      assert {:ok, _} = Ecto.UUID.cast(user.uuid)
+      assert user.root_admin == true
+      assert user.username == "example"
+      assert user.email == "example@example.com"
+      assert user.first_name == "John"
+      assert user.last_name == "Doe"
+      assert user.language == "en"
+    end
   end
 
-  test "delete user" do
-    assert :ok = Users.delete(1)
+  describe "update/2" do
+    test "edits user", %{user1: %{id: id}} do
+      params = %{
+        email: "email@example.com",
+        first_name: "John",
+        last_name: "Doe",
+        language: "ru",
+      }
+
+      assert {:ok, user} = Users.update(id, params)
+      assert user.email == "email@example.com"
+      assert user.first_name == "John"
+      assert user.last_name == "Doe"
+      assert user.language == "ru"
+    end
+  end
+
+  describe "delete/1" do
+    test "deletes user" do
+      assert :ok = Users.delete(1)
+    end
   end
 end

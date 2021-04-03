@@ -2,10 +2,12 @@ defmodule Elidactyl.MockedServer.Router.Client.Servers.Subusers do
   @moduledoc false
 
   use Plug.Router
+
   import Elidactyl.MockedServer.Router.Utils
 
-  alias Elidactyl.MockedServer.ExternalSchema.List
-  alias Elidactyl.MockedServer.ExternalSchema.ServerSubuser
+  alias Elidactyl.MockedServer
+  alias Elidactyl.MockedServer.Factory
+  alias Elidactyl.MockedServer.ExternalSchema.List, as: ExternalList
 
   plug(
     Plug.Parsers,
@@ -18,129 +20,40 @@ defmodule Elidactyl.MockedServer.Router.Client.Servers.Subusers do
   plug(:dispatch)
 
   get "/api/client/servers/:id/users" do
-    subusers =
-      [
-        %ServerSubuser{
-          attributes: %{
-            uuid: "60a7aec3-e17d-4aa9-abb3-56d944d204b4",
-            username: "subuser2jvc",
-            email: "subuser2@example.com",
-            image: "https:\/\/gravatar.com\/avatar\/3bb1c751a8b3488f4a4c70eddfe898d8",
-            "2fa_enabled": false,
-            created_at: "2020-06-12T23:31:41+01:00",
-            permissions: [
-              "control.console",
-              "control.start",
-              "websocket.connect"
-            ]
-          }
-        },
-        %ServerSubuser{
-          attributes: %{
-            uuid: "1287632d-9224-40c0-906e-f543423400bc",
-            username: "subuser3bvo",
-            email: "subuser3@example.com",
-            image: "https:\/\/gravatar.com\/avatar\/8b28d32aaa64a1564450d16f71a81f65",
-            "2fa_enabled": false,
-            created_at: "2020-07-13T14:27:46+01:00",
-            permissions: [
-              "control.console",
-              "control.start",
-              "websocket.connect"
-            ]
-          }
-        }
-      ]
-    success(conn, %List{data: subusers})
+    {id, ""} = Integer.parse(id)
+    %{data: users} = MockedServer.list(:server_subuser)
+    users =
+      users
+      |> Enum.filter(& match?(%{attributes: %{server: ^id}}, &1))
+      |> Enum.map(&serialize/1)
+    success(conn, %ExternalList{data: users})
   end
 
   post "/api/client/servers/:id/users" do
-    params = %{
-      "username" => "subuser3bvo",
-      "email" => "subuser3@example.com",
-      "image" => "https =>\/\/gravatar.com\/avatar\/8b28d32aaa64a1564450d16f71a81f65",
-      "2fa_enabled" => false,
-      "permissions" => [
-        "control.console",
-        "control.start",
-        "websocket.connect"
-      ]
-    }
-
-    attributes = %{
-        uuid: "1287632d-9224-40c0-906e-f543423400bc",
-        username: "subuser3bvo",
-        email: "subuser3@example.com",
-        image: "https:\/\/gravatar.com\/avatar\/8b28d32aaa64a1564450d16f71a81f65",
-        "2fa_enabled": false,
-        created_at: "2020-07-13T14:27:46+01:00",
-        permissions: [
-          "control.console",
-          "control.start",
-          "websocket.connect"
-        ]
-    }
-
-    if params != conn.params do
-      success(conn, %ServerSubuser{attributes: attributes})
-    else
-      failure(conn, 500, "some params missing in request #{inspect conn.params}")
-    end
+    success(conn, MockedServer.put(:server_subuser, conn.params), 201)
   end
 
-  get "/api/client/servers/:id/users/1287632d-9224-40c0-906e-f543423400bc" do
-    attributes = %{
-      uuid: "1287632d-9224-40c0-906e-f543423400bc",
-      username: "subuser3bvo",
-      email: "subuser3@example.com",
-      image: "https:\/\/gravatar.com\/avatar\/8b28d32aaa64a1564450d16f71a81f65",
-      "2fa_enabled": false,
-      created_at: "2020-07-13T14:27:46+01:00",
-      permissions: [
-        "control.console",
-        "control.start",
-        "websocket.connect"
-      ]
-    }
-
-    success(conn, %ServerSubuser{attributes: attributes})
+  get "/api/client/servers/:id/users/:uuid" do
+    {id, ""} = Integer.parse(id)
+    %{data: users} = MockedServer.list(:server_subuser)
+    user = Enum.find(users, & match?(%{attributes: %{server: ^id, uuid: ^uuid}}, &1))
+    success(conn, serialize(user))
   end
 
-  post "/api/client/servers/:id/users/1287632d-9224-40c0-906e-f543423400bc" do
-    params = %{
-      "username" => "subuser3bvo",
-      "email" => "subuser3@example.com",
-      "image" => "https =>\/\/gravatar.com\/avatar\/8b28d32aaa64a1564450d16f71a81f65",
-      "2fa_enabled" => false,
-      "permissions" => [
-        "control.console",
-        "control.start",
-        "websocket.connect"
-      ]
-    }
-
-    attributes = %{
-      uuid: "1287632d-9224-40c0-906e-f543423400bc",
-      username: "subuser3bvo",
-      email: "subuser3@example.com",
-      image: "https:\/\/gravatar.com\/avatar\/8b28d32aaa64a1564450d16f71a81f65",
-      "2fa_enabled": false,
-      created_at: "2020-07-13T14:27:46+01:00",
-      permissions: [
-        "control.console",
-        "control.start",
-        "websocket.connect"
-      ]
-    }
-
-    if params != conn.params do
-      success(conn, %ServerSubuser{attributes: attributes})
-    else
-      failure(conn, 500, "some params missing in request #{inspect conn.params}")
-    end
+  post "/api/client/servers/:id/users/:uuid" do
+    {id, ""} = Integer.parse(id)
+    %{data: users} = MockedServer.list(:server_subuser)
+    %{attributes: prev} = Enum.find(users, & match?(%{attributes: %{server: ^id, uuid: ^uuid}}, &1))
+    %{attributes: next} = Factory.build(:server_subuser, conn.params)
+    next = Map.take(next, conn.params |> Map.keys() |> Enum.map(&String.to_existing_atom/1))
+    MockedServer.delete(:server_subuser, prev.id)
+    next = MockedServer.put(:server_subuser, prev |> Map.merge(next) |> Map.merge(%{id: id}))
+    success(conn, serialize(next))
   end
 
-  delete "/api/client/servers/:id/users/1287632d-9224-40c0-906e-f543423400bc" do
+  delete "/api/client/servers/:id/users/:uuid" do
     success(conn, "", 204)
   end
+
+  defp serialize(user), do: %{user | attributes: Map.drop(user.attributes, ~w[id server]a)}
 end

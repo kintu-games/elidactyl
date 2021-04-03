@@ -46,8 +46,25 @@ defmodule Elidactyl do
       ...>  last_name: "Doe",
       ...>  language: "en"
       ...> }
-      iex> Elidactyl.update_user(1, params)
-      {:ok, %Elidactyl.Schemas.User{external_id: nil, password: nil, "2fa": false, created_at: "2018-03-18T15:15:17+00:00", email: "email@example.com", first_name: "John", id: "1", language: "en", last_name: "Doe", root_admin: true, updated_at: "2018-10-16T21:51:21+00:00", username: "codeco", uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335"}}
+      iex> Elidactyl.update_user(4, params)
+      {
+        :ok,
+        %Elidactyl.Schemas.User{
+          external_id: nil,
+          password: nil,
+          "2fa": false,
+          created_at: "2018-09-29T17:59:45+00:00",
+          email: "email@example.com",
+          first_name: "John",
+          id: 4,
+          language: "en",
+          last_name: "Doe",
+          root_admin: false,
+          updated_at: "2018-10-02T18:59:03+00:00",
+          username: "wardledeboss",
+          uuid: "f253663c-5a45-43a8-b280-3ea3c752b931"
+        }
+      }
   """
   def update_user(id, params) do
     Users.update(id, params)

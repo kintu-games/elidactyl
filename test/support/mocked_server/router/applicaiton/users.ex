@@ -4,8 +4,8 @@ defmodule Elidactyl.MockedServer.Router.Application.Users do
   use Plug.Router
   import Elidactyl.MockedServer.Router.Utils
 
-  alias Elidactyl.MockedServer.ExternalSchema.List
-  alias Elidactyl.MockedServer.ExternalSchema.User
+  alias Elidactyl.MockedServer
+  alias Elidactyl.MockedServer.Factory
 
   plug(
     Plug.Parsers,
@@ -18,137 +18,39 @@ defmodule Elidactyl.MockedServer.Router.Application.Users do
   plug(:dispatch)
 
   get "/api/application/users" do
-    body = %List{
-      data: [
-        %User{
-          attributes: %{
-            id: 1,
-            external_id: nil,
-            uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
-            username: "codeco",
-            email: "codeco@file.properties",
-            first_name: "Rihan",
-            last_name: "Arfan",
-            language: "en",
-            root_admin: true,
-            "2fa": false,
-            created_at: "2018-03-18T15:15:17+00:00",
-            updated_at: "2018-10-16T21:51:21+00:00"
-          }
-        },
-        %User{
-          object: "user",
-          attributes: %{
-            id: 4,
-            external_id: nil,
-            uuid: "f253663c-5a45-43a8-b280-3ea3c752b931",
-            username: "wardledeboss",
-            email: "wardle315@gmail.com",
-            first_name: "Harvey",
-            last_name: "Wardle",
-            language: "en",
-            root_admin: false,
-            "2fa": false,
-            created_at: "2018-09-29T17:59:45+00:00",
-            updated_at: "2018-10-02T18:59:03+00:00"
-          }
-        }
-      ]
-    }
-
-    success(conn, body)
+    success(conn, MockedServer.list(:user))
   end
 
   get "/api/application/users/:id" do
-    body = %User{
-      object: "user",
-      attributes: %{
-        id: id,
-        external_id: nil,
-        uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
-        username: "codeco",
-        email: "codeco@file.properties",
-        first_name: "Rihan",
-        last_name: "Arfan",
-        language: "en",
-        root_admin: true,
-        "2fa": false,
-        created_at: "2018-03-18T15:15:17+00:00",
-        updated_at: "2018-10-16T21:51:21+00:00"
-      }
-    }
-
-    success(conn, body)
+    {id, ""} = Integer.parse(id)
+    success(conn, MockedServer.get(:user, id))
   end
 
   get "/api/application/users/external/:external_id" do
-    body = %User{
-      object: "user",
-      attributes: %{
-        id: 1,
-        external_id: external_id,
-        uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
-        username: "codeco",
-        email: "codeco@file.properties",
-        first_name: "Rihan",
-        last_name: "Arfan",
-        language: "en",
-        root_admin: true,
-        "2fa": false,
-        created_at: "2018-03-18T15:15:17+00:00",
-        updated_at: "2018-10-16T21:51:21+00:00"
-      }
-    }
-
-    success(conn, body)
+    %{data: users} = MockedServer.list(:user)
+    user = Enum.find(users, &match?(%{attributes: %{external_id: ^external_id}}, &1))
+    success(conn, user)
   end
 
   post "/api/application/users" do
     params = conn.params
-    if Map.take(params, ["username", "email", "first_name", "last_name"])
-       |> Kernel.map_size() == 4 do
-      body = %User{
-        object: "user",
-        attributes:
-          Map.merge(
-            %{
-              id: 2,
-              uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
-              "2fa": false,
-              created_at: "2018-03-18T15:15:17+00:00",
-              updated_at: "2018-10-16T21:51:21+00:00"
-            },
-            params
-          )
-      }
-      success(conn, body, 201)
+    if map_size(Map.take(params, ["username", "email", "first_name", "last_name"])) == 4 do
+      success(conn, MockedServer.put(:user, params), 201)
     else
-      #      success(conn, "mandatory params missing in request #{inspect params}")
       failure(conn, 500, "mandatory params missing in request #{inspect params}")
     end
   end
 
   patch "/api/application/users/:id" do
     params = conn.params
-    if Map.take(params, ["username", "email", "first_name", "last_name"])
-       |> Kernel.map_size() == 4 do
-      body = %User{
-        object: "user",
-        attributes:
-          Map.merge(
-            %{
-              id: id,
-              uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335",
-              "2fa": false,
-              created_at: "2018-03-18T15:15:17+00:00",
-              updated_at: "2018-10-16T21:51:21+00:00"
-            },
-            params
-          )
-      }
-      success(conn, body)
+    if map_size(Map.take(params, ["username", "email", "first_name", "last_name"])) == 4 do
+      {id, ""} = Integer.parse(id)
+      %{attributes: prev} = MockedServer.get(:user, id)
+      %{attributes: next} = Factory.build(:user, params)
+      next = Map.take(next, params |> Map.keys() |> Enum.map(&String.to_existing_atom/1))
+      MockedServer.delete(:user, id)
+      success(conn, MockedServer.put(:user, prev |> Map.merge(next) |> Map.merge(%{id: id})))
     else
-      #      success(conn, "mandatory params missing in request #{inspect params}")
       failure(conn, 500, "mandatory params missing in request #{inspect params}")
     end
   end
@@ -156,5 +58,4 @@ defmodule Elidactyl.MockedServer.Router.Application.Users do
   delete "/api/application/users/:id" do
     success(conn, "", 204)
   end
-
 end

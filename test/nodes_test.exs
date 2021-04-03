@@ -1,127 +1,53 @@
 defmodule Elidactyl.NodesTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
+  use Elidactyl.RequestCase
+
+  alias Elidactyl.MockedServer
   alias Elidactyl.Nodes
   alias Elidactyl.Schemas.Node
   alias Elidactyl.Schemas.Node.Allocation
 
-  test "list allocations for a node" do
-    assert {:ok, allocations} = Nodes.list_allocations(1)
-    assert [
-             %Allocation{
-               alias: "steam",
-               assigned: false,
-               id: 1,
-               ip: "1.2.3.4",
-               port: 1000
-             },
-             %Allocation{
-               alias: "rcon",
-               assigned: false,
-               id: 2,
-               ip: "1.2.3.4",
-               port: 2000
-             }
-           ] == allocations
+  setup do
+    %{attributes: node1} = MockedServer.put(:node)
+    %{attributes: node2} = MockedServer.put(:node)
+    %{attributes: a1} = MockedServer.put(:allocation, node: node1.id)
+    %{attributes: a2} = MockedServer.put(:allocation, node: node1.id)
+    %{attributes: a3} = MockedServer.put(:allocation, node: node2.id)
+    %{node1: node1, node2: node2, a1: a1, a2: a2, a3: a3}
   end
 
-  test "get node configuration" do
-    assert {:ok, configuration} = Nodes.get_configuration(1)
-    assert %{
-      "debug" => false,
-      "uuid" => "1046d1d1-b8ef-4771-82b1-2b5946d33397",
-      "token_id" => "iAcosCn1KCAgVjVO",
-      "token" => "FanPzLCptUxkGow3vi7Z",
-      "api" => %{
-        "host" => "0.0.0.0",
-        "port" => 8080,
-        "ssl" => %{
-          "enabled" => true,
-          "cert" => "/etc/letsencrypt/live/pterodactyl.file.properties/fullchain.pem",
-          "key" => "/etc/letsencrypt/live/pterodactyl.file.properties/privkey.pem",
-        },
-        "upload_limit" => 100,
-      },
-      "system" => %{
-        "data" => "/srv/daemon-data",
-        "sftp" => %{"bind_port" => 2022}
-      },
-      "remote" => "https://pterodactyl.file.properties",
-    } == configuration
+  describe "list_allocations/1" do
+    test "lists allocations for a node", %{node1: node, a1: a1, a2: a2} do
+      assert {:ok, allocations} = Nodes.list_allocations(node.id)
+      assert length(allocations) == 2
+      assert Enum.all?(allocations, & match?(%Allocation{}, &1))
+      assert Enum.any?(allocations, & Map.drop(Map.from_struct(&1), ~w[__meta__]a) == Map.drop(a1, ~w[node]a))
+      assert Enum.any?(allocations, & Map.drop(Map.from_struct(&1), ~w[__meta__]a) == Map.drop(a2, ~w[node]a))
+    end
   end
 
-  test "get node" do
-    assert {:ok, node} = Nodes.get(1)
-    assert %Node{
-      id: 1,
-      uuid: "1046d1d1-b8ef-4771-82b1-2b5946d33397",
-      public: true,
-      name: "Test",
-      description: "Test",
-      location_id: 1,
-      fqdn: "pterodactyl.file.properties",
-      scheme: "https",
-      behind_proxy: false,
-      maintenance_mode: false,
-      memory: 2048,
-      memory_overallocate: 0,
-      disk: 5000,
-      disk_overallocate: 0,
-      upload_size: 100,
-      daemon_listen: 8080,
-      daemon_sftp: 2022,
-      daemon_base: "/srv/daemon-data",
-      created_at: "2019-12-22T04:44:51+00:00",
-      updated_at: "2019-12-22T04:44:51+00:00",
-    } == node
+  describe "get_configuration/1" do
+    test "gets node configuration", %{node1: node} do
+      assert {:ok, configuration} = Nodes.get_configuration(node.id)
+      assert node.configuration == configuration
+    end
   end
 
-  test "get nodes list" do
-    assert {:ok, nodes} = Nodes.list()
-    assert [
-      %Node{
-        id: 1,
-        uuid: "1046d1d1-b8ef-4771-82b1-2b5946d33397",
-        public: true,
-        name: "Test",
-        description: "Test",
-        location_id: 1,
-        fqdn: "pterodactyl.file.properties",
-        scheme: "https",
-        behind_proxy: false,
-        maintenance_mode: false,
-        memory: 2048,
-        memory_overallocate: 0,
-        disk: 5000,
-        disk_overallocate: 0,
-        upload_size: 100,
-        daemon_listen: 8080,
-        daemon_sftp: 2022,
-        daemon_base: "/srv/daemon-data",
-        created_at: "2019-12-22T04:44:51+00:00",
-        updated_at: "2019-12-22T04:44:51+00:00",
-      },
-      %Node{
-        id: 3,
-        uuid: "71b15cf6-909a-4b60-aa04-abb4c8f98f61",
-        public: true,
-        name: "2",
-        description: "e",
-        location_id: 1,
-        fqdn: "pterodactyl.file.properties",
-        scheme: "https",
-        behind_proxy: false,
-        maintenance_mode: false,
-        memory: 100,
-        memory_overallocate: 0,
-        disk: 100,
-        disk_overallocate: 0,
-        upload_size: 100,
-        daemon_listen: 8080,
-        daemon_sftp: 2022,
-        daemon_base: "/var/lib/pterodactyl/volumes",
-        created_at: "2020-06-23T04:50:37+00:00",
-        updated_at: "2020-06-23T04:50:37+00:00",
-      },
-    ] = nodes
+  describe "get/1" do
+    test "gets node", %{node1: node} do
+      assert {:ok, %Node{} = n} = Nodes.get(node.id)
+      assert Map.drop(Map.from_struct(n), ~w[__meta__ created_at updated_at]a) ==
+        Map.drop(node, ~w[created_at updated_at configuration]a)
+    end
+  end
+
+  describe "list/0" do
+    test "gets nodes list", %{node1: node1, node2: node2} do
+      assert {:ok, nodes} = Nodes.list()
+      assert length(nodes) == 2
+      assert Enum.all?(nodes, & match?(%Node{}, &1))
+      assert Enum.find(nodes, & &1.id == node1.id)
+      assert Enum.find(nodes, & &1.id == node2.id)
+    end
   end
 end

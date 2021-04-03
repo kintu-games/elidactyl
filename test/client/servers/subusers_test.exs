@@ -1,114 +1,79 @@
 defmodule Elidactyl.Client.Server.SubusersTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
+  use Elidactyl.RequestCase
 
+  alias Elidactyl.MockedServer
   alias Elidactyl.Schemas.Server.SubuserV1
   alias Elidactyl.Client
 
-
-  test "list allocations for a node" do
-    assert {:ok, subusers} = Client.list_all_server_subusers(1)
-    assert [
-             %SubuserV1{
-               id: nil,
-               updated_at: nil,
-               "2fa_enabled": false,
-               created_at: "2020-06-12T23:31:41+01:00",
-               email: "subuser2@example.com",
-               image: "https://gravatar.com/avatar/3bb1c751a8b3488f4a4c70eddfe898d8",
-               permissions: ["control.console", "control.start", "websocket.connect"],
-               username: "subuser2jvc",
-               uuid: "60a7aec3-e17d-4aa9-abb3-56d944d204b4"
-             },
-             %SubuserV1{
-               id: nil,
-               updated_at: nil,
-               "2fa_enabled": false,
-               created_at: "2020-07-13T14:27:46+01:00",
-               email: "subuser3@example.com",
-               image: "https://gravatar.com/avatar/8b28d32aaa64a1564450d16f71a81f65",
-               permissions: ["control.console", "control.start", "websocket.connect"],
-               username: "subuser3bvo",
-               uuid: "1287632d-9224-40c0-906e-f543423400bc"
-             }
-           ] == subusers
+  setup do
+    %{attributes: user1} = MockedServer.put(:server_subuser, server: 1)
+    %{attributes: user2} = MockedServer.put(:server_subuser, server: 1)
+    %{user1: user1, user2: user2}
   end
 
-  test "create subuser" do
-    params = %{
-      username: "subuser3bvo",
-      email: "subuser3@example.com",
-      image: "https:\/\/gravatar.com\/avatar\/8b28d32aaa64a1564450d16f71a81f65",
-      "2fa_enabled": false,
-      permissions: [
-        "control.console",
-        "control.start",
-        "websocket.connect"
-      ]
-    }
-
-    assert {:ok, subuser} = Client.create_server_subuser(1, params)
-    assert subuser == %SubuserV1{
-      uuid: "1287632d-9224-40c0-906e-f543423400bc",
-      username: "subuser3bvo",
-      email: "subuser3@example.com",
-      image: "https:\/\/gravatar.com\/avatar\/8b28d32aaa64a1564450d16f71a81f65",
-      "2fa_enabled": false,
-      created_at: "2020-07-13T14:27:46+01:00",
-      permissions: [
-        "control.console",
-        "control.start",
-        "websocket.connect"
-      ]
-    }
+  describe "list_all_server_subusers/1" do
+    test "lists allocations for a node", %{user1: %{email: email1}, user2: %{email: email2}} do
+      assert {:ok, subusers} = Client.list_all_server_subusers(1)
+      assert length(subusers) == 2
+      assert Enum.find(subusers, & &1.email == email1)
+      assert Enum.find(subusers, & &1.email == email2)
+    end
   end
 
-  test "get subuser details" do
-    assert {:ok, subuser} = Client.get_server_subuser(1, "1287632d-9224-40c0-906e-f543423400bc")
-    assert subuser == %SubuserV1{
-             uuid: "1287632d-9224-40c0-906e-f543423400bc",
-             username: "subuser3bvo",
-             email: "subuser3@example.com",
-             image: "https:\/\/gravatar.com\/avatar\/8b28d32aaa64a1564450d16f71a81f65",
-             "2fa_enabled": false,
-             created_at: "2020-07-13T14:27:46+01:00",
-             permissions: [
-               "control.console",
-               "control.start",
-               "websocket.connect"
-             ]
-           }
+  describe "create_server_subuser/2" do
+    test "creates subuser" do
+      params = %{
+        username: "subuser3bvo",
+        email: "subuser3@example.com",
+        image: "https:\/\/gravatar.com\/avatar\/8b28d32aaa64a1564450d16f71a81f65",
+        "2fa_enabled": false,
+        permissions: ~w[control.console control.start websocket.connect],
+      }
+
+      assert {:ok, subuser} = Client.create_server_subuser(1, params)
+      assert subuser.username == "subuser3bvo"
+      assert {:ok, _} = Ecto.UUID.cast(subuser.uuid)
+      assert subuser.email == "subuser3@example.com"
+      assert subuser.image == "https:\/\/gravatar.com\/avatar\/8b28d32aaa64a1564450d16f71a81f65"
+      assert subuser."2fa_enabled" == false
+      assert subuser.permissions == ~w[control.console control.start websocket.connect]
+    end
   end
 
-  test "update subuser" do
-    params = %{
-      username: "subuser3bvo",
-      email: "subuser3@example.com",
-      image: "https:\/\/gravatar.com\/avatar\/8b28d32aaa64a1564450d16f71a81f65",
-      "2fa_enabled": false,
-      permissions: [
-        "control.console",
-        "control.start",
-        "websocket.connect"
-      ]
-    }
-
-    assert {:ok, subuser} = Client.update_server_subuser(1, "1287632d-9224-40c0-906e-f543423400bc", params)
-    assert subuser == %SubuserV1{
-             uuid: "1287632d-9224-40c0-906e-f543423400bc",
-             username: "subuser3bvo",
-             email: "subuser3@example.com",
-             image: "https:\/\/gravatar.com\/avatar\/8b28d32aaa64a1564450d16f71a81f65",
-             "2fa_enabled": false,
-             created_at: "2020-07-13T14:27:46+01:00",
-             permissions: [
-               "control.console",
-               "control.start",
-               "websocket.connect"
-             ]
-           }
+  describe "get_server_subuser/2" do
+    test "gets subuser details", %{user1: user} do
+      assert {:ok, %SubuserV1{} = subuser} = Client.get_server_subuser(1, user.uuid)
+      assert subuser."2fa_enabled" == user."2fa_enabled"
+      assert subuser.email == user.email
+      assert subuser.image == user.image
+      assert subuser.permissions == user.permissions
+      assert subuser.username == user.username
+    end
   end
 
-  test "delete subuser" do
-    assert {:ok, ""} = Client.delete_server_subuser(1, "1287632d-9224-40c0-906e-f543423400bc")
+  describe "update_server_subuser/3" do
+    test "updates subuser", %{user1: user} do
+      params = %{
+        username: "subuser3bvo",
+        email: "subuser3@example.com",
+        image: "https:\/\/gravatar.com\/avatar\/8b28d32aaa64a1564450d16f71a81f65",
+        "2fa_enabled": not user."2fa_enabled",
+        permissions: ~w[control.console],
+      }
+
+      assert {:ok, %SubuserV1{} = subuser} = Client.update_server_subuser(1, user.uuid, params)
+      assert subuser."2fa_enabled" != user."2fa_enabled"
+      assert subuser.email == "subuser3@example.com"
+      assert subuser.image == "https:\/\/gravatar.com\/avatar\/8b28d32aaa64a1564450d16f71a81f65"
+      assert subuser.permissions == ~w[control.console]
+      assert subuser.username == "subuser3bvo"
+    end
+  end
+
+  describe "delete_server_subuser/2" do
+    test "deletes subuser", %{user1: user} do
+      assert {:ok, ""} = Client.delete_server_subuser(1, user.uuid)
+    end
   end
 end
