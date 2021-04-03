@@ -21,7 +21,16 @@ defmodule Elidactyl.MockedServer.Router.Application.Servers do
 
   get "/api/application/servers" do
     %{data: servers} = list = MockedServer.list(:server)
-    meta = %{pagination: %{total: 1, count: 1, per_page: 50, current_page: 1, total_pages: 1, links: %{}}}
+    meta = %{
+      pagination: %{
+        total: length(servers),
+        count: length(servers),
+        per_page: 50,
+        current_page: 1,
+        total_pages: 1,
+        links: %{}
+      }
+    }
     success(conn, %{list | data: add_databases(servers), meta: meta})
   end
 
@@ -47,7 +56,7 @@ defmodule Elidactyl.MockedServer.Router.Application.Servers do
       conn.params
       |> Map.drop(~w[environment docker_image startup allocation])
       |> Map.put("container", container)
-    success(conn, MockedServer.put(:server, params))
+    success(conn, MockedServer.put(:server, params), 201)
   end
 
   patch "/api/application/servers/:id/details" do

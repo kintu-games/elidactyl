@@ -1,7 +1,10 @@
 defmodule Elidactyl.Factory do
   @moduledoc false
 
-  @maps ~w[server database egg egg_variable nest egg_config limits feature_limits container environment script]a
+  @maps ~w[
+    server database egg egg_variable nest user server_subuser egg_config limits feature_limits
+    container environment script allocation node node_configuration
+  ]a
 
   @spec build(atom, any) :: any
   def build(subj, opts \\ %{})
@@ -11,6 +14,8 @@ defmodule Elidactyl.Factory do
   def build(:email, _), do: "support@pterodactyl.io"
   def build(:docker_image, _), do: "quay.io/pterodactyl/core:java"
   def build(:startup_command, _), do: "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}"
+  def build(:ip, _), do: "#{Enum.random(1..200)}.#{Enum.random(1..200)}.#{Enum.random(1..200)}.#{Enum.random(1..200)}"
+  def build(:port, _), do: Enum.random(1000..2000)
   def build(:base64, size) do
     size
     |> :crypto.strong_rand_bytes()
@@ -146,6 +151,99 @@ defmodule Elidactyl.Factory do
       rules: Enum.random(@egg_variable_rules),
     }
     |> add_timestamps()
+  end
+  @usernames ~w[wardledeboss codeco example]
+  @email_domains ~w[file.properties gmail.com example.com]
+  @firstnames ~w[Rihan Harvey]
+  @lastnames ~w[Arfan Wardle]
+  def defaults(:user) do
+    username = Enum.random(@usernames)
+    %{
+      id: build(:id),
+      external_id: "RemoteId#{build(:id)}",
+      uuid: build(:uuid),
+      username: username,
+      email: "#{username}@#{Enum.random(@email_domains)}",
+      first_name: Enum.random(@firstnames),
+      last_name: Enum.random(@lastnames),
+      language: "en",
+      root_admin: build(:boolean),
+      "2fa": build(:boolean),
+    }
+    |> add_timestamps()
+  end
+  def defaults(:server_subuser) do
+    username = Enum.random(@usernames)
+    uuid = build(:uuid)
+    %{
+      id: build(:id),
+      server: build(:id),
+      "2fa_enabled": build(:boolean),
+      email: "#{username}@#{Enum.random(@email_domains)}",
+      image: "https://gravatar.com/avatar/#{String.replace(uuid, "-", "")}",
+      permissions: ~w[control.console control.start websocket.connect],
+      username: username,
+      uuid: uuid,
+    }
+    |> add_timestamps()
+  end
+  @allocation_aliases ~w[steam rcon]
+  def defaults(:allocation) do
+    %{
+      alias: Enum.random(@allocation_aliases),
+      assigned: build(:boolean),
+      id: build(:id),
+      ip: build(:ip),
+      port: build(:port),
+      node: build(:id),
+    }
+  end
+  def defaults(:node) do
+    %{
+      id: build(:id),
+      uuid: build(:uuid),
+      public: build(:boolean),
+      name: "Test",
+      description: "Test",
+      location_id: build(:id),
+      fqdn: "pterodactyl.file.properties",
+      scheme: "https",
+      behind_proxy: build(:boolean),
+      maintenance_mode: build(:boolean),
+      memory: Enum.random([512, 1024, 2048, 4096, 8192]),
+      memory_overallocate: 0,
+      disk: Enum.random([500, 1000, 2000, 3000, 5000, 10_000]),
+      disk_overallocate: 0,
+      upload_size: 100,
+      daemon_listen: build(:port),
+      daemon_sftp: build(:port),
+      daemon_base: "/srv/daemon-data",
+      configuration: build(:node_configuration),
+    }
+    |> add_timestamps()
+  end
+  def defaults(:node_configuration) do
+    %{
+      "debug" => build(:boolean),
+      "uuid" => build(:uuid),
+      "token_id" => build(:base64, 16),
+      "token" => build(:base64, 20),
+      "api" => %{
+        "host" => build(:ip),
+        "port" => build(:port),
+        "ssl" => %{
+          "enabled" => build(:boolean),
+          "cert" => "/etc/letsencrypt/live/pterodactyl.file.properties/fullchain.pem",
+          "key" => "/etc/letsencrypt/live/pterodactyl.file.properties/privkey.pem",
+        },
+        "upload_limit" => 100,
+      },
+      "system" => %{
+        "data" => "/srv/daemon-data",
+        "sftp" => %{"bind_port" => build(:port)},
+      },
+      "remote" => "https://pterodactyl.file.properties",
+    }
   end
 
   defp deep_merge(:environment, _, v2), do: v2
