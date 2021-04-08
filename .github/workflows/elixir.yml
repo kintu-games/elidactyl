@@ -18,6 +18,7 @@ jobs:
       with:
         elixir-version: '1.11.3' # Define the elixir version [required]
         otp-version: '22.3' # Define the OTP version [required]
+        experimental-otp: true # as a solution for ssl library missing 
     - name: Install Dependencies
       run: mix deps.get
     - name: Run Tests
