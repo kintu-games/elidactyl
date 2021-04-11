@@ -4,11 +4,19 @@ defmodule Elidactyl.Schemas.Server.Limits do
   use Ecto.Schema
   alias Ecto.Changeset
 
-  @type t :: %__MODULE__{}
+  @type t :: %__MODULE__{
+    memory: non_neg_integer | nil,
+    swap: integer | nil,
+    disk: non_neg_integer | nil,
+    io: non_neg_integer | nil,
+    cpu: non_neg_integer | nil,
+  }
+
   @mandatory [:memory, :swap, :disk, :io, :cpu]
 
   @derive {Jason.Encoder, only: @mandatory}
 
+  @primary_key false
   embedded_schema do
     field :memory, :integer
     field :swap, :integer

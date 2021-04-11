@@ -8,7 +8,13 @@ defmodule Elidactyl.Schemas.Node.Allocation do
 
   @behaviour Parser
 
-  @type t :: %__MODULE__{}
+  @type t :: %__MODULE__{
+    id: non_neg_integer | nil,
+    ip: binary | nil,
+    alias: binary | nil,
+    port: binary | nil,
+    assigned: boolean | nil,
+  }
 
   @optional []
   @mandatory []

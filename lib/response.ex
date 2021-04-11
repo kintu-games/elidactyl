@@ -13,14 +13,14 @@ defmodule Elidactyl.Response do
 
   alias Elidactyl.Schemas.Server.SubuserV1
 
-  @type json_map :: %{binary => any}
-
   defmodule Parser do
-    @callback parse(Elidactyl.Response.json_map) :: any
+    @type json_map :: %{binary => any}
+
+    @callback parse(json_map) :: any
   end
 
-  @spec parse_response(json_map | binary) :: any
-  @spec parse_response(json_map | binary, module | nil) :: any
+  @spec parse_response(Parser.json_map | binary) :: any
+  @spec parse_response(Parser.json_map | binary, module | nil) :: any
   def parse_response(map, mod \\ nil)
   def parse_response("", _), do: ""
   def parse_response(%{"object" => "null_response", "attributes" => nil}, _), do: nil

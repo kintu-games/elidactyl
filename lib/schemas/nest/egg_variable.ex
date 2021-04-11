@@ -6,11 +6,19 @@ defmodule Elidactyl.Schemas.Nest.EggVariable do
 
   @behaviour Parser
 
-  defstruct ~w[
-    id egg_id name description env_variable default_value user_viewable user_editable rules
-    created_at updated_at]a
+  @type t :: %__MODULE__{
+    id: non_neg_integer | nil,
+    egg_id: non_neg_integer | nil,
+    name: binary | nil,
+    description: binary | nil,
+    env_variable: binary | nil,
+    default_value: binary | nil,
+    user_viewable: boolean | nil,
+    user_editable: boolean | nil,
+    rules: binary | nil,
+  }
 
-  @type t :: %__MODULE__{}
+  defstruct ~w[id egg_id name description env_variable default_value user_viewable user_editable rules]a
 
   @impl Parser
   def parse(%{"object" => "egg_variable", "attributes" => attributes}) do

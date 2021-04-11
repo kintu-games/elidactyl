@@ -5,6 +5,13 @@ defmodule Elidactyl do
 
   alias Elidactyl.Application.Users
   alias Elidactyl.Application.Servers
+  alias Elidactyl.Error
+  alias Elidactyl.Schemas.Server
+  alias Elidactyl.Schemas.User
+
+  @type id :: binary | non_neg_integer
+  @type params :: map
+  @type uuid :: Ecto.UUID.t
 
   @doc ~S"""
   Get all users.
@@ -13,9 +20,8 @@ defmodule Elidactyl do
       iex> Elidactyl.get_all_users()
       {:ok, [%Elidactyl.Schemas.User{external_id: nil, password: nil, "2fa": false, created_at: "2018-03-18T15:15:17+00:00", email: "codeco@file.properties", first_name: "Rihan", id: 1, language: "en", last_name: "Arfan", root_admin: true, updated_at: "2018-10-16T21:51:21+00:00", username: "codeco", uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335"}, %Elidactyl.Schemas.User{"2fa": false, created_at: "2018-09-29T17:59:45+00:00", email: "wardle315@gmail.com", external_id: nil, first_name: "Harvey", id: 4, language: "en", last_name: "Wardle", password: nil, root_admin: false, updated_at: "2018-10-02T18:59:03+00:00", username: "wardledeboss", uuid: "f253663c-5a45-43a8-b280-3ea3c752b931"}]}
   """
-  def get_all_users() do
-    Users.all()
-  end
+  @spec get_all_users() :: {:ok, [User.t]} | {:error, Error.t}
+  defdelegate get_all_users, to: Users, as: :all
 
   @doc ~S"""
   Create user with given params.
@@ -32,9 +38,8 @@ defmodule Elidactyl do
       iex> Elidactyl.create_user(params)
       {:ok, %Elidactyl.Schemas.User{external_id: nil, password: nil, "2fa": false, created_at: "2018-03-18T15:15:17+00:00", email: "example@example.com", first_name: "John", id: 2, language: "en", last_name: "Doe", root_admin: false, updated_at: "2018-10-16T21:51:21+00:00", username: "example", uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335"}}
   """
-  def create_user(params) do
-    Users.create(params)
-  end
+  @spec create_user(params) :: {:ok, User.t} | {:error, Error.t}
+  defdelegate create_user(params), to: Users, as: :create
 
   @doc ~S"""
   Update user using pterodactyl internal user id and params.
@@ -66,9 +71,8 @@ defmodule Elidactyl do
         }
       }
   """
-  def update_user(id, params) do
-    Users.update(id, params)
-  end
+  @spec update_user(id, params) :: {:ok, User.t} | {:error, Error.t}
+  defdelegate update_user(id, params), to: Users, as: :update
 
   @doc ~S"""
   Delete user using internal pterodactyl user id.
@@ -77,10 +81,8 @@ defmodule Elidactyl do
       iex> Elidactyl.delete_user(1)
       :ok
   """
-  def delete_user(id) do
-    Users.delete(id)
-  end
-
+  @spec delete_user(id) :: :ok | {:error, Error.t}
+  defdelegate delete_user(id), to: Users, as: :delete
 
   @doc ~S"""
   Get all servers.
@@ -129,9 +131,8 @@ defmodule Elidactyl do
         ]
       }
   """
-  def get_all_servers() do
-    Servers.list_servers()
-  end
+  @spec get_all_servers() :: {:ok, [Server.t]} | {:error, Error.t}
+  defdelegate get_all_servers, to: Servers, as: :list_servers
 
   @doc ~S"""
   Create a new server with given params
@@ -200,9 +201,8 @@ defmodule Elidactyl do
         }
       }
   """
-  def create_server(params) do
-    Servers.create_server(params)
-  end
+  @spec create_server(params) :: {:ok, Server.t} | {:error, Error.t}
+  defdelegate create_server(params), to: Servers
 
   @doc ~S"""
   Delete a server using internal pterodactyl server id.
@@ -211,7 +211,6 @@ defmodule Elidactyl do
       iex> Elidactyl.delete_server(1)
       :ok
   """
-  def delete_server(id) do
-    Servers.delete_server(id)
-  end
+  @spec delete_server(id) :: :ok | {:error, Error.t}
+  defdelegate delete_server(id), to: Servers
 end

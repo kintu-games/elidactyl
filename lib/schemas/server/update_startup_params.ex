@@ -4,13 +4,20 @@ defmodule Elidactyl.Schemas.Server.UpdateStartupParams do
   use Ecto.Schema
   alias Ecto.Changeset
 
-  @type t :: %__MODULE__{}
+  @type t :: %__MODULE__{
+    startup: binary | nil,
+    environment: map | nil,
+    egg: non_neg_integer | nil,
+    image: binary | nil,
+    skip_scripts: boolean | nil,
+  }
 
   @mandatory ~w[startup egg image]a
   @optional ~w[environment skip_scripts]a
 
   @derive {Jason.Encoder, only: @mandatory ++ @optional}
 
+  @primary_key false
   embedded_schema do
     field :startup, :string
     field :environment, :map
