@@ -195,6 +195,7 @@ defmodule Elidactyl.Factory do
       ip: build(:ip),
       port: build(:port),
       node: build(:id),
+      notes: nil,
     }
   end
   def defaults(:node) do

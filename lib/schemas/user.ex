@@ -50,6 +50,7 @@ defmodule Elidactyl.Schemas.User do
     |> Ecto.Changeset.cast(params, @mandatory ++ @optional)
     |> Ecto.Changeset.validate_required(@mandatory)
     |> Ecto.Changeset.validate_format(:email, ~r/.+@.+\..+/)
+    |> Ecto.Changeset.validate_length(:email, min: 1, max: 255)
     |> Ecto.Changeset.validate_length(:external_id, min: 1, max: 255)
     |> Ecto.Changeset.validate_length(:username, min: 1, max: 255)
     |> Ecto.Changeset.validate_length(:first_name, min: 1, max: 255)
@@ -58,6 +59,6 @@ defmodule Elidactyl.Schemas.User do
 
   @impl Parser
   def parse(%{"object" => "user", "attributes" => attributes}) do
-    struct(__MODULE__, Utils.keys_to_atoms(attributes))
+    struct(__MODULE__, attributes |> Utils.keys_to_atoms() |> Utils.parse_timestamps())
   end
 end

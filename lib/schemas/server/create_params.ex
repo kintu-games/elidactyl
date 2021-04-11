@@ -26,9 +26,9 @@ defmodule Elidactyl.Schemas.Server.CreateParams do
     oom_disabled: boolean | nil,
   }
 
-  @optional [:pack, :oom_disabled, :description, :name, :start_on_completion, :skip_scripts]
-  @mandatory [:user, :egg, :docker_image, :startup, :environment]
-  @embedded [:limits, :feature_limits, :allocation]
+  @optional ~w[pack oom_disabled description name start_on_completion skip_scripts external_id]a
+  @mandatory ~w[user egg docker_image startup environment]a
+  @embedded ~w[limits feature_limits allocation]a
 
   @derive {Jason.Encoder, only: @mandatory ++ @optional ++ @embedded}
 

@@ -11,6 +11,7 @@ defmodule Elidactyl.Schemas.Server.Database do
 
   @type t :: %__MODULE__{
     id: non_neg_integer | nil,
+    host: non_neg_integer | nil,
     server: non_neg_integer | nil,
     database: binary | nil,
     username: binary | nil,
@@ -20,20 +21,19 @@ defmodule Elidactyl.Schemas.Server.Database do
     updated_at: NaiveDateTime.t | nil,
   }
 
-  @mandatory [:server, :host, :database, :username, :remote, :max_connections]
+  @mandatory ~w[host database remote]a
 
   @derive {Jason.Encoder, only: @mandatory}
 
   embedded_schema do
-    field :server, :integer
     field :host, :integer
     field :database, :string
-    field :username, :string
     field :remote, :string
-    field :max_connections, :integer
-
-    field :created_at, :naive_datetime
-    field :updated_at, :naive_datetime
+    field :server, :integer, virtual: true
+    field :username, :string, virtual: true
+    field :max_connections, :integer, virtual: true
+    field :created_at, :naive_datetime, virtual: true
+    field :updated_at, :naive_datetime, virtual: true
   end
 
   @spec changeset(t(), map) :: Changeset.t()
@@ -41,7 +41,6 @@ defmodule Elidactyl.Schemas.Server.Database do
     struct
     |> Changeset.cast(params, @mandatory)
     |> Changeset.validate_required(@mandatory)
-    |> Changeset.validate_number(:max_connections, greater_than_or_equal_to: 0)
   end
 
   @impl Parser

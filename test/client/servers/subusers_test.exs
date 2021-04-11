@@ -73,7 +73,7 @@ defmodule Elidactyl.Client.Server.SubusersTest do
 
   describe "delete_server_subuser/2" do
     test "deletes subuser", %{user1: user} do
-      assert {:ok, ""} = Client.delete_server_subuser(1, user.uuid)
+      assert :ok = Client.delete_server_subuser(1, user.uuid)
     end
   end
 end

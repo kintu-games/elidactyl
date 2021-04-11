@@ -12,7 +12,7 @@ defmodule Elidactyl.Schemas.Server.Limits do
     cpu: non_neg_integer | nil,
   }
 
-  @mandatory [:memory, :swap, :disk, :io, :cpu]
+  @mandatory ~w[memory swap disk io cpu]a
 
   @derive {Jason.Encoder, only: @mandatory}
 

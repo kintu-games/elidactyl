@@ -2,15 +2,19 @@ defmodule Elidactyl.Response do
   @moduledoc false
 
   alias Elidactyl.Schemas.List
+  alias Elidactyl.Schemas.Nest
+  alias Elidactyl.Schemas.Nest.Egg
+  alias Elidactyl.Schemas.Nest.EggVariable
   alias Elidactyl.Schemas.Node
+  alias Elidactyl.Schemas.Node.Allocation
   alias Elidactyl.Schemas.Server
   alias Elidactyl.Schemas.Server.Database
+  alias Elidactyl.Schemas.Server.SubuserV1
   alias Elidactyl.Schemas.User
   alias Elidactyl.Schemas.Node.Allocation
   alias Elidactyl.Schemas.Nest
   alias Elidactyl.Schemas.Nest.Egg
   alias Elidactyl.Schemas.Nest.EggVariable
-
   alias Elidactyl.Schemas.Server.SubuserV1
 
   defmodule Parser do
