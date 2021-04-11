@@ -9,7 +9,12 @@ defmodule Elidactyl.Schemas.Server.Container do
 
   @behaviour Parser
 
-  @type t :: %__MODULE__{}
+  @type t :: %__MODULE__{
+    startup_command: binary | nil,
+    image: binary | nil,
+    environment: Parser.json_map | nil,
+    installed: boolean | nil,
+  }
 
   @derive {Jason.Encoder, only: [:startup_command, :image, :environment, :installed]}
 

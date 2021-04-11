@@ -6,13 +6,23 @@ defmodule Elidactyl.Schemas.Server.UpdateBuildInfoParams do
 
   alias Elidactyl.Schemas.Server.FeatureLimits
 
-  @type t :: %__MODULE__{}
+  @type t :: %__MODULE__{
+    allocation: pos_integer | nil,
+    memory: non_neg_integer | nil,
+    swap: integer | nil,
+    io: non_neg_integer | nil,
+    cpu: non_neg_integer | nil,
+    disk: non_neg_integer | nil,
+    threads: binary | nil,
+    feature_limits: FeatureLimits.t | nil,
+  }
 
   @mandatory ~w[allocation memory swap io cpu disk]a
   @embedded ~w[feature_limits]a
 
   @derive {Jason.Encoder, only: @mandatory ++ @embedded ++ ~w[threads]a}
 
+  @primary_key false
   embedded_schema do
     field :allocation, :integer
     field :memory, :integer

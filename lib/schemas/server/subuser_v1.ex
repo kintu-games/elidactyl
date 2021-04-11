@@ -6,10 +6,20 @@ defmodule Elidactyl.Schemas.Server.SubuserV1 do
   alias Ecto.Changeset
   alias Elidactyl.Utils
 
-  @type t :: %__MODULE__{}
+  @type t :: %__MODULE__{
+    uuid: Ecto.UUID.t | nil,
+    username: binary | nil,
+    email: binary | nil,
+    image: binary | nil,
+    "2fa_enabled": boolean | nil,
+    permissions: [binary] | nil,
+    created_at: NaiveDateTime.t | nil,
+    updated_at: NaiveDateTime.t | nil,
+  }
 
   @derive {Jason.Encoder, only: [:user_id, :server_id]}
 
+  @primary_key false
   schema "subusers" do
     field :uuid, :string
     field :username, :string
@@ -30,6 +40,6 @@ defmodule Elidactyl.Schemas.Server.SubuserV1 do
 
   @spec parse(map) :: t()
   def parse(%{"object" => "server_subuser", "attributes" => attributes}) do
-    struct(__MODULE__, Utils.keys_to_atoms(attributes))
+    struct(__MODULE__, attributes |> Utils.keys_to_atoms() |> Utils.parse_timestamps())
   end
 end

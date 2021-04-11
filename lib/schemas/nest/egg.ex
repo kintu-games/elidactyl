@@ -3,15 +3,35 @@ defmodule Elidactyl.Schemas.Nest.Egg do
 
   alias Elidactyl.Response
   alias Elidactyl.Response.Parser
+  alias Elidactyl.Schemas.Nest
+  alias Elidactyl.Schemas.Nest.EggVariable
+  alias Elidactyl.Schemas.Server
   alias Elidactyl.Utils
 
   @behaviour Parser
 
+  @type t :: %__MODULE__{
+    id: non_neg_integer | nil,
+    uuid: Ecto.UUID.t | nil,
+    name: binary | nil,
+    nest_id: non_neg_integer | nil,
+    author: binary | nil,
+    description: binary | nil,
+    docker_image: binary | nil,
+    config: Parser.json_map | nil,
+    startup: binary | nil,
+    script: Parser.json_map | nil,
+    created_at: NaiveDateTime.t | nil,
+    updated_at: NaiveDateTime.t | nil,
+    nest: Nest.t | nil,
+    servers: [Server.t] | nil,
+    variables: [EggVariable.t] | nil,
+  }
+
   defstruct ~w[
     id uuid name nest_id author description docker_image config startup script created_at updated_at
-    nest servers variables]a
-
-  @type t :: %__MODULE__{}
+    nest servers variables
+  ]a
 
   @impl Parser
   def parse(%{"object" => "egg", "attributes" => attributes}) do
@@ -21,6 +41,7 @@ defmodule Elidactyl.Schemas.Nest.Egg do
       |> Map.drop(~w[nest])
       |> parse_relationships()
       |> Utils.keys_to_atoms(~w[config script relationships nest servers variables])
+      |> Utils.parse_timestamps()
     struct(__MODULE__, attributes)
   end
 
