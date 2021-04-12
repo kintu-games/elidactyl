@@ -2,14 +2,10 @@ defmodule Elidactyl.Application do
   @moduledoc false
   use Application
 
-  alias Elidactyl.Repo.Supervisor, as: Repo
-
   def start(_type, args) do
     children = case args do
-      [env: :prod] -> [Repo]
-      [env: :test] -> [Repo, {Plug.Cowboy, scheme: :http, plug: Elidactyl.MockServer, options: [port: 8081]}]
-      [env: :dev] -> [Repo]
-      [_] -> [Repo]
+      [env: :test] -> [{Plug.Cowboy, scheme: :http, plug: Elidactyl.MockedServer.Router, options: [port: 8081]}]
+      [_] -> []
     end
 
     opts = [strategy: :one_for_one, name: Elidactyl.Supervisor]

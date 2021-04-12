@@ -2,12 +2,23 @@ defmodule Elidactyl.Schemas.Server.Container do
   @moduledoc false
 
   alias Ecto.Changeset
+  alias Elidactyl.Utils
+  alias Elidactyl.Response.Parser
+
   use Ecto.Schema
 
-  @type t :: %__MODULE__{}
+  @behaviour Parser
 
-  @derive {Poison.Encoder, only: [:startup_command, :image, :environment, :installed]}
+  @type t :: %__MODULE__{
+    startup_command: binary | nil,
+    image: binary | nil,
+    environment: Parser.json_map | nil,
+    installed: boolean | nil,
+  }
 
+  @derive {Jason.Encoder, only: [:startup_command, :image, :environment, :installed]}
+
+  @primary_key false
   embedded_schema do
     field :startup_command, :string
     field :image, :string
@@ -18,7 +29,12 @@ defmodule Elidactyl.Schemas.Server.Container do
   @spec changeset(t(), map) :: Changeset.t()
   def changeset(struct, params) do
     struct
-    |> Changeset.cast(params, [:startup_command, :image, :environment])
+    |> Changeset.cast(params, [:startup_command, :image, :environment, :installed])
     |> Changeset.validate_required([:startup_command, :image, :environment])
+  end
+
+  @impl Parser
+  def parse(%{} = attributes) do
+    struct(__MODULE__, Utils.keys_to_atoms(attributes, ~w[environment]))
   end
 end

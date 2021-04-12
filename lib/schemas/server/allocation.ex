@@ -4,9 +4,13 @@ defmodule Elidactyl.Schemas.Server.Allocation do
   alias Ecto.Changeset
   use Ecto.Schema
 
-  @type t :: %__MODULE__{}
+  @type t :: %__MODULE__{
+    id: non_neg_integer | nil,
+    default: non_neg_integer | nil,
+    additional: [integer] | nil,
+  }
 
-  @derive {Poison.Encoder, only: [:default, :additional]}
+  @derive {Jason.Encoder, only: [:default, :additional]}
 
   embedded_schema do
     field :default, :integer

@@ -2,14 +2,33 @@ defmodule Elidactyl.Schemas.User do
   @moduledoc false
 
   use Ecto.Schema
+
   alias Elidactyl.Utils
+  alias Elidactyl.Response.Parser
 
-  @type t :: %__MODULE__{}
+  @behaviour Parser
 
-  @optional [:password, :language, :external_id]
-  @mandatory [:username, :email, :first_name, :last_name, :root_admin]
+  @type t :: %__MODULE__{
+    id: non_neg_integer | nil,
+    external_id: binary | nil,
+    uuid: Ecto.UUID.t | nil,
+    username: binary | nil,
+    email: binary | nil,
+    first_name: binary | nil,
+    last_name: binary | nil,
+    password: binary | nil,
+    "2fa": boolean | nil,
+    root_admin: boolean | nil,
+    language: binary | nil,
+    created_at: NaiveDateTime.t | nil,
+    updated_at: NaiveDateTime.t | nil,
+  }
 
-  @derive {Poison.Encoder, only: @optional ++ @mandatory}
+  @optional [:password, :external_id]
+  @mandatory [:username, :email, :first_name, :last_name, :root_admin, :language]
+
+  @derive {Jason.Encoder, only: @optional ++ @mandatory}
+
   embedded_schema do
     field :external_id, :string
     field :uuid, Ecto.UUID
@@ -25,20 +44,21 @@ defmodule Elidactyl.Schemas.User do
     field :updated_at, :naive_datetime
   end
 
-  @spec parse(map) :: t()
-  def parse(%{"object" => "user", "attributes" => attributes}) do
-    struct(__MODULE__, Utils.keys_to_atoms(attributes))
-  end
-
-  @spec changeset(t(), map) :: Changeset.t()
+  @spec changeset(t(), map) :: Ecto.Changeset.t()
   def changeset(struct, params) do
     struct
     |> Ecto.Changeset.cast(params, @mandatory ++ @optional)
     |> Ecto.Changeset.validate_required(@mandatory)
     |> Ecto.Changeset.validate_format(:email, ~r/.+@.+\..+/)
+    |> Ecto.Changeset.validate_length(:email, min: 1, max: 255)
     |> Ecto.Changeset.validate_length(:external_id, min: 1, max: 255)
     |> Ecto.Changeset.validate_length(:username, min: 1, max: 255)
     |> Ecto.Changeset.validate_length(:first_name, min: 1, max: 255)
     |> Ecto.Changeset.validate_length(:last_name, min: 1, max: 255)
+  end
+
+  @impl Parser
+  def parse(%{"object" => "user", "attributes" => attributes}) do
+    struct(__MODULE__, attributes |> Utils.keys_to_atoms() |> Utils.parse_timestamps())
   end
 end

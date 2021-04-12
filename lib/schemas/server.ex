@@ -6,29 +6,40 @@ defmodule Elidactyl.Schemas.Server do
   alias Elidactyl.Schemas.Server.Container
   alias Elidactyl.Schemas.Server.FeatureLimits
   alias Elidactyl.Schemas.Server.Limits
+  alias Elidactyl.Schemas.Server.Database
   alias Elidactyl.Utils
+  alias Elidactyl.Response
+  alias Elidactyl.Response.Parser
 
-  @type t :: %__MODULE__{}
+  @behaviour Parser
 
-  @optional [:password, :language, :root_admin, :external_id]
-  @mandatory [
-    :name,
-    :user,
-    :limits,
-    :egg,
-    :environment,
-    :feature_limits,
-    :deploy,
-    :start_on_completion,
-    :skip_scripts,
-    :oom_disabled,
-    :startup,
-    :docker_image,
-    :pack,
-    :description
-  ]
+  @type t :: %__MODULE__{
+    id: non_neg_integer | nil,
+    external_id: binary | nil,
+    uuid: Ecto.UUID.t | nil,
+    identifier: binary | nil,
+    name: binary | nil,
+    description: binary | nil,
+    suspended: boolean | nil,
+    limits: Limits.t | nil,
+    feature_limits: FeatureLimits.t | nil,
+    databases: [Database.t] | nil,
+    user: non_neg_integer | nil,
+    server_owner: boolean | nil,
+    node: non_neg_integer | nil,
+    allocation: non_neg_integer | nil,
+    nest: non_neg_integer | nil,
+    egg: non_neg_integer | nil,
+    pack: non_neg_integer | nil,
+    container: Container.t | nil,
+    created_at: NaiveDateTime.t | nil,
+    updated_at: NaiveDateTime.t | nil,
+  }
 
-  @derive {Poison.Encoder, only: @optional ++ @mandatory}
+  @optional ~w[password language root_admin external_id description oom_disabled name]a
+  @mandatory ~w[user limits egg environment feature_limits start_on_completion skip_scripts startup docker_image pack]a
+
+  @derive {Jason.Encoder, only: @optional ++ @mandatory ++ ~w[allocation]a}
 
   embedded_schema do
     field :external_id, :string
@@ -39,8 +50,8 @@ defmodule Elidactyl.Schemas.Server do
     field :suspended, :boolean
 
     embeds_one :limits, Limits
-
     embeds_one :feature_limits, FeatureLimits
+    embeds_many :databases, Database
 
     field :user, :integer
     field :server_owner, :boolean
@@ -56,23 +67,34 @@ defmodule Elidactyl.Schemas.Server do
     field :updated_at, :naive_datetime
   end
 
-  @spec parse(map) :: t()
-  def parse(
-        %{
-          "object" => "server",
-          "attributes" => %{
-            "container" => %{
-              "environment" => _
-            }
-          } = attributes
-        }
-      ) do
-    {unsafe_value, safe_attributes} = pop_in(attributes, ["container", "environment"])
-    server = struct(__MODULE__, Utils.keys_to_atoms(safe_attributes))
-    put_in(server, [Access.key!(:container), :environment], unsafe_value)
+  @impl Parser
+  def parse(%{"object" => "server", "attributes" => attributes}) do
+    attributes =
+      attributes
+      |> parse_container()
+      |> parse_relationships()
+      |> Map.drop(~w[relationships])
+      |> Utils.keys_to_atoms(~w[container])
+      |> Utils.parse_timestamps()
+    struct(__MODULE__, attributes)
   end
 
-  def parse(%{"object" => "server", "attributes" => attributes}) do
-    struct(__MODULE__, Utils.keys_to_atoms(attributes))
+  defp parse_container(%{"container" => %{} = cont} = attributes) do
+    cont = Response.parse_response(cont, Container)
+    Map.put(attributes, "container", cont)
   end
+  defp parse_container(%{"container" => _} = attributes), do: Map.delete(attributes, "container")
+  defp parse_container(attributes), do: attributes
+
+  @relationships_atoms ~w[databases]a
+  @relationships Enum.map(@relationships_atoms, &to_string/1)
+  defp parse_relationships(%{"relationships" => %{} = rels} = attributes) do
+    rels =
+      rels
+      |> Map.take(@relationships)
+      |> Enum.into(%{}, fn {k, v} -> {String.to_existing_atom(k), Response.parse_response(v)} end)
+    Map.put(attributes, "databases", Map.get(rels, :databases, []))
+  end
+  defp parse_relationships(%{"relationships" => _} = attributes), do: Map.delete(attributes, "relationships")
+  defp parse_relationships(attributes), do: attributes
 end
