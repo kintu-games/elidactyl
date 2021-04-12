@@ -8,7 +8,21 @@ defmodule Elidactyl.Schemas.User do
 
   @behaviour Parser
 
-  @type t :: %__MODULE__{}
+  @type t :: %__MODULE__{
+    id: non_neg_integer | nil,
+    external_id: binary | nil,
+    uuid: Ecto.UUID.t | nil,
+    username: binary | nil,
+    email: binary | nil,
+    first_name: binary | nil,
+    last_name: binary | nil,
+    password: binary | nil,
+    "2fa": boolean | nil,
+    root_admin: boolean | nil,
+    language: binary | nil,
+    created_at: NaiveDateTime.t | nil,
+    updated_at: NaiveDateTime.t | nil,
+  }
 
   @optional [:password, :external_id]
   @mandatory [:username, :email, :first_name, :last_name, :root_admin, :language]
@@ -45,6 +59,6 @@ defmodule Elidactyl.Schemas.User do
 
   @impl Parser
   def parse(%{"object" => "user", "attributes" => attributes}) do
-    struct(__MODULE__, Utils.keys_to_atoms(attributes))
+    struct(__MODULE__, attributes |> Utils.keys_to_atoms() |> Utils.parse_timestamps())
   end
 end

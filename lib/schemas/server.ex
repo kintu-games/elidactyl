@@ -13,7 +13,28 @@ defmodule Elidactyl.Schemas.Server do
 
   @behaviour Parser
 
-  @type t :: %__MODULE__{}
+  @type t :: %__MODULE__{
+    id: non_neg_integer | nil,
+    external_id: binary | nil,
+    uuid: Ecto.UUID.t | nil,
+    identifier: binary | nil,
+    name: binary | nil,
+    description: binary | nil,
+    suspended: boolean | nil,
+    limits: Limits.t | nil,
+    feature_limits: FeatureLimits.t | nil,
+    databases: [Database.t] | nil,
+    user: non_neg_integer | nil,
+    server_owner: boolean | nil,
+    node: non_neg_integer | nil,
+    allocation: non_neg_integer | nil,
+    nest: non_neg_integer | nil,
+    egg: non_neg_integer | nil,
+    pack: non_neg_integer | nil,
+    container: Container.t | nil,
+    created_at: NaiveDateTime.t | nil,
+    updated_at: NaiveDateTime.t | nil,
+  }
 
   @optional ~w[password language root_admin external_id description oom_disabled name]a
   @mandatory ~w[user limits egg environment feature_limits start_on_completion skip_scripts startup docker_image pack]a
@@ -54,6 +75,7 @@ defmodule Elidactyl.Schemas.Server do
       |> parse_relationships()
       |> Map.drop(~w[relationships])
       |> Utils.keys_to_atoms(~w[container])
+      |> Utils.parse_timestamps()
     struct(__MODULE__, attributes)
   end
 

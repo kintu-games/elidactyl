@@ -18,7 +18,6 @@ defmodule Elidactyl.Schemas.Server.CreateParamsTest do
     limits: %{memory: 128, swap: 0, disk: 512, io: 500, cpu: 100},
     feature_limits: %{databases: 5, allocations: 5, backups: 2},
     allocation: %{default: 17},
-    deploy: %{locations: [1, 2], dedicated_ip: true},
     start_on_completion: true,
     skip_scripts: false,
     oom_disabled: true,
@@ -58,7 +57,6 @@ defmodule Elidactyl.Schemas.Server.CreateParamsTest do
       %{limits: "a"} |> build_changeset() |> assert_invalid(:limits)
       %{feature_limits: "a"} |> build_changeset() |> assert_invalid(:feature_limits)
       %{allocation: "a"} |> build_changeset() |> assert_invalid(:allocation)
-      %{deploy: "a"} |> build_changeset() |> assert_invalid(:deploy)
       %{start_on_completion: "a"} |> build_changeset() |> assert_invalid(:start_on_completion)
       %{skip_scripts: "a"} |> build_changeset() |> assert_invalid(:skip_scripts)
       %{oom_disabled: "a"} |> build_changeset() |> assert_invalid(:oom_disabled)

@@ -5,17 +5,54 @@ defmodule Elidactyl do
 
   alias Elidactyl.Application.Users
   alias Elidactyl.Application.Servers
+  alias Elidactyl.Error
+  alias Elidactyl.Schemas.Server
+  alias Elidactyl.Schemas.User
+
+  @type id :: binary | non_neg_integer
+  @type params :: map
+  @type uuid :: Ecto.UUID.t
 
   @doc ~S"""
   Get all users.
 
   ## Examples
       iex> Elidactyl.get_all_users()
-      {:ok, [%Elidactyl.Schemas.User{external_id: nil, password: nil, "2fa": false, created_at: "2018-03-18T15:15:17+00:00", email: "codeco@file.properties", first_name: "Rihan", id: 1, language: "en", last_name: "Arfan", root_admin: true, updated_at: "2018-10-16T21:51:21+00:00", username: "codeco", uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335"}, %Elidactyl.Schemas.User{"2fa": false, created_at: "2018-09-29T17:59:45+00:00", email: "wardle315@gmail.com", external_id: nil, first_name: "Harvey", id: 4, language: "en", last_name: "Wardle", password: nil, root_admin: false, updated_at: "2018-10-02T18:59:03+00:00", username: "wardledeboss", uuid: "f253663c-5a45-43a8-b280-3ea3c752b931"}]}
+      {:ok, [
+        %Elidactyl.Schemas.User{
+          external_id: nil,
+          password: nil,
+          "2fa": false,
+          created_at:  NaiveDateTime.from_iso8601!("2018-03-18T15:15:17+00:00"),
+          email: "codeco@file.properties",
+          first_name: "Rihan",
+          id: 1,
+          language: "en",
+          last_name: "Arfan",
+          root_admin: true,
+          updated_at:  NaiveDateTime.from_iso8601!("2018-10-16T21:51:21+00:00"),
+          username: "codeco",
+          uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335"
+        },
+        %Elidactyl.Schemas.User{
+          "2fa": false,
+          created_at:  NaiveDateTime.from_iso8601!("2018-09-29T17:59:45+00:00"),
+          email: "wardle315@gmail.com",
+          external_id: nil,
+          first_name: "Harvey",
+          id: 4,
+          language: "en",
+          last_name: "Wardle",
+          password: nil,
+          root_admin: false,
+          updated_at:  NaiveDateTime.from_iso8601!("2018-10-02T18:59:03+00:00"),
+          username: "wardledeboss",
+          uuid: "f253663c-5a45-43a8-b280-3ea3c752b931"
+        }
+      ]}
   """
-  def get_all_users() do
-    Users.all()
-  end
+  @spec get_all_users() :: {:ok, [User.t]} | {:error, Error.t}
+  defdelegate get_all_users, to: Users, as: :all
 
   @doc ~S"""
   Create user with given params.
@@ -30,11 +67,27 @@ defmodule Elidactyl do
       ...>  root_admin: false
       ...> }
       iex> Elidactyl.create_user(params)
-      {:ok, %Elidactyl.Schemas.User{external_id: nil, password: nil, "2fa": false, created_at: "2018-03-18T15:15:17+00:00", email: "example@example.com", first_name: "John", id: 2, language: "en", last_name: "Doe", root_admin: false, updated_at: "2018-10-16T21:51:21+00:00", username: "example", uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335"}}
+      {
+        :ok,
+        %Elidactyl.Schemas.User{
+          external_id: nil,
+          password: nil,
+          "2fa": false,
+          created_at:  NaiveDateTime.from_iso8601!("2018-03-18T15:15:17+00:00"),
+          email: "example@example.com",
+          first_name: "John",
+          id: 2,
+          language: "en",
+          last_name: "Doe",
+          root_admin: false,
+          updated_at:  NaiveDateTime.from_iso8601!("2018-10-16T21:51:21+00:00"),
+          username: "example",
+          uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335"
+        }
+      }
   """
-  def create_user(params) do
-    Users.create(params)
-  end
+  @spec create_user(params) :: {:ok, User.t} | {:error, Error.t}
+  defdelegate create_user(params), to: Users, as: :create
 
   @doc ~S"""
   Update user using pterodactyl internal user id and params.
@@ -53,22 +106,21 @@ defmodule Elidactyl do
           external_id: nil,
           password: nil,
           "2fa": false,
-          created_at: "2018-09-29T17:59:45+00:00",
+          created_at:  NaiveDateTime.from_iso8601!("2018-09-29T17:59:45+00:00"),
           email: "email@example.com",
           first_name: "John",
           id: 4,
           language: "en",
           last_name: "Doe",
           root_admin: false,
-          updated_at: "2018-10-02T18:59:03+00:00",
+          updated_at: NaiveDateTime.from_iso8601!("2018-10-02T18:59:03+00:00"),
           username: "wardledeboss",
           uuid: "f253663c-5a45-43a8-b280-3ea3c752b931"
         }
       }
   """
-  def update_user(id, params) do
-    Users.update(id, params)
-  end
+  @spec update_user(id, params) :: {:ok, User.t} | {:error, Error.t}
+  defdelegate update_user(id, params), to: Users, as: :update
 
   @doc ~S"""
   Delete user using internal pterodactyl user id.
@@ -77,10 +129,8 @@ defmodule Elidactyl do
       iex> Elidactyl.delete_user(1)
       :ok
   """
-  def delete_user(id) do
-    Users.delete(id)
-  end
-
+  @spec delete_user(id) :: :ok | {:error, Error.t}
+  defdelegate delete_user(id), to: Users, as: :delete
 
   @doc ~S"""
   Get all servers.
@@ -104,10 +154,30 @@ defmodule Elidactyl do
               installed: true,
               startup_command: "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}"
             },
-            created_at: "2019-12-23T06:46:27+00:00",
+            created_at:  NaiveDateTime.from_iso8601!("2019-12-23T06:46:27+00:00"),
             databases: [
-              %Elidactyl.Schemas.Server.Database{created_at: "2020-06-12T23:00:13+01:00", database: "s5_perms", host: 4, id: 1, max_connections: 0, remote: "%", server: 5, updated_at: "2020-06-12T23:00:13+01:00", username: "u5_QsIAp1jhvS"},
-              %Elidactyl.Schemas.Server.Database{created_at: "2020-06-12T23:00:20+01:00", database: "s5_coreprotect", host: 4, id: 2, max_connections: 0, remote: "%", server: 5, updated_at: "2020-06-12T23:00:20+01:00", username: "u5_2jtJx1nO1d"}
+              %Elidactyl.Schemas.Server.Database{
+                created_at:  NaiveDateTime.from_iso8601!("2020-06-12T23:00:13+01:00"),
+                database: "s5_perms",
+                host: 4,
+                id: 1,
+                max_connections: 0,
+                remote: "%",
+                server: 5,
+                updated_at:  NaiveDateTime.from_iso8601!("2020-06-12T23:00:13+01:00"),
+                username: "u5_QsIAp1jhvS"
+              },
+              %Elidactyl.Schemas.Server.Database{
+                created_at:  NaiveDateTime.from_iso8601!("2020-06-12T23:00:20+01:00"),
+                database: "s5_coreprotect",
+                host: 4,
+                id: 2,
+                max_connections: 0,
+                remote: "%",
+                server: 5,
+                updated_at:  NaiveDateTime.from_iso8601!("2020-06-12T23:00:20+01:00"),
+                username: "u5_2jtJx1nO1d"
+              }
             ],
             description: "Matt from Wii Sports",
             egg: 5,
@@ -122,16 +192,15 @@ defmodule Elidactyl do
             pack: nil,
             server_owner: nil,
             suspended: false,
-            updated_at: "2020-06-13T04:20:53+00:00",
+            updated_at: NaiveDateTime.from_iso8601!("2020-06-13T04:20:53+00:00"),
             user: 1,
             uuid: "1a7ce997-259b-452e-8b4e-cecc464142ca"
           }
         ]
       }
   """
-  def get_all_servers() do
-    Servers.list_servers()
-  end
+  @spec get_all_servers() :: {:ok, [Server.t]} | {:error, Error.t}
+  defdelegate get_all_servers, to: Servers, as: :list_servers
 
   @doc ~S"""
   Create a new server with given params
@@ -179,7 +248,7 @@ defmodule Elidactyl do
             installed: false,
             startup_command: "java -Xms128M -Xmx128M -jar server.jar"
           },
-          created_at: "2020-10-29T01:38:59+00:00",
+          created_at:  NaiveDateTime.from_iso8601!("2020-10-29T01:38:59+00:00"),
           databases: [],
           description: "",
           egg: 1,
@@ -194,15 +263,14 @@ defmodule Elidactyl do
           pack: nil,
           server_owner: nil,
           suspended: false,
-          updated_at: "2020-10-29T01:38:59+00:00",
+          updated_at:  NaiveDateTime.from_iso8601!("2020-10-29T01:38:59+00:00"),
           user: 1,
           uuid: "d557c19c-8b21-4456-a9e5-181beda429f4"
         }
       }
   """
-  def create_server(params) do
-    Servers.create_server(params)
-  end
+  @spec create_server(params) :: {:ok, Server.t} | {:error, Error.t}
+  defdelegate create_server(params), to: Servers
 
   @doc ~S"""
   Delete a server using internal pterodactyl server id.
@@ -211,7 +279,6 @@ defmodule Elidactyl do
       iex> Elidactyl.delete_server(1)
       :ok
   """
-  def delete_server(id) do
-    Servers.delete_server(id)
-  end
+  @spec delete_server(id) :: :ok | {:error, Error.t}
+  defdelegate delete_server(id), to: Servers
 end

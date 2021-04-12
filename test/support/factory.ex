@@ -150,7 +150,6 @@ defmodule Elidactyl.Factory do
       user_editable: build(:boolean),
       rules: Enum.random(@egg_variable_rules),
     }
-    |> add_timestamps()
   end
   @usernames ~w[wardledeboss codeco example]
   @email_domains ~w[file.properties gmail.com example.com]
@@ -196,6 +195,7 @@ defmodule Elidactyl.Factory do
       ip: build(:ip),
       port: build(:port),
       node: build(:id),
+      notes: nil,
     }
   end
   def defaults(:node) do

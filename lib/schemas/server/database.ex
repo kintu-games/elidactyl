@@ -9,7 +9,18 @@ defmodule Elidactyl.Schemas.Server.Database do
 
   @behaviour Parser
 
-  @type t :: %__MODULE__{}
+  @type t :: %__MODULE__{
+    id: non_neg_integer | nil,
+    host: non_neg_integer | nil,
+    server: non_neg_integer | nil,
+    database: binary | nil,
+    username: binary | nil,
+    remote: binary | nil,
+    max_connections: non_neg_integer | nil,
+    created_at: NaiveDateTime.t | nil,
+    updated_at: NaiveDateTime.t | nil,
+  }
+
   @mandatory ~w[host database remote]a
 
   @derive {Jason.Encoder, only: @mandatory}
@@ -34,6 +45,6 @@ defmodule Elidactyl.Schemas.Server.Database do
 
   @impl Parser
   def parse(%{"object" => "databases", "attributes" => attributes}) do
-    struct(__MODULE__, Utils.keys_to_atoms(attributes))
+    struct(__MODULE__, attributes |> Utils.keys_to_atoms() |> Utils.parse_timestamps())
   end
 end

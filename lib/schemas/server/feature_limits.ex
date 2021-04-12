@@ -4,12 +4,17 @@ defmodule Elidactyl.Schemas.Server.FeatureLimits do
   alias Ecto.Changeset
   use Ecto.Schema
 
-  @type t :: %__MODULE__{}
+  @type t :: %__MODULE__{
+    databases: non_neg_integer | nil,
+    backups: non_neg_integer | nil,
+    allocations: non_neg_integer | nil,
+  }
 
   @mandatory ~w[databases allocations backups]a
 
   @derive {Jason.Encoder, only: @mandatory}
 
+  @primary_key false
   embedded_schema do
     field :databases, :integer
     field :backups, :integer

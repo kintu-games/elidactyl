@@ -6,9 +6,15 @@ defmodule Elidactyl.Schemas.Node.Allocation do
 
   @behaviour Parser
 
-  defstruct ~w[id ip alias port notes assigned]a
+  @type t :: %__MODULE__{
+    id: non_neg_integer | nil,
+    ip: binary | nil,
+    alias: binary | nil,
+    port: binary | nil,
+    assigned: boolean | nil,
+  }
 
-  @type t :: %__MODULE__{}
+  defstruct ~w[id ip alias port notes assigned]a
 
   @impl Parser
   def parse(%{"object" => "allocation", "attributes" => attributes}) do
