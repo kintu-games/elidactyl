@@ -11,7 +11,7 @@ Add `elidactyl` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:elidactyl, "~> 0.3.0"}
+    {:elidactyl, "~> 0.4.0"}
   ]
 end
 ```
