@@ -36,10 +36,9 @@ defmodule Elidactyl.Schemas.Server do
     updated_at: NaiveDateTime.t | nil,
   }
 
-  @optional ~w[password language root_admin external_id description oom_disabled name]a
-  @mandatory ~w[user limits egg environment feature_limits start_on_completion skip_scripts startup docker_image pack]a
+  @encode_keys ~w[external_id uuid identifier name description suspended user server_owner node allocation nest egg pack]a
 
-  @derive {Jason.Encoder, only: @optional ++ @mandatory ++ ~w[allocation]a}
+  @derive {Jason.Encoder, only: @encode_keys}
 
   embedded_schema do
     field :external_id, :string

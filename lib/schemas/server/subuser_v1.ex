@@ -17,7 +17,7 @@ defmodule Elidactyl.Schemas.Server.SubuserV1 do
     updated_at: NaiveDateTime.t | nil,
   }
 
-  @derive {Jason.Encoder, only: [:user_id, :server_id]}
+  @derive {Jason.Encoder, only: [:uuid, :username, :email, :"2fa_enabled", :permissions]}
 
   @primary_key false
   schema "subusers" do
