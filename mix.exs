@@ -4,8 +4,8 @@ defmodule Elidactyl.MixProject do
   def project do
     [
       app: :elidactyl,
-      version: "0.4.0",
-      elixir: "~> 1.9",
+      version: "0.5.0",
+      elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env),
       description: "Elixir API for Pterodactyl game panel",
       package: package(),
