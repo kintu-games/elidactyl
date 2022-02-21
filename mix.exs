@@ -17,7 +17,7 @@ defmodule Elidactyl.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      mod: {Elidactyl.Application, [env: Mix.env]},
+      mod: {Elidactyl.TestApplication, [env: Mix.env]},
 #      applications: applications(Mix.env),
       extra_applications: [:logger],
       dialyzer: [

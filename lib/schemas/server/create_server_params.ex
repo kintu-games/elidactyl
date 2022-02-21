@@ -1,4 +1,4 @@
-defmodule Elidactyl.Schemas.Server.CreateParams do
+defmodule Elidactyl.Schemas.Server.CreateServerParams do
   @moduledoc false
 
   use Ecto.Schema

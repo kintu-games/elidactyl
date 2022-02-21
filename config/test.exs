@@ -1,3 +1,3 @@
-use Mix.Config
+import Config
 
 config :elidactyl, :pterodactyl_url, "localhost:8081"

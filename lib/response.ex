@@ -18,6 +18,7 @@ defmodule Elidactyl.Response do
   alias Elidactyl.Schemas.Server.SubuserV1
 
   defmodule Parser do
+    @moduledoc false
     @type json_map :: %{binary => any}
 
     @callback parse(json_map) :: any

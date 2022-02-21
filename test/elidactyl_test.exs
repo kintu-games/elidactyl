@@ -1,6 +1,6 @@
 defmodule ElidactylTest do
   use ExUnit.Case, async: false
-  doctest Elidactyl, except: [create_server: 1, create_user: 1]
+  doctest Elidactyl, except: [create_server: 1, create_user: 1, create_node: 1]
 
   alias Elidactyl.MockedServer
 
@@ -88,6 +88,29 @@ defmodule ElidactylTest do
       username: "codeco",
       uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335"
     )
+    MockedServer.put(:node,
+      behind_proxy: true,
+      created_at: ~N[2022-01-16 23:36:57.343035],
+      daemon_base: "/srv/daemon-data",
+      daemon_listen: 8080,
+      daemon_sftp: 2022,
+      description: "Test",
+      disk: 1024,
+      disk_overallocate: 0,
+      fqdn: "node.example.com",
+      id: 100,
+      location_id: 1,
+      maintenance_mode: false,
+      memory: 1024,
+      memory_overallocate: 0,
+      name: "node",
+      public: false,
+      scheme: "http",
+      updated_at: ~N[2022-02-12 23:36:57.343035],
+      upload_size: 100,
+      uuid: "e543674f-3d37-445a-90e8-e5c47b05c7e9"
+    )
+
     :ok
   end
 end

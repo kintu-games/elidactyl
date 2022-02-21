@@ -11,6 +11,11 @@ defmodule Elidactyl.MockedServer.Router.Application.Nodes do
   plug :match
   plug :dispatch
 
+  post "/api/application/nodes" do
+    success(conn, MockedServer.put(:node_created_response, conn.params), 201)
+  end
+
+
   get "/api/application/nodes/:id/allocations" do
     {id, ""} = Integer.parse(id)
     case MockedServer.get(:node, id) do

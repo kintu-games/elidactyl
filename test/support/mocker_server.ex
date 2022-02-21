@@ -6,7 +6,7 @@ defmodule Elidactyl.MockedServer do
   alias Elidactyl.MockedServer.ExternalSchema.List, as: ExternalList
   alias Elidactyl.MockedServer.ExternalSchema.NullResource
 
-  @objs ~w[server database nest egg egg_variable user server_subuser node allocation]a
+  @objs ~w[server database nest egg egg_variable user server_subuser node node_created_response allocation]a
   @type record :: %{
     required(:object) => binary,
     required(:attributes) => map,

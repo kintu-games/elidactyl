@@ -1,4 +1,4 @@
-defmodule Elidactyl.Application do
+defmodule Elidactyl.TestApplication do
   @moduledoc false
   use Application
 

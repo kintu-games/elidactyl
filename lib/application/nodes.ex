@@ -1,9 +1,10 @@
-defmodule Elidactyl.Nodes do
+defmodule Elidactyl.Application.Nodes do
   @moduledoc false
 
   alias Elidactyl.Request
   alias Elidactyl.Error
   alias Elidactyl.Schemas.Node
+  alias Elidactyl.Schemas.Node.CreateNodeParams
   alias Elidactyl.Schemas.Node.Allocation
   alias Elidactyl.Response
 
@@ -41,6 +42,20 @@ defmodule Elidactyl.Nodes do
       {:ok, nodes}
     else
       {:error, _} = error -> error
+      _ -> {:error, Error.invalid_response()}
+    end
+  end
+
+  @spec create_node(Elidactyl.params) :: {:ok, Node.t} | {:error, Error.t}
+  def create_node(params) do
+    with %{valid?: true} = changeset <- CreateNodeParams.changeset(%CreateNodeParams{}, params),
+         %CreateNodeParams{} = node <- Ecto.Changeset.apply_changes(changeset),
+         {:ok, resp} <- Request.request(:post, "/api/application/nodes", node),
+         %Node{} = node <- Response.parse_response(resp) do
+      {:ok, node}
+    else
+      {:error, _} = error -> error
+      %Ecto.Changeset{} = changeset -> {:error, Error.from_changeset(changeset)}
       _ -> {:error, Error.invalid_response()}
     end
   end

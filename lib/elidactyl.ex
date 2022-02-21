@@ -3,9 +3,11 @@ defmodule Elidactyl do
   API for Pterodactyl panel
   """
 
-  alias Elidactyl.Application.Users
+  alias Elidactyl.Application.Nodes
   alias Elidactyl.Application.Servers
+  alias Elidactyl.Application.Users
   alias Elidactyl.Error
+  alias Elidactyl.Schemas.Node
   alias Elidactyl.Schemas.Server
   alias Elidactyl.Schemas.User
 
@@ -281,4 +283,84 @@ defmodule Elidactyl do
   """
   @spec delete_server(id) :: :ok | {:error, Error.t}
   defdelegate delete_server(id), to: Servers
+
+
+  @doc ~S"""
+  Create a new Pterodactyl node with given params.
+
+  ## Examples
+      iex> params =
+      ...>  %{
+      ...> daemon_listen: 8080,
+      ...> daemon_sftp: 2022,
+      ...> disk: 1024,
+      ...> disk_overallocate: 0,
+      ...> fqdn: "node.example.com",
+      ...> location_id: 1,
+      ...> memory: 1024,
+      ...> memory_overallocate: 0,
+      ...> name: "node",
+      ...> scheme: "http",
+      ...> upload_size: 100
+      ...> }
+      iex> Elidactyl.create_node(params)
+      {:ok,
+        %Elidactyl.Schemas.Node{
+         behind_proxy: true,
+         created_at: ~N[2022-01-16 23:36:57.343035],
+         daemon_base: "/srv/daemon-data",
+         daemon_listen: 8080,
+         daemon_sftp: 2022,
+         description: "Test",
+         disk: 1024,
+         disk_overallocate: 0,
+         fqdn: "node.example.com",
+         id: 562,
+         location_id: 1,
+         maintenance_mode: false,
+         memory: 1024,
+         memory_overallocate: 0,
+         name: "node",
+         public: false,
+         scheme: "http",
+         updated_at: ~N[2022-02-12 23:36:57.343035],
+         upload_size: 100,
+         uuid: "e543674f-3d37-445a-90e8-e5c47b05c7e9"
+      }}
+  """
+  @spec create_node(params) :: {:ok, Node.t} | {:error, Error.t}
+  defdelegate create_node(params), to: Nodes
+
+
+  @doc ~S"""
+  Gets an existing Pterodactyl node by id.
+
+  ## Examples
+      iex> Elidactyl.get_node(100)
+      {:ok,
+        %Elidactyl.Schemas.Node{
+         behind_proxy: true,
+         created_at: ~N[2022-01-16 23:36:57.343035],
+         daemon_base: "/srv/daemon-data",
+         daemon_listen: 8080,
+         daemon_sftp: 2022,
+         description: "Test",
+         disk: 1024,
+         disk_overallocate: 0,
+         fqdn: "node.example.com",
+         id: 100,
+         location_id: 1,
+         maintenance_mode: false,
+         memory: 1024,
+         memory_overallocate: 0,
+         name: "node",
+         public: false,
+         scheme: "http",
+         updated_at: ~N[2022-02-12 23:36:57.343035],
+         upload_size: 100,
+         uuid: "e543674f-3d37-445a-90e8-e5c47b05c7e9"
+      }}
+  """
+  @spec get_node(id) :: {:ok, Node.t} | {:error, Error.t}
+  defdelegate get_node(node_id), to: Nodes, as: :get
 end

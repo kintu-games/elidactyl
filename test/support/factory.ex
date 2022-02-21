@@ -2,8 +2,11 @@ defmodule Elidactyl.Factory do
   @moduledoc false
 
   @maps ~w[
-    server database egg egg_variable nest user server_subuser egg_config limits feature_limits
-    container environment script allocation node node_configuration
+    server database egg egg_variable nest
+    user server_subuser egg_config limits
+    feature_limits container environment
+    script allocation node
+    node_created_response node_configuration
   ]a
 
   @spec build(atom, any) :: any
@@ -222,6 +225,34 @@ defmodule Elidactyl.Factory do
     }
     |> add_timestamps()
   end
+  def defaults(:node_created_response) do
+    %{
+      id: build(:id),
+      uuid: build(:uuid),
+      public: build(:boolean),
+      name: "Test",
+      description: "Test",
+      location_id: build(:id),
+      fqdn: "pterodactyl.file.properties",
+      scheme: "https",
+      behind_proxy: build(:boolean),
+      maintenance_mode: build(:boolean),
+      memory: Enum.random([512, 1024, 2048, 4096, 8192]),
+      memory_overallocate: 0,
+      disk: Enum.random([500, 1000, 2000, 3000, 5000, 10_000]),
+      disk_overallocate: 0,
+      upload_size: 100,
+      daemon_listen: build(:port),
+      daemon_sftp: build(:port),
+      daemon_base: "/srv/daemon-data",
+      allocated_resources: %{
+        memory: 0,
+        disk: 0
+     }
+    }
+    |> add_timestamps()
+  end
+
   def defaults(:node_configuration) do
     %{
       "debug" => build(:boolean),

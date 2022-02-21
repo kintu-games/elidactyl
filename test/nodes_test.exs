@@ -1,9 +1,9 @@
-defmodule Elidactyl.NodesTest do
+defmodule Elidactyl.Application.NodesTest do
   use ExUnit.Case, async: false
   use Elidactyl.RequestCase
 
   alias Elidactyl.MockedServer
-  alias Elidactyl.Nodes
+  alias Elidactyl.Application.Nodes
   alias Elidactyl.Schemas.Node
   alias Elidactyl.Schemas.Node.Allocation
 
@@ -49,5 +49,29 @@ defmodule Elidactyl.NodesTest do
       assert Enum.find(nodes, & &1.id == node1.id)
       assert Enum.find(nodes, & &1.id == node2.id)
     end
+  end
+
+  describe "create_node/1" do
+    test "creates a node" do
+      node_params = create_node_params_fixture()
+      assert {:ok, %Node{}} = Nodes.create_node(node_params)
+    end
+  end
+
+  defp create_node_params_fixture do
+    %{
+      name: "node",
+      location_id: 1,
+      fqdn: "node.example.com",
+      scheme: "http",
+      memory: 1024,
+      memory_overallocate: 0,
+      disk: 1024,
+      disk_overallocate: 0,
+      upload_size: 100,
+      daemon_sftp: 2022,
+      daemon_listen: 8080,
+    }
+
   end
 end

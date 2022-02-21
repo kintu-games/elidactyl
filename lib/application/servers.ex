@@ -5,7 +5,7 @@ defmodule Elidactyl.Application.Servers do
   alias Elidactyl.Request
   alias Elidactyl.Response
   alias Elidactyl.Schemas.Server
-  alias Elidactyl.Schemas.Server.CreateParams
+  alias Elidactyl.Schemas.Server.CreateServerParams
   alias Elidactyl.Schemas.Server.UpdateDetailsParams
   alias Elidactyl.Schemas.Server.UpdateBuildInfoParams
   alias Elidactyl.Schemas.Server.UpdateStartupParams
@@ -45,8 +45,8 @@ defmodule Elidactyl.Application.Servers do
 
   @spec create_server(Elidactyl.params) :: {:ok, Server.t} | {:error, Error.t}
   def create_server(params) do
-    with %{valid?: true} = changeset <- CreateParams.changeset(%CreateParams{}, params),
-         %CreateParams{} = server <- Ecto.Changeset.apply_changes(changeset),
+    with %{valid?: true} = changeset <- CreateServerParams.changeset(%CreateServerParams{}, params),
+         %CreateServerParams{} = server <- Ecto.Changeset.apply_changes(changeset),
          {:ok, resp} <- Request.request(:post, "/api/application/servers", server),
          %Server{} = result <- Response.parse_response(resp) do
       {:ok, result}

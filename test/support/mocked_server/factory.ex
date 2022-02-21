@@ -12,7 +12,7 @@ defmodule Elidactyl.MockedServer.Factory do
   alias Elidactyl.MockedServer.ExternalSchema.Node.Allocation
   alias Elidactyl.MockedServer.ExternalSchema.User
 
-  @type obj :: :server | :database | :nest | :egg | :egg_variable | :user | :server_subuser | :node | :allocation
+  @type obj :: :server | :database | :nest | :egg | :egg_variable | :user | :server_subuser | :node | :node_created_response | :allocation
   @type attributes :: map | keyword
 
   @spec build(obj, attributes) :: struct
@@ -29,5 +29,6 @@ defmodule Elidactyl.MockedServer.Factory do
   defp module_for(:user), do: User
   defp module_for(:server_subuser), do: ServerSubuser
   defp module_for(:node), do: Node
+  defp module_for(:node_created_response), do: Node
   defp module_for(:allocation), do: Allocation
 end

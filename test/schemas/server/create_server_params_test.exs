@@ -1,9 +1,9 @@
-defmodule Elidactyl.Schemas.Server.CreateParamsTest do
+defmodule Elidactyl.Schemas.Server.CreateServerParamsTest do
   use ExUnit.Case
   use Elidactyl.ChangesetCase
 
-  alias Elidactyl.Schemas.Server.CreateParams
-  import CreateParams
+  alias Elidactyl.Schemas.Server.CreateServerParams
+  import CreateServerParams
 
   @valid %{
     external_id: "external-id",
@@ -24,7 +24,7 @@ defmodule Elidactyl.Schemas.Server.CreateParamsTest do
   }
 
   def build_changeset(params \\ %{}) do
-    changeset(%CreateParams{}, Map.merge(@valid, params))
+    changeset(%CreateServerParams{}, Map.merge(@valid, params))
   end
 
   describe "changeset/2" do
@@ -33,7 +33,7 @@ defmodule Elidactyl.Schemas.Server.CreateParamsTest do
     end
 
     test "validates that mandatory fields are present" do
-      changeset = changeset(%CreateParams{}, %{})
+      changeset = changeset(%CreateServerParams{}, %{})
       assert_invalid(changeset, :user, error_message == "can't be blank")
       assert_invalid(changeset, :egg, error_message == "can't be blank")
       assert_invalid(changeset, :docker_image, error_message == "can't be blank")
