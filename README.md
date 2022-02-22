@@ -1,6 +1,9 @@
 # Elidactyl
 
-Elixir API client to Pterodactyl - opensource dedicated game server managment system
+Elixir API client to Pterodactyl - opensource dedicated game server management system.
+
+Supports Pterodactyl API V1.
+https://dashflo.net/docs/api/pterodactyl/v1/
 
 You can find documentation here https://hexdocs.pm/elidactyl/Elidactyl.html
 
@@ -11,7 +14,7 @@ Add `elidactyl` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:elidactyl, "~> 0.4.0"}
+    {:elidactyl, "~> 0.6.0"}
   ]
 end
 ```
@@ -80,7 +83,7 @@ iex> Elidactyl.get_all_users()
  ]}
 ```
 
-### Create user
+### Create new User
 ```elixir
 iex(2)> params = 
   %{
@@ -110,4 +113,47 @@ iex(3)> Elidactyl.Application.Users.create_user(params)
    username: "example",
    uuid: "219e20e3-3975-44b4-ae63-fa79137fdb99"
  }}
+```
+
+### Create new Node
+
+```elixir
+params =
+  %{
+     daemon_listen: 8080,
+     daemon_sftp: 2022,
+     disk: 1024,
+     disk_overallocate: 0,
+     fqdn: "node.example.com",
+     location_id: 1,
+     memory: 1024,
+     memory_overallocate: 0,
+     name: "node",
+     scheme: "http",
+     upload_size: 100
+     }
+iex> Elidactyl.create_node(params)
+{:ok,
+  %Elidactyl.Schemas.Node{
+   behind_proxy: true,
+   created_at: ~N[2022-01-16 23:36:57.343035],
+   daemon_base: "/srv/daemon-data",
+   daemon_listen: 8080,
+   daemon_sftp: 2022,
+   description: "Test",
+   disk: 1024,
+   disk_overallocate: 0,
+   fqdn: "node.example.com",
+   id: 562,
+   location_id: 1,
+   maintenance_mode: false,
+   memory: 1024,
+   memory_overallocate: 0,
+   name: "node",
+   public: false,
+   scheme: "http",
+   updated_at: ~N[2022-02-12 23:36:57.343035],
+   upload_size: 100,
+   uuid: "e543674f-3d37-445a-90e8-e5c47b05c7e9"
+}}
 ```
