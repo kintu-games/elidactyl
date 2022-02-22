@@ -4,7 +4,7 @@ defmodule Elidactyl.MixProject do
   def project do
     [
       app: :elidactyl,
-      version: "0.5.1",
+      version: "0.6.0",
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env),
       description: "Elixir API for Pterodactyl game panel",
@@ -48,7 +48,7 @@ defmodule Elidactyl.MixProject do
   defp package do
     [
       maintainers: ["Roman Berdichevskii"],
-      licenses: ["MIT License"],
+      licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/kintull/elidactyl"}
     ]
   end
