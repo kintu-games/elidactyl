@@ -11,6 +11,8 @@ defmodule Elidactyl do
   alias Elidactyl.Schemas.Server
   alias Elidactyl.Schemas.User
 
+  @behaviour Elidactyl.Behaviour
+
   @type id :: binary | non_neg_integer
   @type params :: map
   @type uuid :: Ecto.UUID.t
