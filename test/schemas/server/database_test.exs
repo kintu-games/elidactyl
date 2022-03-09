@@ -8,7 +8,7 @@ defmodule Elidactyl.Schemas.Server.DatabaseTest do
   @valid %{
     host: 2,
     database: "db",
-    remote: "%",
+    remote: "%"
   }
 
   def build_changeset(params \\ %{}) do

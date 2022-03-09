@@ -22,10 +22,12 @@ defmodule Elidactyl.MockedServer.Router.Client.Servers.Subusers do
   get "/api/client/servers/:id/users" do
     {id, ""} = Integer.parse(id)
     %{data: users} = MockedServer.list(:server_subuser)
+
     users =
       users
-      |> Enum.filter(& match?(%{attributes: %{server: ^id}}, &1))
+      |> Enum.filter(&match?(%{attributes: %{server: ^id}}, &1))
       |> Enum.map(&serialize/1)
+
     success(conn, %ExternalList{data: users})
   end
 
@@ -36,14 +38,17 @@ defmodule Elidactyl.MockedServer.Router.Client.Servers.Subusers do
   get "/api/client/servers/:id/users/:uuid" do
     {id, ""} = Integer.parse(id)
     %{data: users} = MockedServer.list(:server_subuser)
-    user = Enum.find(users, & match?(%{attributes: %{server: ^id, uuid: ^uuid}}, &1))
+    user = Enum.find(users, &match?(%{attributes: %{server: ^id, uuid: ^uuid}}, &1))
     success(conn, serialize(user))
   end
 
   post "/api/client/servers/:id/users/:uuid" do
     {id, ""} = Integer.parse(id)
     %{data: users} = MockedServer.list(:server_subuser)
-    %{attributes: prev} = Enum.find(users, & match?(%{attributes: %{server: ^id, uuid: ^uuid}}, &1))
+
+    %{attributes: prev} =
+      Enum.find(users, &match?(%{attributes: %{server: ^id, uuid: ^uuid}}, &1))
+
     %{attributes: next} = Factory.build(:server_subuser, conn.params)
     next = Map.take(next, conn.params |> Map.keys() |> Enum.map(&String.to_existing_atom/1))
     MockedServer.delete(:server_subuser, prev.id)

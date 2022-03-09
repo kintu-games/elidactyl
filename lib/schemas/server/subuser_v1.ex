@@ -7,26 +7,26 @@ defmodule Elidactyl.Schemas.Server.SubuserV1 do
   alias Elidactyl.Utils
 
   @type t :: %__MODULE__{
-    uuid: Ecto.UUID.t | nil,
-    username: binary | nil,
-    email: binary | nil,
-    image: binary | nil,
-    "2fa_enabled": boolean | nil,
-    permissions: [binary] | nil,
-    created_at: NaiveDateTime.t | nil,
-    updated_at: NaiveDateTime.t | nil,
-  }
+          uuid: Ecto.UUID.t() | nil,
+          username: binary | nil,
+          email: binary | nil,
+          image: binary | nil,
+          "2fa_enabled": boolean | nil,
+          permissions: [binary] | nil,
+          created_at: NaiveDateTime.t() | nil,
+          updated_at: NaiveDateTime.t() | nil
+        }
 
   @derive {Jason.Encoder, only: [:uuid, :username, :email, :"2fa_enabled", :permissions]}
 
   @primary_key false
   schema "subusers" do
-    field :uuid, :string
-    field :username, :string
-    field :email, :string
-    field :image, :string
-    field :"2fa_enabled", :boolean
-    field :permissions, {:array, :string}
+    field(:uuid, :string)
+    field(:username, :string)
+    field(:email, :string)
+    field(:image, :string)
+    field(:"2fa_enabled", :boolean)
+    field(:permissions, {:array, :string})
 
     timestamps(inserted_at: :created_at)
   end

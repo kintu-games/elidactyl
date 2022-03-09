@@ -5,11 +5,11 @@ defmodule Elidactyl.Schemas.Server.UpdateDetailsParams do
   alias Ecto.Changeset
 
   @type t :: %__MODULE__{
-    external_id: binary | nil,
-    name: binary | nil,
-    description: binary | nil,
-    user: non_neg_integer | nil,
-  }
+          external_id: binary | nil,
+          name: binary | nil,
+          description: binary | nil,
+          user: non_neg_integer | nil
+        }
 
   @mandatory [:name, :user]
   @optional [:external_id, :description]
@@ -18,10 +18,10 @@ defmodule Elidactyl.Schemas.Server.UpdateDetailsParams do
 
   @primary_key false
   embedded_schema do
-    field :external_id, :string
-    field :name, :string
-    field :description, :string
-    field :user, :integer
+    field(:external_id, :string)
+    field(:name, :string)
+    field(:description, :string)
+    field(:user, :integer)
   end
 
   @spec changeset(t(), map) :: Changeset.t()

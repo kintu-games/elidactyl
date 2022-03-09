@@ -5,10 +5,10 @@ defmodule Elidactyl.Schemas.Server.FeatureLimits do
   use Ecto.Schema
 
   @type t :: %__MODULE__{
-    databases: non_neg_integer | nil,
-    backups: non_neg_integer | nil,
-    allocations: non_neg_integer | nil,
-  }
+          databases: non_neg_integer | nil,
+          backups: non_neg_integer | nil,
+          allocations: non_neg_integer | nil
+        }
 
   @mandatory ~w[databases allocations backups]a
 
@@ -16,9 +16,9 @@ defmodule Elidactyl.Schemas.Server.FeatureLimits do
 
   @primary_key false
   embedded_schema do
-    field :databases, :integer
-    field :backups, :integer
-    field :allocations, :integer
+    field(:databases, :integer)
+    field(:backups, :integer)
+    field(:allocations, :integer)
   end
 
   @spec changeset(t(), map) :: Changeset.t()

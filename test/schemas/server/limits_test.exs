@@ -10,7 +10,7 @@ defmodule Elidactyl.Schemas.Server.LimitsTest do
     swap: 0,
     disk: 200,
     io: 500,
-    cpu: 0,
+    cpu: 0
   }
 
   def build_changeset(params \\ %{}) do

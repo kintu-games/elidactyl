@@ -5,12 +5,12 @@ defmodule Elidactyl.Schemas.Server.UpdateStartupParams do
   alias Ecto.Changeset
 
   @type t :: %__MODULE__{
-    startup: binary | nil,
-    environment: map | nil,
-    egg: non_neg_integer | nil,
-    image: binary | nil,
-    skip_scripts: boolean | nil,
-  }
+          startup: binary | nil,
+          environment: map | nil,
+          egg: non_neg_integer | nil,
+          image: binary | nil,
+          skip_scripts: boolean | nil
+        }
 
   @mandatory ~w[startup egg image]a
   @optional ~w[environment skip_scripts]a
@@ -19,14 +19,14 @@ defmodule Elidactyl.Schemas.Server.UpdateStartupParams do
 
   @primary_key false
   embedded_schema do
-    field :startup, :string
-    field :environment, :map
-    field :egg, :integer
-    field :image, :string
-    field :skip_scripts, :boolean
+    field(:startup, :string)
+    field(:environment, :map)
+    field(:egg, :integer)
+    field(:image, :string)
+    field(:skip_scripts, :boolean)
   end
 
-  @spec changeset(t, map) :: Changeset.t
+  @spec changeset(t, map) :: Changeset.t()
   def changeset(struct, params) do
     struct
     |> Changeset.cast(params, @mandatory ++ @optional)

@@ -10,19 +10,21 @@ defmodule Elidactyl.MockedServer.Router.Application.Nests do
   alias Elidactyl.MockedServer.ExternalSchema.Nest
   alias Elidactyl.MockedServer.ExternalSchema.Nest.Egg
 
-  plug Plug.Parsers, parsers: [:json], pass: ["text/*"], json_decoder: Jason
-  plug :match
-  plug :dispatch
+  plug(Plug.Parsers, parsers: [:json], pass: ["text/*"], json_decoder: Jason)
+  plug(:match)
+  plug(:dispatch)
 
   get "/api/application/nests/:nest_id/eggs" do
     {nest_id, ""} = Integer.parse(nest_id)
     %{query_params: params} = conn = Plug.Conn.fetch_query_params(conn)
     include = parse_include(params["include"])
     list = MockedServer.list(:egg)
+
     eggs =
       list.data
-      |> Enum.filter(& match?(%{attributes: %{nest: ^nest_id}}, &1))
+      |> Enum.filter(&match?(%{attributes: %{nest: ^nest_id}}, &1))
       |> add_references(include)
+
     success(conn, %{list | data: eggs})
   end
 
@@ -31,6 +33,7 @@ defmodule Elidactyl.MockedServer.Router.Application.Nests do
     {egg_id, ""} = Integer.parse(egg_id)
     %{query_params: params} = conn = Plug.Conn.fetch_query_params(conn)
     include = parse_include(params["include"])
+
     with {:ok, _} <- find_nest(nest_id),
          {:ok, %Egg{attributes: %{nest: ^nest_id}} = egg} <- find_egg(egg_id) do
       [egg] = add_references([egg], include)
@@ -44,14 +47,14 @@ defmodule Elidactyl.MockedServer.Router.Application.Nests do
   defp find_nest(nest_id) do
     case MockedServer.get(:nest, nest_id) do
       %Nest{} = nest -> {:ok, nest}
-      _              -> {:error, 404, "not found nest #{nest_id}"}
+      _ -> {:error, 404, "not found nest #{nest_id}"}
     end
   end
 
   defp find_egg(egg_id) do
     case MockedServer.get(:egg, egg_id) do
       %Egg{} = egg -> {:ok, egg}
-      _            -> {:error, 404, "not found egg #{egg_id}"}
+      _ -> {:error, 404, "not found egg #{egg_id}"}
     end
   end
 
@@ -65,40 +68,51 @@ defmodule Elidactyl.MockedServer.Router.Application.Nests do
   end
 
   defp add_nest(eggs, %{"nest" => true}) do
-    Enum.map(eggs, & MockedServer.add_relationship(&1, :nest, MockedServer.get(:nest, &1.attributes[:nest])))
+    Enum.map(
+      eggs,
+      &MockedServer.add_relationship(&1, :nest, MockedServer.get(:nest, &1.attributes[:nest]))
+    )
   end
+
   defp add_nest(eggs, _), do: eggs
 
   defp add_servers(eggs, %{"servers" => true}) do
     %{data: servers} = MockedServer.list(:server)
+
     Enum.map(eggs, fn %{attributes: %{id: id}} = egg ->
-      egg_servers = Enum.filter(servers, & match?(%{attributes: %{egg: ^id}}, &1))
+      egg_servers = Enum.filter(servers, &match?(%{attributes: %{egg: ^id}}, &1))
       MockedServer.add_relationship(egg, :servers, %ExternalList{data: egg_servers})
     end)
   end
+
   defp add_servers(eggs, _), do: eggs
 
   defp add_config(eggs, %{"config" => true}) do
-    Enum.map(eggs, & MockedServer.add_relationship(&1, :config, %NullResource{}))
+    Enum.map(eggs, &MockedServer.add_relationship(&1, :config, %NullResource{}))
   end
+
   defp add_config(eggs, _), do: eggs
 
   defp add_script(eggs, %{"script" => true}) do
-    Enum.map(eggs, & MockedServer.add_relationship(&1, :script, %NullResource{}))
+    Enum.map(eggs, &MockedServer.add_relationship(&1, :script, %NullResource{}))
   end
+
   defp add_script(eggs, _), do: eggs
 
   defp add_variables(eggs, %{"variables" => true}) do
     %{data: vars} = MockedServer.list(:egg_variable)
+
     Enum.map(eggs, fn %{attributes: %{id: id}} = egg ->
-      egg_vars = Enum.filter(vars, & match?(%{attributes: %{egg_id: ^id}}, &1))
+      egg_vars = Enum.filter(vars, &match?(%{attributes: %{egg_id: ^id}}, &1))
       MockedServer.add_relationship(egg, :variables, %ExternalList{data: egg_vars})
     end)
   end
+
   defp add_variables(eggs, _), do: eggs
 
   defp parse_include(include) when is_binary(include) and byte_size(include) > 0 do
-    include |> String.split(",") |> Enum.into(%{}, & {&1, true})
+    include |> String.split(",") |> Enum.into(%{}, &{&1, true})
   end
+
   defp parse_include(_), do: %{}
 end

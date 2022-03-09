@@ -13,7 +13,7 @@ defmodule Elidactyl.Schemas.Server.UpdateBuildInfoParamsTest do
     io: 500,
     cpu: 0,
     threads: nil,
-    feature_limits: %{databases: 5, allocations: 5, backups: 2},
+    feature_limits: %{databases: 5, allocations: 5, backups: 2}
   }
 
   def build_changeset(params \\ %{}) do

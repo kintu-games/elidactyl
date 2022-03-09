@@ -2,12 +2,13 @@ defmodule Elidactyl do
   @moduledoc """
   API for Pterodactyl panel
   """
-
+  alias Elidactyl.Application.Nodes
   alias Elidactyl.Application.Nodes
   alias Elidactyl.Application.Servers
   alias Elidactyl.Application.Users
   alias Elidactyl.Error
   alias Elidactyl.Schemas.Node
+  alias Elidactyl.Schemas.Node.Allocation
   alias Elidactyl.Schemas.Server
   alias Elidactyl.Schemas.User
 
@@ -15,7 +16,7 @@ defmodule Elidactyl do
 
   @type id :: binary | non_neg_integer
   @type params :: map
-  @type uuid :: Ecto.UUID.t
+  @type uuid :: Ecto.UUID.t()
 
   @doc ~S"""
   Get all users.
@@ -55,7 +56,7 @@ defmodule Elidactyl do
         }
       ]}
   """
-  @spec get_all_users() :: {:ok, [User.t]} | {:error, Error.t}
+  @spec get_all_users() :: {:ok, [User.t()]} | {:error, Error.t()}
   defdelegate get_all_users, to: Users, as: :all
 
   @doc ~S"""
@@ -90,7 +91,7 @@ defmodule Elidactyl do
         }
       }
   """
-  @spec create_user(params) :: {:ok, User.t} | {:error, Error.t}
+  @spec create_user(params) :: {:ok, User.t()} | {:error, Error.t()}
   defdelegate create_user(params), to: Users, as: :create
 
   @doc ~S"""
@@ -123,7 +124,7 @@ defmodule Elidactyl do
         }
       }
   """
-  @spec update_user(id, params) :: {:ok, User.t} | {:error, Error.t}
+  @spec update_user(id, params) :: {:ok, User.t()} | {:error, Error.t()}
   defdelegate update_user(id, params), to: Users, as: :update
 
   @doc ~S"""
@@ -133,7 +134,7 @@ defmodule Elidactyl do
       iex> Elidactyl.delete_user(1)
       :ok
   """
-  @spec delete_user(id) :: :ok | {:error, Error.t}
+  @spec delete_user(id) :: :ok | {:error, Error.t()}
   defdelegate delete_user(id), to: Users, as: :delete
 
   @doc ~S"""
@@ -203,7 +204,7 @@ defmodule Elidactyl do
         ]
       }
   """
-  @spec get_all_servers() :: {:ok, [Server.t]} | {:error, Error.t}
+  @spec get_all_servers() :: {:ok, [Server.t()]} | {:error, Error.t()}
   defdelegate get_all_servers, to: Servers, as: :list_servers
 
   @doc ~S"""
@@ -273,7 +274,7 @@ defmodule Elidactyl do
         }
       }
   """
-  @spec create_server(params) :: {:ok, Server.t} | {:error, Error.t}
+  @spec create_server(params) :: {:ok, Server.t()} | {:error, Error.t()}
   defdelegate create_server(params), to: Servers
 
   @doc ~S"""
@@ -283,9 +284,8 @@ defmodule Elidactyl do
       iex> Elidactyl.delete_server(1)
       :ok
   """
-  @spec delete_server(id) :: :ok | {:error, Error.t}
+  @spec delete_server(id) :: :ok | {:error, Error.t()}
   defdelegate delete_server(id), to: Servers
-
 
   @doc ~S"""
   Create a new Pterodactyl node with given params.
@@ -330,9 +330,8 @@ defmodule Elidactyl do
          uuid: "e543674f-3d37-445a-90e8-e5c47b05c7e9"
       }}
   """
-  @spec create_node(params) :: {:ok, Node.t} | {:error, Error.t}
+  @spec create_node(params) :: {:ok, Node.t()} | {:error, Error.t()}
   defdelegate create_node(params), to: Nodes
-
 
   @doc ~S"""
   Gets an existing Pterodactyl node by id.
@@ -363,6 +362,24 @@ defmodule Elidactyl do
          uuid: "e543674f-3d37-445a-90e8-e5c47b05c7e9"
       }}
   """
-  @spec get_node(id) :: {:ok, Node.t} | {:error, Error.t}
+  @spec get_node(id) :: {:ok, Node.t()} | {:error, Error.t()}
   defdelegate get_node(node_id), to: Nodes, as: :get
+
+  @doc ~S"""
+  List available allocations for a given node.
+
+  ## Examples
+      iex> Elidactyl.list_allocations(100)
+      {:ok, [%Elidactyl.Schemas.Node.Allocation{
+        alias: nil,
+        assigned: true,
+        id: 1,
+        ip: "45.86.168.218",
+        notes: nil,
+        port: 25565
+      }]}
+  """
+
+  @spec list_allocations(id) :: {:ok, [Allocation.t()]} | {:error, Error.t()}
+  defdelegate list_allocations(node_id), to: Nodes
 end

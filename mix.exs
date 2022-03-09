@@ -4,9 +4,9 @@ defmodule Elidactyl.MixProject do
   def project do
     [
       app: :elidactyl,
-      version: "0.6.1",
+      version: "0.6.2",
       elixir: "~> 1.12",
-      elixirc_paths: elixirc_paths(Mix.env),
+      elixirc_paths: elixirc_paths(Mix.env()),
       description: "Elixir API for Pterodactyl game panel",
       package: package(),
       start_permanent: Mix.env() == :prod,
@@ -17,8 +17,8 @@ defmodule Elidactyl.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      mod: {Elidactyl.TestApplication, [env: Mix.env]},
-#      applications: applications(Mix.env),
+      mod: {Elidactyl.TestApplication, [env: Mix.env()]},
+      #      applications: applications(Mix.env),
       extra_applications: [:logger],
       dialyzer: [
         plt_add_deps: :apps_direct,
@@ -27,8 +27,8 @@ defmodule Elidactyl.MixProject do
     ]
   end
 
-#  defp applications(:test), do: applications(:default) ++ [:cowboy, :plug, :myxql]
-#  defp applications(_),     do: [:logger, :httpoison, :myxql]
+  #  defp applications(:test), do: applications(:default) ++ [:cowboy, :plug, :myxql]
+  #  defp applications(_),     do: [:logger, :httpoison, :myxql]
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
@@ -53,6 +53,6 @@ defmodule Elidactyl.MixProject do
     ]
   end
 
-  defp elixirc_paths(:test), do: ["lib","test/support"]
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
 end

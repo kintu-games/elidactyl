@@ -9,7 +9,7 @@ defmodule Elidactyl.Schemas.Server.UpdateStartupParamsTest do
     startup: "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
     environment: %{
       "SERVER_JARFILE" => "server.jar",
-      "VANILLA_VERSION" => "latest",
+      "VANILLA_VERSION" => "latest"
     },
     egg: 5,
     image: "quay.io/pterodactyl/core:java",
@@ -53,7 +53,9 @@ defmodule Elidactyl.Schemas.Server.UpdateStartupParamsTest do
     end
 
     test "refutes startup values longer than 255 chars" do
-      %{startup: String.pad_leading("", 256, "x")} |> build_changeset() |> assert_invalid(:startup)
+      %{startup: String.pad_leading("", 256, "x")}
+      |> build_changeset()
+      |> assert_invalid(:startup)
     end
 
     test "refutes image values longer than 255 chars" do

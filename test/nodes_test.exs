@@ -20,9 +20,17 @@ defmodule Elidactyl.Application.NodesTest do
     test "lists allocations for a node", %{node1: node, a1: a1, a2: a2} do
       assert {:ok, allocations} = Nodes.list_allocations(node.id)
       assert length(allocations) == 2
-      assert Enum.all?(allocations, & match?(%Allocation{}, &1))
-      assert Enum.any?(allocations, & Map.drop(Map.from_struct(&1), ~w[__meta__]a) == Map.drop(a1, ~w[node]a))
-      assert Enum.any?(allocations, & Map.drop(Map.from_struct(&1), ~w[__meta__]a) == Map.drop(a2, ~w[node]a))
+      assert Enum.all?(allocations, &match?(%Allocation{}, &1))
+
+      assert Enum.any?(
+               allocations,
+               &(Map.drop(Map.from_struct(&1), ~w[__meta__]a) == Map.drop(a1, ~w[node]a))
+             )
+
+      assert Enum.any?(
+               allocations,
+               &(Map.drop(Map.from_struct(&1), ~w[__meta__]a) == Map.drop(a2, ~w[node]a))
+             )
     end
   end
 
@@ -36,8 +44,9 @@ defmodule Elidactyl.Application.NodesTest do
   describe "get/1" do
     test "gets node", %{node1: node} do
       assert {:ok, %Node{} = n} = Nodes.get(node.id)
+
       assert Map.drop(Map.from_struct(n), ~w[__meta__ created_at updated_at]a) ==
-        Map.drop(node, ~w[created_at updated_at configuration]a)
+               Map.drop(node, ~w[created_at updated_at configuration]a)
     end
   end
 
@@ -45,9 +54,9 @@ defmodule Elidactyl.Application.NodesTest do
     test "gets nodes list", %{node1: node1, node2: node2} do
       assert {:ok, nodes} = Nodes.list()
       assert length(nodes) == 2
-      assert Enum.all?(nodes, & match?(%Node{}, &1))
-      assert Enum.find(nodes, & &1.id == node1.id)
-      assert Enum.find(nodes, & &1.id == node2.id)
+      assert Enum.all?(nodes, &match?(%Node{}, &1))
+      assert Enum.find(nodes, &(&1.id == node1.id))
+      assert Enum.find(nodes, &(&1.id == node2.id))
     end
   end
 
@@ -70,8 +79,7 @@ defmodule Elidactyl.Application.NodesTest do
       disk_overallocate: 0,
       upload_size: 100,
       daemon_sftp: 2022,
-      daemon_listen: 8080,
+      daemon_listen: 8080
     }
-
   end
 end

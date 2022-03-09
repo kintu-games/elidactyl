@@ -24,15 +24,17 @@ defmodule Elidactyl.Response do
     @callback parse(json_map) :: any
   end
 
-  @spec parse_response(Parser.json_map | binary) :: any
-  @spec parse_response(Parser.json_map | binary, module | nil) :: any
+  @spec parse_response(Parser.json_map() | binary) :: any
+  @spec parse_response(Parser.json_map() | binary, module | nil) :: any
   def parse_response(map, mod \\ nil)
   def parse_response("", _), do: ""
   def parse_response(%{"object" => "null_response", "attributes" => nil}, _), do: nil
+
   def parse_response(%{"object" => object} = resp, _) do
     mod = get_object_mod(object)
     apply(mod, :parse, [resp])
   end
+
   def parse_response(resp, mod) do
     apply(mod, :parse, [resp])
   end

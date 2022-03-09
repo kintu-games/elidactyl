@@ -5,16 +5,16 @@ defmodule Elidactyl.Schemas.Server.Allocation do
   use Ecto.Schema
 
   @type t :: %__MODULE__{
-    id: non_neg_integer | nil,
-    default: non_neg_integer | nil,
-    additional: [integer] | nil,
-  }
+          id: non_neg_integer | nil,
+          default: non_neg_integer | nil,
+          additional: [integer] | nil
+        }
 
   @derive {Jason.Encoder, only: [:default, :additional]}
 
   embedded_schema do
-    field :default, :integer
-    field :additional, {:array, :integer}
+    field(:default, :integer)
+    field(:additional, {:array, :integer})
   end
 
   @spec changeset(t(), map) :: Changeset.t()

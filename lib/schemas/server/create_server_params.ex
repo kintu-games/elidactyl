@@ -9,22 +9,22 @@ defmodule Elidactyl.Schemas.Server.CreateServerParams do
   alias Elidactyl.Schemas.Server.Allocation
 
   @type t :: %__MODULE__{
-    external_id: binary | nil,
-    name: binary | nil,
-    user: non_neg_integer | nil,
-    description: binary | nil,
-    egg: non_neg_integer | nil,
-    pack: non_neg_integer | nil,
-    docker_image: binary | nil,
-    startup: binary | nil,
-    environment: map | nil,
-    limits: Limits.t | nil,
-    feature_limits: FeatureLimits.t | nil,
-    allocation: Allocation.t | nil,
-    start_on_completion: boolean | nil,
-    skip_scripts: boolean | nil,
-    oom_disabled: boolean | nil,
-  }
+          external_id: binary | nil,
+          name: binary | nil,
+          user: non_neg_integer | nil,
+          description: binary | nil,
+          egg: non_neg_integer | nil,
+          pack: non_neg_integer | nil,
+          docker_image: binary | nil,
+          startup: binary | nil,
+          environment: map | nil,
+          limits: Limits.t() | nil,
+          feature_limits: FeatureLimits.t() | nil,
+          allocation: Allocation.t() | nil,
+          start_on_completion: boolean | nil,
+          skip_scripts: boolean | nil,
+          oom_disabled: boolean | nil
+        }
 
   @optional ~w[pack oom_disabled description name start_on_completion skip_scripts external_id]a
   @mandatory ~w[user egg docker_image startup environment]a
@@ -34,24 +34,24 @@ defmodule Elidactyl.Schemas.Server.CreateServerParams do
 
   @primary_key false
   embedded_schema do
-    field :external_id, :binary
-    field :name, :string
-    field :user, :integer
-    field :description, :string
-    field :egg, :integer
-    field :pack, :integer
+    field(:external_id, :binary)
+    field(:name, :string)
+    field(:user, :integer)
+    field(:description, :string)
+    field(:egg, :integer)
+    field(:pack, :integer)
 
-    field :docker_image, :string
-    field :startup, :string
-    field :environment, :map
+    field(:docker_image, :string)
+    field(:startup, :string)
+    field(:environment, :map)
 
-    embeds_one :limits, Limits
-    embeds_one :feature_limits, FeatureLimits
-    embeds_one :allocation, Allocation
+    embeds_one(:limits, Limits)
+    embeds_one(:feature_limits, FeatureLimits)
+    embeds_one(:allocation, Allocation)
 
-    field :start_on_completion, :boolean
-    field :skip_scripts, :boolean
-    field :oom_disabled, :boolean
+    field(:start_on_completion, :boolean)
+    field(:skip_scripts, :boolean)
+    field(:oom_disabled, :boolean)
   end
 
   @spec changeset(%__MODULE__{}, map) :: Changeset.t()

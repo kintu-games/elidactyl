@@ -21,6 +21,7 @@ defmodule Elidactyl.MockedServer.Router.Application.Servers do
 
   get "/api/application/servers" do
     %{data: servers} = list = MockedServer.list(:server)
+
     meta = %{
       pagination: %{
         total: length(servers),
@@ -31,6 +32,7 @@ defmodule Elidactyl.MockedServer.Router.Application.Servers do
         links: %{}
       }
     }
+
     success(conn, %{list | data: add_databases(servers), meta: meta})
   end
 
@@ -50,12 +52,14 @@ defmodule Elidactyl.MockedServer.Router.Application.Servers do
       "environment" => Map.get(conn.params, "environment", %{}),
       "image" => Map.get(conn.params, "docker_image"),
       "startup_command" => Map.get(conn.params, "startup"),
-      "installed" => false,
+      "installed" => false
     }
+
     params =
       conn.params
       |> Map.drop(~w[environment docker_image startup allocation])
       |> Map.put("container", container)
+
     success(conn, MockedServer.put(:server, params), 201)
   end
 
@@ -70,6 +74,7 @@ defmodule Elidactyl.MockedServer.Router.Application.Servers do
   delete "/api/application/servers/:id" do
     success(conn, "", 204)
   end
+
   delete "/api/application/servers/:id/force" do
     success(conn, "", 204)
   end
@@ -77,10 +82,12 @@ defmodule Elidactyl.MockedServer.Router.Application.Servers do
   patch "/api/application/servers/:id/build" do
     {id, ""} = Integer.parse(id)
     limits = Map.take(conn.params, ~w[memory swap disk io cpu threads])
+
     params =
       conn.params
       |> Map.drop(~w[memory swap disk io cpu threads])
       |> Map.put("limits", limits)
+
     %{attributes: prev} = MockedServer.get(:server, id)
     %{attributes: next} = Factory.build(:server, params)
     MockedServer.delete(:server, id)
@@ -89,15 +96,18 @@ defmodule Elidactyl.MockedServer.Router.Application.Servers do
 
   patch "/api/application/servers/:id/startup" do
     {id, ""} = Integer.parse(id)
+
     container = %{
       "environment" => Map.get(conn.params, "environment", %{}),
       "image" => Map.get(conn.params, "image"),
-      "startup_command" => Map.get(conn.params, "startup"),
+      "startup_command" => Map.get(conn.params, "startup")
     }
+
     params =
       conn.params
       |> Map.drop(~w[environment image startup])
       |> Map.put("container", container)
+
     %{attributes: prev} = MockedServer.get(:server, id)
     %{attributes: next} = Factory.build(:server, params)
     MockedServer.delete(:server, id)
@@ -118,8 +128,9 @@ defmodule Elidactyl.MockedServer.Router.Application.Servers do
 
   defp add_databases(servers) do
     %{data: databases} = MockedServer.list(:database)
+
     Enum.map(servers, fn %{attributes: %{id: id}} = server ->
-      server_databases = Enum.filter(databases, & match?(%{attributes: %{server: ^id}}, &1))
+      server_databases = Enum.filter(databases, &match?(%{attributes: %{server: ^id}}, &1))
       MockedServer.add_relationship(server, :databases, %ExternalList{data: server_databases})
     end)
   end

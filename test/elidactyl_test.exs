@@ -18,7 +18,7 @@ defmodule ElidactylTest do
         },
         image: "quay.io/pterodactyl/core:java",
         installed: true,
-        startup_command: "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+        startup_command: "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}"
       },
       created_at: "2019-12-23T06:46:27+00:00",
       description: "Matt from Wii Sports",
@@ -38,6 +38,7 @@ defmodule ElidactylTest do
       user: 1,
       uuid: "1a7ce997-259b-452e-8b4e-cecc464142ca"
     )
+
     MockedServer.put(:database,
       created_at: "2020-06-12T23:00:20+01:00",
       database: "s5_coreprotect",
@@ -49,6 +50,7 @@ defmodule ElidactylTest do
       updated_at: "2020-06-12T23:00:20+01:00",
       username: "u5_2jtJx1nO1d"
     )
+
     MockedServer.put(:database,
       created_at: "2020-06-12T23:00:13+01:00",
       database: "s5_perms",
@@ -60,6 +62,7 @@ defmodule ElidactylTest do
       updated_at: "2020-06-12T23:00:13+01:00",
       username: "u5_QsIAp1jhvS"
     )
+
     MockedServer.put(:user,
       "2fa": false,
       created_at: "2018-09-29T17:59:45+00:00",
@@ -74,6 +77,7 @@ defmodule ElidactylTest do
       username: "wardledeboss",
       uuid: "f253663c-5a45-43a8-b280-3ea3c752b931"
     )
+
     MockedServer.put(:user,
       external_id: nil,
       "2fa": false,
@@ -88,6 +92,7 @@ defmodule ElidactylTest do
       username: "codeco",
       uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335"
     )
+
     MockedServer.put(:node,
       behind_proxy: true,
       created_at: ~N[2022-01-16 23:36:57.343035],
@@ -109,6 +114,18 @@ defmodule ElidactylTest do
       updated_at: ~N[2022-02-12 23:36:57.343035],
       upload_size: 100,
       uuid: "e543674f-3d37-445a-90e8-e5c47b05c7e9"
+    )
+
+    MockedServer.put(
+      :allocation,
+      id: 1,
+      ip: "45.86.168.218",
+      alias: nil,
+      port: 25565,
+      notes: nil,
+      assigned: true,
+      uuid: "e543674f-3d37-445a-90e8-e5c47b05c7e9",
+      node: 100
     )
 
     :ok

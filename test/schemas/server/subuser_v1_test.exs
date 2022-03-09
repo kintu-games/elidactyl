@@ -11,7 +11,7 @@ defmodule Elidactyl.Schemas.Server.SubuserV1Test do
     email: "john@test.com",
     image: "avatar.jpg",
     "2fa_enabled": true,
-    permissions: ["admin"],
+    permissions: ["admin"]
   }
 
   def build_changeset(params \\ %{}) do

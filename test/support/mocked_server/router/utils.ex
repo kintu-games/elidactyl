@@ -4,7 +4,7 @@ defmodule Elidactyl.MockedServer.Router.Utils do
   def success(conn, body, code \\ 200) do
     body =
       case body do
-        ""  -> ""
+        "" -> ""
         nil -> ""
         body -> Jason.encode!(body)
       end

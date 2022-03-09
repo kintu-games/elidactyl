@@ -16,7 +16,7 @@ defmodule Elidactyl.Schemas.Server.CreateNodeParamsTest do
     disk_overallocate: 0,
     upload_size: 100,
     daemon_sftp: 2022,
-    daemon_listen: 8080,
+    daemon_listen: 8080
   }
 
   def build_changeset(params \\ %{}) do

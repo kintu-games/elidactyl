@@ -20,7 +20,7 @@ defmodule Elidactyl.Schemas.Server.CreateServerParamsTest do
     allocation: %{default: 17},
     start_on_completion: true,
     skip_scripts: false,
-    oom_disabled: true,
+    oom_disabled: true
   }
 
   def build_changeset(params \\ %{}) do
@@ -63,7 +63,9 @@ defmodule Elidactyl.Schemas.Server.CreateServerParamsTest do
     end
 
     test "refutes external id if its length grater than 191" do
-      %{external_id: String.pad_leading("", 192, "0")} |> build_changeset() |> assert_invalid(:external_id)
+      %{external_id: String.pad_leading("", 192, "0")}
+      |> build_changeset()
+      |> assert_invalid(:external_id)
     end
 
     test "refutes name if its length grater than 255" do
@@ -71,7 +73,9 @@ defmodule Elidactyl.Schemas.Server.CreateServerParamsTest do
     end
 
     test "refutes docker image if its length grater than 255" do
-      %{docker_image: String.pad_leading("", 256, "0")} |> build_changeset() |> assert_invalid(:docker_image)
+      %{docker_image: String.pad_leading("", 256, "0")}
+      |> build_changeset()
+      |> assert_invalid(:docker_image)
     end
 
     test "refutes negative pack values" do

@@ -8,7 +8,7 @@ defmodule Elidactyl.Schemas.Node.CreateAllocationParamsTest do
   @valid %{
     ip: "10.0.0.1",
     ports: ~w[25565],
-    alias: "test_alias",
+    alias: "test_alias"
   }
 
   def build_changeset(params \\ %{}) do

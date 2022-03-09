@@ -18,15 +18,15 @@ defmodule Elidactyl.Application.ServerTest do
     test "lists servers", %{server1: server1, server2: server2, db1: db1, db2: db2, db3: db3} do
       assert {:ok, servers} = Servers.list_servers()
       assert length(servers) == 2
-      s1 = Enum.find(servers, & &1.id == server1.id)
-      s2 = Enum.find(servers, & &1.id == server2.id)
+      s1 = Enum.find(servers, &(&1.id == server1.id))
+      s2 = Enum.find(servers, &(&1.id == server2.id))
       assert s1 != nil
       assert s2 != nil
       assert length(s1.databases) == 2
       assert length(s2.databases) == 1
-      assert Enum.any?(s1.databases, & &1.id == db1.id)
-      assert Enum.any?(s1.databases, & &1.id == db2.id)
-      assert Enum.any?(s2.databases, & &1.id == db3.id)
+      assert Enum.any?(s1.databases, &(&1.id == db1.id))
+      assert Enum.any?(s1.databases, &(&1.id == db2.id))
+      assert Enum.any?(s2.databases, &(&1.id == db3.id))
     end
   end
 
@@ -51,19 +51,21 @@ defmodule Elidactyl.Application.ServerTest do
       }
 
       assert {:ok, %{id: id} = server} = Servers.create_server(params)
+
       assert %{
-        allocation: allocation,
-        container: %{
-          environment: %{"DL_VERSION" => "1.12.2"},
-          image: "quay.io/pterodactyl/core:java-glibc",
-          installed: false,
-          startup_command: "java -Xms128M -Xmx 1024M -jar server.jar"
-        },
-        egg: egg,
-        feature_limits: %{backups: 1, databases: 1},
-        id: ^id,
-        limits: %{cpu: 100, disk: 1024, io: 500, memory: 512, swap: 0, threads: nil},
-      } = server
+               allocation: allocation,
+               container: %{
+                 environment: %{"DL_VERSION" => "1.12.2"},
+                 image: "quay.io/pterodactyl/core:java-glibc",
+                 installed: false,
+                 startup_command: "java -Xms128M -Xmx 1024M -jar server.jar"
+               },
+               egg: egg,
+               feature_limits: %{backups: 1, databases: 1},
+               id: ^id,
+               limits: %{cpu: 100, disk: 1024, io: 500, memory: 512, swap: 0, threads: nil}
+             } = server
+
       assert is_integer(allocation)
       assert is_integer(egg)
     end
@@ -96,7 +98,7 @@ defmodule Elidactyl.Application.ServerTest do
         io: 500,
         cpu: 0,
         threads: nil,
-        feature_limits: %{databases: 5, allocations: 5, backups: 2},
+        feature_limits: %{databases: 5, allocations: 5, backups: 2}
       }
 
       assert {:ok, server} = Servers.update_server_build_info(id, params)
@@ -117,11 +119,13 @@ defmodule Elidactyl.Application.ServerTest do
       }
 
       assert {:ok, server} = Servers.update_server_startup(id, params)
+
       assert %{
-        startup_command: "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
-        environment: %{"SERVER_JARFILE" => "server.jar", "VANILLA_VERSION" => "latest"},
-        image: "quay.io/pterodactyl/core:java"
-      } = server.container
+               startup_command: "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+               environment: %{"SERVER_JARFILE" => "server.jar", "VANILLA_VERSION" => "latest"},
+               image: "quay.io/pterodactyl/core:java"
+             } = server.container
+
       assert server.egg == 5
     end
   end

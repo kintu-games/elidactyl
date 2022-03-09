@@ -9,20 +9,20 @@ defmodule Elidactyl.Schemas.User do
   @behaviour Parser
 
   @type t :: %__MODULE__{
-    id: non_neg_integer | nil,
-    external_id: binary | nil,
-    uuid: Ecto.UUID.t | nil,
-    username: binary | nil,
-    email: binary | nil,
-    first_name: binary | nil,
-    last_name: binary | nil,
-    password: binary | nil,
-    "2fa": boolean | nil,
-    root_admin: boolean | nil,
-    language: binary | nil,
-    created_at: NaiveDateTime.t | nil,
-    updated_at: NaiveDateTime.t | nil,
-  }
+          id: non_neg_integer | nil,
+          external_id: binary | nil,
+          uuid: Ecto.UUID.t() | nil,
+          username: binary | nil,
+          email: binary | nil,
+          first_name: binary | nil,
+          last_name: binary | nil,
+          password: binary | nil,
+          "2fa": boolean | nil,
+          root_admin: boolean | nil,
+          language: binary | nil,
+          created_at: NaiveDateTime.t() | nil,
+          updated_at: NaiveDateTime.t() | nil
+        }
 
   @optional [:password, :external_id]
   @mandatory [:username, :email, :first_name, :last_name, :root_admin, :language]
@@ -30,18 +30,18 @@ defmodule Elidactyl.Schemas.User do
   @derive {Jason.Encoder, only: @optional ++ @mandatory}
 
   embedded_schema do
-    field :external_id, :string
-    field :uuid, Ecto.UUID
-    field :username, :string
-    field :email, :string
-    field :first_name, :string
-    field :last_name, :string
-    field :password, :string
-    field :"2fa", :boolean
-    field :root_admin, :boolean
-    field :language, :string
-    field :created_at, :naive_datetime
-    field :updated_at, :naive_datetime
+    field(:external_id, :string)
+    field(:uuid, Ecto.UUID)
+    field(:username, :string)
+    field(:email, :string)
+    field(:first_name, :string)
+    field(:last_name, :string)
+    field(:password, :string)
+    field(:"2fa", :boolean)
+    field(:root_admin, :boolean)
+    field(:language, :string)
+    field(:created_at, :naive_datetime)
+    field(:updated_at, :naive_datetime)
   end
 
   @spec changeset(t(), map) :: Ecto.Changeset.t()

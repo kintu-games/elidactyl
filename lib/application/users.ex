@@ -6,7 +6,7 @@ defmodule Elidactyl.Application.Users do
   alias Elidactyl.Schemas.User
   alias Elidactyl.Response
 
-  @spec all() :: {:ok, [User.t]} | {:error, Error.t}
+  @spec all() :: {:ok, [User.t()]} | {:error, Error.t()}
   def all do
     with {:ok, resp} <- Request.request(:get, "/api/application/users"),
          result when is_list(result) <- Response.parse_response(resp) do
@@ -17,7 +17,7 @@ defmodule Elidactyl.Application.Users do
     end
   end
 
-  @spec get_by_id(Elidactyl.id) :: {:ok, User.t} | {:error, Error.t}
+  @spec get_by_id(Elidactyl.id()) :: {:ok, User.t()} | {:error, Error.t()}
   def get_by_id(id) do
     with {:ok, resp} <- Request.request(:get, "/api/application/users/#{id}"),
          %User{} = result <- Response.parse_response(resp) do
@@ -28,7 +28,7 @@ defmodule Elidactyl.Application.Users do
     end
   end
 
-  @spec get_by_external_id(Elidactyl.id) :: {:ok, User.t} | {:error, Error.t}
+  @spec get_by_external_id(Elidactyl.id()) :: {:ok, User.t()} | {:error, Error.t()}
   def get_by_external_id(id) do
     with {:ok, resp} <- Request.request(:get, "/api/application/users/external/#{id}"),
          %User{} = result <- Response.parse_response(resp) do
@@ -39,8 +39,7 @@ defmodule Elidactyl.Application.Users do
     end
   end
 
-
-  @spec create(Elidactyl.params) :: {:ok, User.t} | {:error, Error.t}
+  @spec create(Elidactyl.params()) :: {:ok, User.t()} | {:error, Error.t()}
   def create(params) do
     with %{valid?: true} = changeset <- User.changeset(%User{}, params),
          user = Ecto.Changeset.apply_changes(changeset),
@@ -54,7 +53,7 @@ defmodule Elidactyl.Application.Users do
     end
   end
 
-  @spec update(Elidactyl.id, Elidactyl.params) :: {:ok, User.t} | {:error, Error.t}
+  @spec update(Elidactyl.id(), Elidactyl.params()) :: {:ok, User.t()} | {:error, Error.t()}
   def update(id, params) do
     with {:ok, %User{} = user} <- get_by_id(id),
          %{valid?: true} = changeset <- User.changeset(user, params),
@@ -69,7 +68,7 @@ defmodule Elidactyl.Application.Users do
     end
   end
 
-  @spec delete(Elidactyl.id) :: :ok | {:error, Error.t}
+  @spec delete(Elidactyl.id()) :: :ok | {:error, Error.t()}
   def delete(id) do
     with {:ok, _resp} <- Request.request(:delete, "/api/application/users/#{id}") do
       :ok

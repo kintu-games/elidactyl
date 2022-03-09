@@ -16,8 +16,8 @@ defmodule Elidactyl.Client.Server.SubusersTest do
     test "lists allocations for a node", %{user1: %{email: email1}, user2: %{email: email2}} do
       assert {:ok, subusers} = Client.list_all_server_subusers(1)
       assert length(subusers) == 2
-      assert Enum.find(subusers, & &1.email == email1)
-      assert Enum.find(subusers, & &1.email == email2)
+      assert Enum.find(subusers, &(&1.email == email1))
+      assert Enum.find(subusers, &(&1.email == email2))
     end
   end
 
@@ -28,7 +28,7 @@ defmodule Elidactyl.Client.Server.SubusersTest do
         email: "subuser3@example.com",
         image: "https:\/\/gravatar.com\/avatar\/8b28d32aaa64a1564450d16f71a81f65",
         "2fa_enabled": false,
-        permissions: ~w[control.console control.start websocket.connect],
+        permissions: ~w[control.console control.start websocket.connect]
       }
 
       assert {:ok, subuser} = Client.create_server_subuser(1, params)
@@ -59,7 +59,7 @@ defmodule Elidactyl.Client.Server.SubusersTest do
         email: "subuser3@example.com",
         image: "https:\/\/gravatar.com\/avatar\/8b28d32aaa64a1564450d16f71a81f65",
         "2fa_enabled": not user."2fa_enabled",
-        permissions: ~w[control.console],
+        permissions: ~w[control.console]
       }
 
       assert {:ok, %SubuserV1{} = subuser} = Client.update_server_subuser(1, user.uuid, params)

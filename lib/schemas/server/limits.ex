@@ -5,12 +5,12 @@ defmodule Elidactyl.Schemas.Server.Limits do
   alias Ecto.Changeset
 
   @type t :: %__MODULE__{
-    memory: non_neg_integer | nil,
-    swap: integer | nil,
-    disk: non_neg_integer | nil,
-    io: non_neg_integer | nil,
-    cpu: non_neg_integer | nil,
-  }
+          memory: non_neg_integer | nil,
+          swap: integer | nil,
+          disk: non_neg_integer | nil,
+          io: non_neg_integer | nil,
+          cpu: non_neg_integer | nil
+        }
 
   @mandatory ~w[memory swap disk io cpu]a
 
@@ -18,11 +18,11 @@ defmodule Elidactyl.Schemas.Server.Limits do
 
   @primary_key false
   embedded_schema do
-    field :memory, :integer
-    field :swap, :integer
-    field :disk, :integer
-    field :io, :integer
-    field :cpu, :integer
+    field(:memory, :integer)
+    field(:swap, :integer)
+    field(:disk, :integer)
+    field(:io, :integer)
+    field(:cpu, :integer)
   end
 
   @spec changeset(t(), map) :: Changeset.t()

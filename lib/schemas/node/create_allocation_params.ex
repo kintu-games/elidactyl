@@ -4,10 +4,10 @@ defmodule Elidactyl.Schemas.Node.CreateAllocationParams do
   use Ecto.Schema
 
   @type t :: %__MODULE__{
-    ip: binary | nil,
-    alias: binary | nil,
-    ports: [binary] | nil,
-  }
+          ip: binary | nil,
+          alias: binary | nil,
+          ports: [binary] | nil
+        }
 
   @optional [:alias]
   @mandatory [:ip, :ports]
@@ -16,9 +16,9 @@ defmodule Elidactyl.Schemas.Node.CreateAllocationParams do
 
   @primary_key false
   embedded_schema do
-    field :ip, :string
-    field :alias, :string
-    field :ports, {:array, :string}
+    field(:ip, :string)
+    field(:alias, :string)
+    field(:ports, {:array, :string})
   end
 
   @spec changeset(t(), map) :: Ecto.Changeset.t()

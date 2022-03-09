@@ -10,30 +10,30 @@ defmodule Elidactyl.Schemas.Server.Database do
   @behaviour Parser
 
   @type t :: %__MODULE__{
-    id: non_neg_integer | nil,
-    host: non_neg_integer | nil,
-    server: non_neg_integer | nil,
-    database: binary | nil,
-    username: binary | nil,
-    remote: binary | nil,
-    max_connections: non_neg_integer | nil,
-    created_at: NaiveDateTime.t | nil,
-    updated_at: NaiveDateTime.t | nil,
-  }
+          id: non_neg_integer | nil,
+          host: non_neg_integer | nil,
+          server: non_neg_integer | nil,
+          database: binary | nil,
+          username: binary | nil,
+          remote: binary | nil,
+          max_connections: non_neg_integer | nil,
+          created_at: NaiveDateTime.t() | nil,
+          updated_at: NaiveDateTime.t() | nil
+        }
 
   @mandatory ~w[host database remote]a
 
   @derive {Jason.Encoder, only: @mandatory}
 
   embedded_schema do
-    field :host, :integer
-    field :database, :string
-    field :remote, :string
-    field :server, :integer, virtual: true
-    field :username, :string, virtual: true
-    field :max_connections, :integer, virtual: true
-    field :created_at, :naive_datetime, virtual: true
-    field :updated_at, :naive_datetime, virtual: true
+    field(:host, :integer)
+    field(:database, :string)
+    field(:remote, :string)
+    field(:server, :integer, virtual: true)
+    field(:username, :string, virtual: true)
+    field(:max_connections, :integer, virtual: true)
+    field(:created_at, :naive_datetime, virtual: true)
+    field(:updated_at, :naive_datetime, virtual: true)
   end
 
   @spec changeset(t(), map) :: Changeset.t()

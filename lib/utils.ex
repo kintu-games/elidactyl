@@ -4,7 +4,7 @@ defmodule Elidactyl.Utils do
   @spec keys_to_atoms(map | keyword, atom | binary | [atom | binary]) :: %{optional(atom) => any}
   def keys_to_atoms(attributes, exclude \\ []) when is_map(attributes) do
     exclude = normalize_exclude(exclude)
-    Map.new(attributes, & reduce_keys_to_atoms(&1, exclude))
+    Map.new(attributes, &reduce_keys_to_atoms(&1, exclude))
   end
 
   @spec parse_timestamps(map) :: map
@@ -21,17 +21,23 @@ defmodule Elidactyl.Utils do
       else
         val
       end
+
     {String.to_existing_atom(key), val}
   end
-  defp reduce_keys_to_atoms({key, val}, _) when is_list(val), do: {String.to_existing_atom(key), val}
+
+  defp reduce_keys_to_atoms({key, val}, _) when is_list(val),
+    do: {String.to_existing_atom(key), val}
+
   defp reduce_keys_to_atoms({key, val}, _), do: {String.to_existing_atom(key), val}
 
   defp normalize_exclude(exclude) when is_list(exclude) do
     exclude |> Enum.map(&to_string/1) |> Enum.uniq()
   end
+
   defp normalize_exclude(field) when is_atom(field) or is_binary(field) do
     [to_string(field)]
   end
+
   defp normalize_exclude(_), do: []
 
   defp parse_timestamp(attributes, field) do

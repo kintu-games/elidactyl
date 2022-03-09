@@ -7,7 +7,7 @@ defmodule Elidactyl.Schemas.Server.AllocationTest do
 
   @valid %{
     default: 1,
-    additional: [2, 3],
+    additional: [2, 3]
   }
 
   def build_changeset(params \\ %{}) do

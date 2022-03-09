@@ -16,8 +16,8 @@ defmodule Elidactyl.Application.UsersTest do
     test "lists users", %{user1: %{id: id1}, user2: %{id: id2}} do
       assert {:ok, users} = Users.all()
       assert length(users) == 2
-      assert Enum.any?(users, & &1.id == id1)
-      assert Enum.any?(users, & &1.id == id2)
+      assert Enum.any?(users, &(&1.id == id1))
+      assert Enum.any?(users, &(&1.id == id2))
     end
   end
 
@@ -53,6 +53,7 @@ defmodule Elidactyl.Application.UsersTest do
         language: "en",
         root_admin: true
       }
+
       assert {:ok, user} = Users.create(params)
       assert is_integer(user.id)
       assert {:ok, _} = Ecto.UUID.cast(user.uuid)
@@ -71,7 +72,7 @@ defmodule Elidactyl.Application.UsersTest do
         email: "email@example.com",
         first_name: "John",
         last_name: "Doe",
-        language: "ru",
+        language: "ru"
       }
 
       assert {:ok, user} = Users.update(id, params)

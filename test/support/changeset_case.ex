@@ -3,10 +3,13 @@ defmodule Elidactyl.ChangesetCase do
 
   using do
     quote do
-      import unquote(__MODULE__), only: [
-        assert_invalid: 2, assert_invalid: 3,
-        assert_valid: 1, assert_valid: 2
-      ]
+      import unquote(__MODULE__),
+        only: [
+          assert_invalid: 2,
+          assert_invalid: 3,
+          assert_valid: 1,
+          assert_valid: 2
+        ]
     end
   end
 
@@ -27,7 +30,9 @@ defmodule Elidactyl.ChangesetCase do
           raise "assert_invalid/2 requires a changeset for the first argument"
 
         :valid_changeset ->
-          flunk("#{inspect(c.data.__struct__)} is valid, expected at least one field to be invalid")
+          flunk(
+            "#{inspect(c.data.__struct__)} is valid, expected at least one field to be invalid"
+          )
 
         :invalid_field ->
           raise "field :#{unquote(field)} not found in #{inspect(c.data.__struct__)}"
@@ -37,8 +42,10 @@ defmodule Elidactyl.ChangesetCase do
       end
     end
   end
+
   defmacro assert_invalid(changeset, field, assertion_expression) when is_atom(field) do
     expr = Macro.to_string(assertion_expression)
+
     quote do
       c = unquote(changeset)
 
@@ -46,21 +53,24 @@ defmodule Elidactyl.ChangesetCase do
            :ok <- unquote(__MODULE__).validate_field(c, unquote(field)),
            {message, _opts} <- Keyword.get(c.errors, unquote(field)) do
         var!(error_message) = message
+
         if unquote(assertion_expression) do
           assert true
         else
-          flunk """
+          flunk("""
           Expression did not match error message
           #{IO.ANSI.cyan()}error_message:#{IO.ANSI.reset()} #{inspect(message)}
           #{IO.ANSI.cyan()}expression:#{IO.ANSI.reset()} #{unquote(expr)}
-          """
+          """)
         end
       else
         :invalid_changeset ->
           raise "assert_invalid/3 requires a changeset for the first argument"
 
         :valid_changeset ->
-          flunk("#{inspect(c.data.__struct__)} is valid, expected at least one field to be invalid")
+          flunk(
+            "#{inspect(c.data.__struct__)} is valid, expected at least one field to be invalid"
+          )
 
         :invalid_field ->
           raise "field :#{unquote(field)} not found in #{inspect(c.data.__struct__)}"
@@ -83,9 +93,10 @@ defmodule Elidactyl.ChangesetCase do
 
         :valid_changeset ->
           flunk("#{inspect(c.data.__struct__)} is invalid, expected to be valid")
-        end
+      end
     end
   end
+
   defmacro assert_valid(changeset, field) when is_atom(field) do
     quote do
       c = unquote(changeset)
@@ -118,5 +129,6 @@ defmodule Elidactyl.ChangesetCase do
       :invalid_field
     end
   end
+
   def validate_field(_, _), do: :invalid_changeset
 end

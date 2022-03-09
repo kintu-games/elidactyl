@@ -7,16 +7,16 @@ defmodule Elidactyl.Schemas.Nest.EggVariable do
   @behaviour Parser
 
   @type t :: %__MODULE__{
-    id: non_neg_integer | nil,
-    egg_id: non_neg_integer | nil,
-    name: binary | nil,
-    description: binary | nil,
-    env_variable: binary | nil,
-    default_value: binary | nil,
-    user_viewable: boolean | nil,
-    user_editable: boolean | nil,
-    rules: binary | nil,
-  }
+          id: non_neg_integer | nil,
+          egg_id: non_neg_integer | nil,
+          name: binary | nil,
+          description: binary | nil,
+          env_variable: binary | nil,
+          default_value: binary | nil,
+          user_viewable: boolean | nil,
+          user_editable: boolean | nil,
+          rules: binary | nil
+        }
 
   defstruct ~w[id egg_id name description env_variable default_value user_viewable user_editable rules]a
 

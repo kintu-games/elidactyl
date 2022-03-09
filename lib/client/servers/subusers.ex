@@ -6,7 +6,7 @@ defmodule Elidactyl.Client.Servers.Subusers do
   alias Elidactyl.Response
   alias Elidactyl.Schemas.Server.SubuserV1
 
-  @spec all(Elidactyl.uuid) :: {:ok, [SubuserV1.t]} | {:error, Error.t}
+  @spec all(Elidactyl.uuid()) :: {:ok, [SubuserV1.t()]} | {:error, Error.t()}
   def all(server_uuid) do
     with {:ok, resp} <- Request.request(:get, "/api/client/servers/#{server_uuid}/users"),
          result when is_list(result) <- Response.parse_response(resp) do
@@ -17,9 +17,10 @@ defmodule Elidactyl.Client.Servers.Subusers do
     end
   end
 
-  @spec create(Elidactyl.uuid, Elidactyl.params) :: {:ok, SubuserV1.t} | {:error, Error.t}
+  @spec create(Elidactyl.uuid(), Elidactyl.params()) :: {:ok, SubuserV1.t()} | {:error, Error.t()}
   def create(server_uuid, params) do
-    with {:ok, resp} <- Request.request(:post, "/api/client/servers/#{server_uuid}/users", params),
+    with {:ok, resp} <-
+           Request.request(:post, "/api/client/servers/#{server_uuid}/users", params),
          %SubuserV1{} = result <- Response.parse_response(resp) do
       {:ok, result}
     else
@@ -28,9 +29,10 @@ defmodule Elidactyl.Client.Servers.Subusers do
     end
   end
 
-  @spec one(Elidactyl.uuid, Elidactyl.uuid) :: {:ok, SubuserV1.t} | {:error, Error.t}
+  @spec one(Elidactyl.uuid(), Elidactyl.uuid()) :: {:ok, SubuserV1.t()} | {:error, Error.t()}
   def one(server_uuid, subuser_uuid) do
-    with {:ok, resp} <- Request.request(:get, "/api/client/servers/#{server_uuid}/users/#{subuser_uuid}"),
+    with {:ok, resp} <-
+           Request.request(:get, "/api/client/servers/#{server_uuid}/users/#{subuser_uuid}"),
          %SubuserV1{} = result <- Response.parse_response(resp) do
       {:ok, result}
     else
@@ -39,9 +41,15 @@ defmodule Elidactyl.Client.Servers.Subusers do
     end
   end
 
-  @spec update(Elidactyl.uuid, Elidactyl.uuid, Elidactyl.params) :: {:ok, SubuserV1.t} | {:error, Error.t}
+  @spec update(Elidactyl.uuid(), Elidactyl.uuid(), Elidactyl.params()) ::
+          {:ok, SubuserV1.t()} | {:error, Error.t()}
   def update(server_uuid, subuser_uuid, params) do
-    with {:ok, resp} <- Request.request(:post, "/api/client/servers/#{server_uuid}/users/#{subuser_uuid}", params),
+    with {:ok, resp} <-
+           Request.request(
+             :post,
+             "/api/client/servers/#{server_uuid}/users/#{subuser_uuid}",
+             params
+           ),
          %SubuserV1{} = result <- Response.parse_response(resp) do
       {:ok, result}
     else
@@ -50,9 +58,10 @@ defmodule Elidactyl.Client.Servers.Subusers do
     end
   end
 
-  @spec delete(Elidactyl.uuid, Elidactyl.uuid) :: :ok | {:error, Error.t}
+  @spec delete(Elidactyl.uuid(), Elidactyl.uuid()) :: :ok | {:error, Error.t()}
   def delete(server_uuid, subuser_uuid) do
-    with {:ok, _resp} <- Request.request(:delete, "/api/client/servers/#{server_uuid}/users/#{subuser_uuid}") do
+    with {:ok, _resp} <-
+           Request.request(:delete, "/api/client/servers/#{server_uuid}/users/#{subuser_uuid}") do
       :ok
     end
   end

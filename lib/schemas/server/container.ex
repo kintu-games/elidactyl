@@ -10,20 +10,20 @@ defmodule Elidactyl.Schemas.Server.Container do
   @behaviour Parser
 
   @type t :: %__MODULE__{
-    startup_command: binary | nil,
-    image: binary | nil,
-    environment: Parser.json_map | nil,
-    installed: boolean | nil,
-  }
+          startup_command: binary | nil,
+          image: binary | nil,
+          environment: Parser.json_map() | nil,
+          installed: boolean | nil
+        }
 
   @derive {Jason.Encoder, only: [:startup_command, :image, :environment, :installed]}
 
   @primary_key false
   embedded_schema do
-    field :startup_command, :string
-    field :image, :string
-    field :environment, :map
-    field :installed, :boolean
+    field(:startup_command, :string)
+    field(:image, :string)
+    field(:environment, :map)
+    field(:installed, :boolean)
   end
 
   @spec changeset(t(), map) :: Changeset.t()

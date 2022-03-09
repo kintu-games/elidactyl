@@ -9,7 +9,7 @@ defmodule Elidactyl.Schemas.Server.UpdateDetailsParamsTest do
     external_id: "external-id",
     name: "Server Name",
     description: "Server Description",
-    user: 1,
+    user: 1
   }
 
   def build_changeset(params \\ %{}) do
@@ -41,7 +41,9 @@ defmodule Elidactyl.Schemas.Server.UpdateDetailsParamsTest do
     end
 
     test "refutes external_id values longer than 191 chars" do
-      %{external_id: String.pad_leading("", 192, "x")} |> build_changeset() |> assert_invalid(:external_id)
+      %{external_id: String.pad_leading("", 192, "x")}
+      |> build_changeset()
+      |> assert_invalid(:external_id)
     end
 
     test "refutes name values longer than 255 chars" do

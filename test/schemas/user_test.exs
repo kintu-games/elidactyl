@@ -13,7 +13,7 @@ defmodule Elidactyl.Schemas.UserTest do
     last_name: "Smith",
     password: "12345",
     root_admin: false,
-    language: "en",
+    language: "en"
   }
 
   def build_changeset(params \\ %{}) do
@@ -60,23 +60,33 @@ defmodule Elidactyl.Schemas.UserTest do
     end
 
     test "refutes email values longer than 255 chars" do
-      %{email: String.pad_leading("", 249, "x") <> "@test.com"} |> build_changeset() |> assert_invalid(:email)
+      %{email: String.pad_leading("", 249, "x") <> "@test.com"}
+      |> build_changeset()
+      |> assert_invalid(:email)
     end
 
     test "refutes external_id values longer than 255 chars" do
-      %{external_id: String.pad_leading("", 256, "x")} |> build_changeset() |> assert_invalid(:external_id)
+      %{external_id: String.pad_leading("", 256, "x")}
+      |> build_changeset()
+      |> assert_invalid(:external_id)
     end
 
     test "refutes username values longer than 255 chars" do
-      %{username: String.pad_leading("", 256, "x")} |> build_changeset() |> assert_invalid(:username)
+      %{username: String.pad_leading("", 256, "x")}
+      |> build_changeset()
+      |> assert_invalid(:username)
     end
 
     test "refutes first_name values longer than 255 chars" do
-      %{first_name: String.pad_leading("", 256, "x")} |> build_changeset() |> assert_invalid(:first_name)
+      %{first_name: String.pad_leading("", 256, "x")}
+      |> build_changeset()
+      |> assert_invalid(:first_name)
     end
 
     test "refutes last_name values longer than 255 chars" do
-      %{last_name: String.pad_leading("", 256, "x")} |> build_changeset() |> assert_invalid(:last_name)
+      %{last_name: String.pad_leading("", 256, "x")}
+      |> build_changeset()
+      |> assert_invalid(:last_name)
     end
   end
 end

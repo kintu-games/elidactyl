@@ -16,15 +16,23 @@ defmodule Elidactyl.Factory do
   def build(:boolean, _), do: Enum.random([true, false])
   def build(:email, _), do: "support@pterodactyl.io"
   def build(:docker_image, _), do: "quay.io/pterodactyl/core:java"
-  def build(:startup_command, _), do: "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}"
-  def build(:ip, _), do: "#{Enum.random(1..200)}.#{Enum.random(1..200)}.#{Enum.random(1..200)}.#{Enum.random(1..200)}"
+
+  def build(:startup_command, _),
+    do: "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}"
+
+  def build(:ip, _),
+    do:
+      "#{Enum.random(1..200)}.#{Enum.random(1..200)}.#{Enum.random(1..200)}.#{Enum.random(1..200)}"
+
   def build(:port, _), do: Enum.random(1000..2000)
+
   def build(:base64, size) do
     size
     |> :crypto.strong_rand_bytes()
     |> Base.encode64()
     |> String.slice(0..(size - 1))
   end
+
   def build(map, attributes) when map in @maps do
     Map.merge(defaults(map), normalize_attributes(attributes), &deep_merge/3)
   end
@@ -32,6 +40,7 @@ defmodule Elidactyl.Factory do
   @spec defaults(atom) :: map
   def defaults(:limits), do: %{memory: 512, swap: 0, disk: 200, io: 500, cpu: 0, threads: nil}
   def defaults(:feature_limits), do: %{databases: 5, allocations: 5, backups: 2}
+
   def defaults(:container) do
     %{
       startup_command: build(:startup_command),
@@ -40,15 +49,17 @@ defmodule Elidactyl.Factory do
       environment: build(:environment)
     }
   end
+
   def defaults(:environment) do
     %{
       "SERVER_JARFILE" => "server.jar",
       "VANILLA_VERSION" => "latest",
       "STARTUP" => build(:startup_command),
       "P_SERVER_LOCATION" => "Test",
-      "P_SERVER_UUID" => build(:uuid),
+      "P_SERVER_UUID" => build(:uuid)
     }
   end
+
   @egg_config_stops ~w[stop end]
   def defaults(:egg_config) do
     %{
@@ -56,9 +67,10 @@ defmodule Elidactyl.Factory do
       startup: egg_config_startup(),
       stop: Enum.random(@egg_config_stops),
       logs: Enum.random([[], %{custom: build(:boolean), location: "proxy.log.0"}]),
-      extends: nil,
+      extends: nil
     }
   end
+
   @script_shells ~w[bash ash]
   @script_containers ~w[alpine:3.9 openjdk:8]
   def defaults(:script) do
@@ -67,13 +79,14 @@ defmodule Elidactyl.Factory do
       install: "#!/bin/bash\r\n# Forge Installation Script\r\n#\r\n#",
       entry: Enum.random(@script_shells),
       container: Enum.random(@script_containers),
-      extends: nil,
+      extends: nil
     }
   end
 
   @server_names ["Wuhu Island", "Gaming", "Building"]
   def defaults(:server) do
     <<identifier::binary-8, _::binary>> = uuid = build(:uuid)
+
     %{
       id: build(:id),
       external_id: "RemoteId#{build(:id)}",
@@ -90,12 +103,14 @@ defmodule Elidactyl.Factory do
       nest: build(:id),
       egg: build(:id),
       pack: nil,
-      container: build(:container),
+      container: build(:container)
     }
     |> add_timestamps()
   end
+
   def defaults(:database) do
     server_id = build(:id)
+
     %{
       id: build(:id),
       server: server_id,
@@ -103,10 +118,11 @@ defmodule Elidactyl.Factory do
       database: "s#{server_id}_perms",
       username: "u#{server_id}_#{build(:base64, 10)}",
       remote: "%",
-      max_connections: 0,
+      max_connections: 0
     }
     |> add_timestamps()
   end
+
   @nest_names ["Minecraft"]
   def defaults(:nest) do
     %{
@@ -114,10 +130,11 @@ defmodule Elidactyl.Factory do
       uuid: build(:uuid),
       author: build(:email),
       name: Enum.random(@nest_names),
-      description: "",
+      description: ""
     }
     |> add_timestamps()
   end
+
   @egg_names ["Bungeecord", "Forge Minecraft", "Paper"]
   def defaults(:egg) do
     %{
@@ -130,18 +147,28 @@ defmodule Elidactyl.Factory do
       docker_image: build(:docker_image),
       config: build(:egg_config),
       startup: build(:startup_command),
-      script: build(:script),
+      script: build(:script)
     }
     |> add_timestamps()
   end
+
   @egg_variable_names [
-    "Bungeecord Version", "Bungeecord Jar File", "Server Jar File", "Forge version", "Build Type",
-    "Minecraft Version", "Download Path", "Build Number", "Sponge Version", "Server Version",
+    "Bungeecord Version",
+    "Bungeecord Jar File",
+    "Server Jar File",
+    "Forge version",
+    "Build Type",
+    "Minecraft Version",
+    "Download Path",
+    "Build Number",
+    "Sponge Version",
+    "Server Version"
   ]
   @egg_variable_rules ~w[required|string|max:20 required|numeric|digits_between:1,3 required|string|between:3,15]
   def defaults(:egg_variable) do
     name = Enum.random(@egg_variable_names)
     env_variable = name |> String.replace(~r/\s+/, "_") |> String.upcase()
+
     %{
       id: build(:id),
       egg_id: build(:id),
@@ -151,15 +178,17 @@ defmodule Elidactyl.Factory do
       default_value: "",
       user_viewable: build(:boolean),
       user_editable: build(:boolean),
-      rules: Enum.random(@egg_variable_rules),
+      rules: Enum.random(@egg_variable_rules)
     }
   end
+
   @usernames ~w[wardledeboss codeco example]
   @email_domains ~w[file.properties gmail.com example.com]
   @firstnames ~w[Rihan Harvey]
   @lastnames ~w[Arfan Wardle]
   def defaults(:user) do
     username = Enum.random(@usernames)
+
     %{
       id: build(:id),
       external_id: "RemoteId#{build(:id)}",
@@ -170,13 +199,15 @@ defmodule Elidactyl.Factory do
       last_name: Enum.random(@lastnames),
       language: "en",
       root_admin: build(:boolean),
-      "2fa": build(:boolean),
+      "2fa": build(:boolean)
     }
     |> add_timestamps()
   end
+
   def defaults(:server_subuser) do
     username = Enum.random(@usernames)
     uuid = build(:uuid)
+
     %{
       id: build(:id),
       server: build(:id),
@@ -185,10 +216,11 @@ defmodule Elidactyl.Factory do
       image: "https://gravatar.com/avatar/#{String.replace(uuid, "-", "")}",
       permissions: ~w[control.console control.start websocket.connect],
       username: username,
-      uuid: uuid,
+      uuid: uuid
     }
     |> add_timestamps()
   end
+
   @allocation_aliases ~w[steam rcon]
   def defaults(:allocation) do
     %{
@@ -198,9 +230,10 @@ defmodule Elidactyl.Factory do
       ip: build(:ip),
       port: build(:port),
       node: build(:id),
-      notes: nil,
+      notes: nil
     }
   end
+
   def defaults(:node) do
     %{
       id: build(:id),
@@ -221,10 +254,11 @@ defmodule Elidactyl.Factory do
       daemon_listen: build(:port),
       daemon_sftp: build(:port),
       daemon_base: "/srv/daemon-data",
-      configuration: build(:node_configuration),
+      configuration: build(:node_configuration)
     }
     |> add_timestamps()
   end
+
   def defaults(:node_created_response) do
     %{
       id: build(:id),
@@ -248,7 +282,7 @@ defmodule Elidactyl.Factory do
       allocated_resources: %{
         memory: 0,
         disk: 0
-     }
+      }
     }
     |> add_timestamps()
   end
@@ -265,15 +299,15 @@ defmodule Elidactyl.Factory do
         "ssl" => %{
           "enabled" => build(:boolean),
           "cert" => "/etc/letsencrypt/live/pterodactyl.file.properties/fullchain.pem",
-          "key" => "/etc/letsencrypt/live/pterodactyl.file.properties/privkey.pem",
+          "key" => "/etc/letsencrypt/live/pterodactyl.file.properties/privkey.pem"
         },
-        "upload_limit" => 100,
+        "upload_limit" => 100
       },
       "system" => %{
         "data" => "/srv/daemon-data",
-        "sftp" => %{"bind_port" => build(:port)},
+        "sftp" => %{"bind_port" => build(:port)}
       },
-      "remote" => "https://pterodactyl.file.properties",
+      "remote" => "https://pterodactyl.file.properties"
     }
   end
 
@@ -288,6 +322,7 @@ defmodule Elidactyl.Factory do
     now = NaiveDateTime.utc_now()
     about_week_ago = NaiveDateTime.add(now, -1 * Enum.random(5..13) * 24 * 3600)
     about_month_ago = NaiveDateTime.add(now, -1 * Enum.random(20..40) * 24 * 3600)
+
     map
     |> Map.put_new(:created_at, about_month_ago)
     |> Map.put_new(:updated_at, about_week_ago)
@@ -304,10 +339,10 @@ defmodule Elidactyl.Factory do
             "listeners[0].host" => "0.0.0.0:{{server.build.default.port}}",
             "servers.*.address" => %{
               "127.0.0.1" => "{{config.docker.interface}}",
-              "localhost" => "{{config.docker.interface}}",
-            },
-          },
-        },
+              "localhost" => "{{config.docker.interface}}"
+            }
+          }
+        }
       },
       %{
         "server.properties" => %{
@@ -316,24 +351,26 @@ defmodule Elidactyl.Factory do
             "server-ip" => "0.0.0.0",
             "enable-query" => "true",
             "server-port" => "{{server.build.default.port}}",
-            "query.port" => "{{server.build.default.port}}",
-          },
-        },
-      },
-    ] |> Enum.random()
+            "query.port" => "{{server.build.default.port}}"
+          }
+        }
+      }
+    ]
+    |> Enum.random()
   end
 
   defp egg_config_startup do
     [
       %{
         "done" => "Listening on ",
-        "userInteraction" => ["Listening on /0.0.0.0:25577"],
+        "userInteraction" => ["Listening on /0.0.0.0:25577"]
       },
       %{
         "done" => ")! For help, type ",
-        "userInteraction" => ["Go to eula.txt for more info."],
+        "userInteraction" => ["Go to eula.txt for more info."]
       }
-    ] |> Enum.random()
+    ]
+    |> Enum.random()
   end
 
   defp normalize_attributes(attributes) do
@@ -341,7 +378,10 @@ defmodule Elidactyl.Factory do
   end
 
   defp atomize_keys({"environment", v}), do: {:environment, v}
-  defp atomize_keys({k, v}) when is_binary(k) and is_map(v), do: {String.to_existing_atom(k), normalize_attributes(v)}
+
+  defp atomize_keys({k, v}) when is_binary(k) and is_map(v),
+    do: {String.to_existing_atom(k), normalize_attributes(v)}
+
   defp atomize_keys({k, v}) when is_binary(k), do: {String.to_existing_atom(k), v}
   defp atomize_keys(pair), do: pair
 end

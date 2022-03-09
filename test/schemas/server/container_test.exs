@@ -10,9 +10,9 @@ defmodule Elidactyl.Schemas.Server.ContainerTest do
     image: "image",
     environment: %{
       "VAR1" => "value1",
-      "VAR2" => "value2",
+      "VAR2" => "value2"
     },
-    installed: true,
+    installed: true
   }
 
   def build_changeset(params \\ %{}) do

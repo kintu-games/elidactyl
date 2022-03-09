@@ -8,7 +8,7 @@ defmodule Elidactyl.Schemas.Server.FeatureLimitsTest do
   @valid %{
     databases: 2,
     backups: 5,
-    allocations: 3,
+    allocations: 3
   }
 
   def build_changeset(params \\ %{}) do
