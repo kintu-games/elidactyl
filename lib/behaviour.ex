@@ -2,6 +2,7 @@ defmodule Elidactyl.Behaviour do
   @moduledoc false
 
   alias Elidactyl.Schemas.Node
+  alias Elidactyl.Schemas.Node.Allocation
   alias Elidactyl.Schemas.Server
   alias Elidactyl.Schemas.User
 
@@ -17,4 +18,5 @@ defmodule Elidactyl.Behaviour do
   @callback delete_server(id) :: :ok | {:error, Error.t()}
   @callback create_node(params) :: {:ok, Node.t()} | {:error, Error.t()}
   @callback get_node(id) :: {:ok, Node.t()} | {:error, Error.t()}
+  @callback list_allocations(id) :: {:ok, [Allocation.t()]} | {:error, Error.t()}
 end
