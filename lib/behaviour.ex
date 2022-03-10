@@ -5,6 +5,7 @@ defmodule Elidactyl.Behaviour do
   alias Elidactyl.Schemas.Node.Allocation
   alias Elidactyl.Schemas.Server
   alias Elidactyl.Schemas.User
+  alias Elidactyl.Error
 
   @type id :: binary | non_neg_integer
   @type params :: map

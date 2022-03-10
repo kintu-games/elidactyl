@@ -8,7 +8,7 @@ defmodule Elidactyl.Application.Nodes do
   alias Elidactyl.Schemas.Node.Allocation
   alias Elidactyl.Response
 
-  @spec list_allocations(Elidactyl.id()) :: {:ok, Allocation.t()} | {:error, Error.t()}
+  @spec list_allocations(Elidactyl.id()) :: {:ok, [Allocation.t()]} | {:error, Error.t()}
   def list_allocations(node_id) do
     with {:ok, resp} <- Request.request(:get, "/api/application/nodes/#{node_id}/allocations"),
          result when is_list(result) <- Response.parse_response(resp) do
