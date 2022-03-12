@@ -42,12 +42,16 @@ defmodule Elidactyl.Application.ServerTest do
       params = %{
         user: 1,
         egg: 15,
+        name: "ServerName",
+        start_on_completion: true,
+        oom_disabled: false,
+        skip_scripts: false,
         docker_image: "quay.io/pterodactyl/core:java-glibc",
         startup: "java -Xms128M -Xmx 1024M -jar server.jar",
         environment: %{"DL_VERSION" => "1.12.2"},
         limits: %{memory: 512, swap: 0, disk: 1024, io: 500, cpu: 100},
         feature_limits: %{databases: 1, backups: 1},
-        allocation: %{default: 28, additional: [3, 19]}
+        allocation: %{default: 28}
       }
 
       assert {:ok, %{id: id} = server} = Servers.create_server(params)

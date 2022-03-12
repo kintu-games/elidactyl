@@ -26,8 +26,8 @@ defmodule Elidactyl.Schemas.Server.CreateServerParams do
           oom_disabled: boolean | nil
         }
 
-  @optional ~w[pack oom_disabled description name start_on_completion skip_scripts external_id]a
-  @mandatory ~w[user egg docker_image startup environment]a
+  @optional ~w[pack description external_id]a
+  @mandatory ~w[start_on_completion name user egg docker_image startup environment skip_scripts oom_disabled]a
   @embedded ~w[limits feature_limits allocation]a
 
   @derive {Jason.Encoder, only: @mandatory ++ @optional ++ @embedded}
@@ -70,16 +70,16 @@ defmodule Elidactyl.Schemas.Server.CreateServerParams do
 
   @spec allocation_changeset(Allocation.t(), map) :: Changeset.t()
   defp allocation_changeset(%Allocation{} = changeset, params) do
-    Changeset.cast(changeset, params, Allocation.__schema__(:fields))
+    Allocation.changeset(changeset, params)
   end
 
   @spec limits_changeset(Limits.t(), map) :: Changeset.t()
   defp limits_changeset(%Limits{} = changeset, params) do
-    Changeset.cast(changeset, params, Limits.__schema__(:fields))
+    Limits.changeset(changeset, params)
   end
 
   @spec feature_limits_changeset(FeatureLimits.t(), map) :: Changeset.t()
   defp feature_limits_changeset(%FeatureLimits{} = changeset, params) do
-    Changeset.cast(changeset, params, FeatureLimits.__schema__(:fields))
+    FeatureLimits.changeset(changeset, params)
   end
 end

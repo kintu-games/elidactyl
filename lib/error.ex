@@ -17,14 +17,35 @@ defmodule Elidactyl.Error do
   @spec from_changeset(Ecto.Changeset.t()) :: t
   @spec from_changeset(Ecto.Changeset.t(), atom) :: t
   @spec from_changeset(Ecto.Changeset.t(), atom, String.t() | nil) :: t
-  def from_changeset(changeset, type \\ :validation_error, msg \\ nil) do
+  #  def from_changeset(changeset, type \\ :validation_error, msg \\ nil) do
+  #    details =
+  #      changeset
+  #      |> Ecto.Changeset.traverse_errors(fn {msg, _opts} -> msg end)
+  #      |> Enum.into(%{}, fn {field, messages} -> {field, (if is_list(messages), do: Enum.join(messages, ", "), else: messages)} end)
+  #
+  #    %__MODULE__{type: type, message: msg, details: details}
+  #  end
+
+  def from_changeset(%Ecto.Changeset{} = changeset, type \\ :validation_error, msg \\ nil) do
     details =
       changeset
-      |> Ecto.Changeset.traverse_errors(fn {msg, _opts} -> msg end)
-      |> Enum.into(%{}, fn {field, messages} -> {field, Enum.join(messages, ", ")} end)
+      |> Ecto.Changeset.traverse_errors(fn {msg, opts} ->
+        Enum.reduce(opts, msg, fn {key, value}, acc ->
+          String.replace(acc, "%{#{key}}", _to_string(value))
+        end)
+      end)
+      |> Enum.map(fn {_k, v} -> v end)
 
     %__MODULE__{type: type, message: msg, details: details}
   end
+
+  def mapper(changeset), do: changeset
+
+  defp _to_string(val) when is_list(val) do
+    Enum.join(val, ",")
+  end
+
+  defp _to_string(val), do: to_string(val)
 
   @doc """
   Makes response parsing error

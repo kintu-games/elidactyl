@@ -22,7 +22,6 @@ defmodule Elidactyl.Schemas.Server.AllocationTest do
     test "validates that mandatory fields are present" do
       changeset = changeset(%Allocation{}, %{})
       assert_invalid(changeset, :default, error_message == "can't be blank")
-      assert_invalid(changeset, :additional, error_message == "can't be blank")
     end
 
     test "validates fields types" do

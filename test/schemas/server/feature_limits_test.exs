@@ -7,8 +7,7 @@ defmodule Elidactyl.Schemas.Server.FeatureLimitsTest do
 
   @valid %{
     databases: 2,
-    backups: 5,
-    allocations: 3
+    backups: 5
   }
 
   def build_changeset(params \\ %{}) do
@@ -24,13 +23,11 @@ defmodule Elidactyl.Schemas.Server.FeatureLimitsTest do
       changeset = changeset(%FeatureLimits{}, %{})
       assert_invalid(changeset, :databases, error_message == "can't be blank")
       assert_invalid(changeset, :backups, error_message == "can't be blank")
-      assert_invalid(changeset, :allocations, error_message == "can't be blank")
     end
 
     test "validates fields types" do
       %{databases: "a"} |> build_changeset() |> assert_invalid(:databases)
       %{backups: "a"} |> build_changeset() |> assert_invalid(:backups)
-      %{allocations: "a"} |> build_changeset() |> assert_invalid(:allocations)
     end
 
     test "refutes negative databases values" do
@@ -41,11 +38,6 @@ defmodule Elidactyl.Schemas.Server.FeatureLimitsTest do
     test "refutes negative backups values" do
       %{backups: -1} |> build_changeset() |> assert_invalid(:backups)
       %{backups: 0} |> build_changeset() |> assert_valid(:backups)
-    end
-
-    test "refutes negative allocations values" do
-      %{allocations: -1} |> build_changeset() |> assert_invalid(:allocations)
-      %{allocations: 0} |> build_changeset() |> assert_valid(:allocations)
     end
   end
 end

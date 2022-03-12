@@ -278,6 +278,58 @@ defmodule Elidactyl do
   defdelegate create_server(params), to: Servers
 
   @doc ~S"""
+  Update server details:
+    * name, user - mandatory
+    * description, external_id - optional
+
+  ## Examples
+      iex> params = %{
+      ...> user: 2,
+      ...> name: "New name"
+      ...>}
+      iex> Elidactyl.update_server_details(1, params)
+      {
+        :ok,
+        %Elidactyl.Schemas.Server{
+          allocation: 17,
+          container: %Elidactyl.Schemas.Server.Container{
+            environment: %{
+              "P_SERVER_LOCATION" => "GB",
+              "P_SERVER_UUID" => "d557c19c-8b21-4456-a9e5-181beda429f4",
+              "STARTUP" => "java -Xms128M -Xmx128M -jar server.jar",
+              "BUNGEE_VERSION" => "latest",
+              "P_SERVER_ALLOCATION_LIMIT" => 0,
+              "SERVER_JARFILE" => "server.jar"
+            },
+            image: "quay.io/pterodactyl/core =>java",
+            installed: false,
+            startup_command: "java -Xms128M -Xmx128M -jar server.jar"
+          },
+          created_at:  NaiveDateTime.from_iso8601!("2020-10-29T01:38:59+00:00"),
+          databases: [],
+          description: "",
+          egg: 1,
+          external_id: nil,
+          feature_limits: %{allocations: 0, databases: 5, backups: 1},
+          id: 7,
+          identifier: "d557c19c",
+          limits: %{cpu: 100, disk: 512, io: 500, memory: 128, swap: 0, threads: nil},
+          name: "New name",
+          nest: 1,
+          node: 1,
+          pack: nil,
+          server_owner: nil,
+          suspended: false,
+          updated_at:  NaiveDateTime.from_iso8601!("2020-10-29T01:38:59+00:00"),
+          user: 2,
+          uuid: "d557c19c-8b21-4456-a9e5-181beda429f4"
+        }
+      }
+  """
+  @spec update_server_details(id, params) :: {:ok, Server.t()} | {:error, Error.t()}
+  defdelegate update_server_details(id, params), to: Servers
+
+  @doc ~S"""
   Delete a server using internal pterodactyl server id.
 
   ## Examples

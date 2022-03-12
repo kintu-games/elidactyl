@@ -1,6 +1,8 @@
 defmodule ElidactylTest do
   use ExUnit.Case, async: false
-  doctest Elidactyl, except: [create_server: 1, create_user: 1, create_node: 1]
+
+  doctest Elidactyl,
+    except: [create_server: 1, update_server_details: 2, create_user: 1, create_node: 1]
 
   alias Elidactyl.MockedServer
 
