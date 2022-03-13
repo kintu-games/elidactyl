@@ -4,12 +4,12 @@ defmodule Elidactyl.Error do
   """
 
   @type t :: %__MODULE__{
-          type: atom | nil,
-          message: String.t() | nil,
-          details: [any]
-        }
+               type: atom | nil,
+               message: String.t() | nil,
+               details: [any]
+             }
 
-  defstruct type: nil, message: nil, details: [%{}]
+  defstruct type: nil, message: nil, details: []
 
   @doc """
   Makes error struct from ecto changeset
@@ -47,7 +47,7 @@ defmodule Elidactyl.Error do
     %__MODULE__{
       type: :invalid_response,
       message: "Error while parsing response",
-      details: details
+      details: [details]
     }
   end
 
@@ -57,6 +57,6 @@ defmodule Elidactyl.Error do
   @spec encode_error(Jason.EncodeError.t() | Exception.t()) :: t
   @spec encode_error(Jason.EncodeError.t() | Exception.t(), map) :: t
   def encode_error(error, details \\ %{}) do
-    %__MODULE__{type: :json_encode_failed, message: inspect(error), details: details}
+    %__MODULE__{type: :json_encode_failed, message: inspect(error), details: [details]}
   end
 end
