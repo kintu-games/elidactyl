@@ -25,7 +25,7 @@ defmodule Elidactyl.Factory do
       "#{Enum.random(1..200)}.#{Enum.random(1..200)}.#{Enum.random(1..200)}.#{Enum.random(1..200)}"
 
   def build(:port, _), do: Enum.random(1000..2000)
-  def build(:server_state, _), do: Enum.random([:starting, :started])
+  def build(:server_state, _), do: Enum.random([:running, :stopping, :starting, :offline])
 
   def build(:base64, size) do
     size

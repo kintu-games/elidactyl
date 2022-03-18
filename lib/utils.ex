@@ -3,6 +3,7 @@ defmodule Elidactyl.Utils do
 
   @spec keys_to_atoms(map | keyword, atom | binary | [atom | binary]) :: %{optional(atom) => any}
   def keys_to_atoms(attributes, exclude \\ []) when is_map(attributes) do
+    IO.inspect(attributes)
     exclude = normalize_exclude(exclude)
     Map.new(attributes, &reduce_keys_to_atoms(&1, exclude))
   end

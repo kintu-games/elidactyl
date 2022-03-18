@@ -33,6 +33,14 @@ defmodule Elidactyl.Schemas.Server.Stats do
 
   @spec parse(map) :: t()
   def parse(%{"object" => "stats", "attributes" => attributes}) do
+    %Resources{
+      memory_bytes: nil,
+      cpu_absolute: nil,
+      disk_bytes: nil,
+      network_rx_bytes: nil,
+      network_tx_bytes: nil
+    }
+
     struct(__MODULE__, attributes |> Utils.keys_to_atoms() |> Utils.parse_timestamps())
   end
 end
