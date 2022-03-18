@@ -68,6 +68,9 @@ defmodule Elidactyl.Schemas.Server do
 
   @impl Parser
   def parse(%{"object" => "server", "attributes" => attributes}) do
+    #loading for atoms
+    %FeatureLimits{}
+
     attributes =
       attributes
       |> parse_container()
