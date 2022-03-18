@@ -6,7 +6,7 @@ defmodule Elidactyl.Factory do
     user server_subuser egg_config limits
     feature_limits container environment
     script allocation node
-    node_created_response node_configuration
+    node_created_response node_configuration stats stats_resources
   ]a
 
   @spec build(atom, any) :: any
@@ -25,6 +25,7 @@ defmodule Elidactyl.Factory do
       "#{Enum.random(1..200)}.#{Enum.random(1..200)}.#{Enum.random(1..200)}.#{Enum.random(1..200)}"
 
   def build(:port, _), do: Enum.random(1000..2000)
+  def build(:server_state, _), do: Enum.random([:starting, :started])
 
   def build(:base64, size) do
     size
@@ -40,6 +41,15 @@ defmodule Elidactyl.Factory do
   @spec defaults(atom) :: map
   def defaults(:limits), do: %{memory: 512, swap: 0, disk: 200, io: 500, cpu: 0, threads: nil}
   def defaults(:feature_limits), do: %{databases: 5, allocations: 5, backups: 2}
+
+  def defaults(:stats_resources),
+    do: %{
+      memory_bytes: 100,
+      cpu_absolute: 0,
+      disk_bytes: 100,
+      network_rx_bytes: 100,
+      network_tx_bytes: 100
+    }
 
   def defaults(:container) do
     %{
@@ -308,6 +318,16 @@ defmodule Elidactyl.Factory do
         "sftp" => %{"bind_port" => build(:port)}
       },
       "remote" => "https://pterodactyl.file.properties"
+    }
+  end
+
+  def defaults(:stats) do
+    %{
+      id: build(:id),
+      current_state: build(:server_state),
+      is_suspended: build(:boolean),
+      resources: build(:stats_resources),
+      server: build(:id)
     }
   end
 

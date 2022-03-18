@@ -8,6 +8,7 @@ defmodule Elidactyl.Response do
   alias Elidactyl.Schemas.Node
   alias Elidactyl.Schemas.Node.Allocation
   alias Elidactyl.Schemas.Server
+  alias Elidactyl.Schemas.Server.Stats
   alias Elidactyl.Schemas.Server.Database
   alias Elidactyl.Schemas.Server.SubuserV1
   alias Elidactyl.Schemas.User
@@ -49,4 +50,5 @@ defmodule Elidactyl.Response do
   defp get_object_mod("allocation"), do: Allocation
   defp get_object_mod("databases"), do: Database
   defp get_object_mod("server_subuser"), do: SubuserV1
+  defp get_object_mod("stats"), do: Stats
 end

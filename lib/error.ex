@@ -4,10 +4,10 @@ defmodule Elidactyl.Error do
   """
 
   @type t :: %__MODULE__{
-               type: atom | nil,
-               message: String.t() | nil,
-               details: [any]
-             }
+          type: atom | nil,
+          message: String.t() | nil,
+          details: [any]
+        }
 
   defstruct type: nil, message: nil, details: []
 

@@ -5,11 +5,13 @@ defmodule Elidactyl do
   alias Elidactyl.Application.Nodes
   alias Elidactyl.Application.Nodes
   alias Elidactyl.Application.Servers
+  alias Elidactyl.Client
   alias Elidactyl.Application.Users
   alias Elidactyl.Error
   alias Elidactyl.Schemas.Node
   alias Elidactyl.Schemas.Node.Allocation
   alias Elidactyl.Schemas.Server
+  alias Elidactyl.Schemas.Server.Stats
   alias Elidactyl.Schemas.User
 
   @behaviour Elidactyl.Behaviour
@@ -481,4 +483,7 @@ defmodule Elidactyl do
 
   @spec list_allocations(id) :: {:ok, [Allocation.t()]} | {:error, Error.t()}
   defdelegate list_allocations(node_id), to: Nodes
+
+  @spec get_server_stats(id) :: {:ok, [Stats.t()]} | {:error, Error.t()}
+  defdelegate get_server_stats(server_id), to: Client
 end

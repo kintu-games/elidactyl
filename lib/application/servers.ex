@@ -58,7 +58,8 @@ defmodule Elidactyl.Application.Servers do
     end
   end
 
-  @spec update_server_details(Elidactyl.id(), Elidactyl.params()) :: {:ok, Server.t()} | {:error, Error.t()}
+  @spec update_server_details(Elidactyl.id(), Elidactyl.params()) ::
+          {:ok, Server.t()} | {:error, Error.t()}
   def update_server_details(id, params) do
     with %{valid?: true} = changeset <-
            UpdateDetailsParams.changeset(%UpdateDetailsParams{}, params),

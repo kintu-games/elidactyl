@@ -6,12 +6,27 @@ defmodule Elidactyl.Client do
   alias Elidactyl.Request
   alias Elidactyl.Response
   alias Elidactyl.Schemas.Server
+  alias Elidactyl.Schemas.Server.Stats
   alias Elidactyl.Schemas.Server.SubuserV1
 
   @spec list_all_servers :: {:ok, [Server.t()]} | {:error, Error.t()}
   def list_all_servers do
     with {:ok, resp} <- Request.request(:get, "/api/client", "", [], use_client_api: true),
          result when is_list(result) <- Response.parse_response(resp) do
+      {:ok, result}
+    else
+      {:error, _} = error -> error
+      _ -> {:error, Error.invalid_response()}
+    end
+  end
+
+  @spec get_server_stats(Elidactyl.id()) :: {:ok, Stats.t()} | {:error, Error.t()}
+  def get_server_stats(server_id) do
+    with {:ok, resp} <-
+           Request.request(:get, "/api/client/servers/#{server_id}/resources", "", [],
+             use_client_api: true
+           ),
+         result <- Response.parse_response(resp) do
       {:ok, result}
     else
       {:error, _} = error -> error

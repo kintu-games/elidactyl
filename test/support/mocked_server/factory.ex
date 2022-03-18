@@ -23,6 +23,7 @@ defmodule Elidactyl.MockedServer.Factory do
           | :node
           | :node_created_response
           | :allocation
+          | :stats
   @type attributes :: map | keyword
 
   @spec build(obj, attributes) :: struct
@@ -41,4 +42,5 @@ defmodule Elidactyl.MockedServer.Factory do
   defp module_for(:node), do: Node
   defp module_for(:node_created_response), do: Node
   defp module_for(:allocation), do: Allocation
+  defp module_for(:stats), do: Server.Stats
 end

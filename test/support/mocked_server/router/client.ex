@@ -54,4 +54,23 @@ defmodule Elidactyl.MockedServer.Router.Client do
 
     success(conn, Jason.encode!(servers))
   end
+
+  get "/api/client/servers/:server_id/resources" do
+    resp = %{
+      "object" => "stats",
+      "attributes" => %{
+        "current_state" => "starting",
+        "is_suspended" => false,
+        "resources" => %{
+          "memory_bytes" => 588_701_696,
+          "cpu_absolute" => 0,
+          "disk_bytes" => 130_156_361,
+          "network_rx_bytes" => 694_220,
+          "network_tx_bytes" => 337_090
+        }
+      }
+    }
+
+    success(conn, resp)
+  end
 end
