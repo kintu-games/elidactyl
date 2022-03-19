@@ -12,7 +12,7 @@ defmodule Elidactyl.Client do
   @spec list_all_servers :: {:ok, [Server.t()]} | {:error, Error.t()}
   def list_all_servers do
     with {:ok, resp} <-
-           Request.request(:get, "/api/client", "", [], use_client_api: true) |> IO.inspect(),
+           Request.request(:get, "/api/client", "", [], use_client_api: true),
          result when is_list(result) <- Response.parse_response(resp) do
       {:ok, result}
     else
@@ -21,10 +21,10 @@ defmodule Elidactyl.Client do
     end
   end
 
-  @spec get_server_stats(Elidactyl.id()) :: {:ok, Stats.t()} | {:error, Error.t()}
-  def get_server_stats(server_id) do
+  @spec get_server_stats(Elidactyl.wings_identifier()) :: {:ok, Stats.t()} | {:error, Error.t()}
+  def get_server_stats(server_identifier) do
     with {:ok, resp} <-
-           Request.request(:get, "/api/client/servers/#{server_id}/resources", "", [],
+           Request.request(:get, "/api/client/servers/#{server_identifier}/resources", "", [],
              use_client_api: true
            ),
          result <- Response.parse_response(resp) do

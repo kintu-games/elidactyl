@@ -17,6 +17,7 @@ defmodule Elidactyl do
   @behaviour Elidactyl.Behaviour
 
   @type id :: binary | non_neg_integer
+  @type wings_identifier :: binary
   @type params :: map
   @type uuid :: Ecto.UUID.t()
 
@@ -484,6 +485,6 @@ defmodule Elidactyl do
   @spec list_allocations(id) :: {:ok, [Allocation.t()]} | {:error, Error.t()}
   defdelegate list_allocations(node_id), to: Nodes
 
-  @spec get_server_stats(id) :: {:ok, [Stats.t()]} | {:error, Error.t()}
+  @spec get_server_stats(wings_identifier) :: {:ok, Stats.t()} | {:error, Error.t()}
   defdelegate get_server_stats(server_id), to: Client
 end
