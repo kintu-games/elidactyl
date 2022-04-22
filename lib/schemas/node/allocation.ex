@@ -10,7 +10,7 @@ defmodule Elidactyl.Schemas.Node.Allocation do
           id: non_neg_integer | nil,
           ip: binary | nil,
           alias: binary | nil,
-          port: binary | nil,
+          port: integer | nil,
           assigned: boolean | nil
         }
 
