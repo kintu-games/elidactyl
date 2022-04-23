@@ -19,6 +19,7 @@ defmodule Elidactyl do
   @type id :: binary | non_neg_integer
   @type wings_identifier :: binary
   @type params :: map
+  @type external_id :: binary | integer
   @type uuid :: Ecto.UUID.t()
 
   @doc ~S"""
@@ -96,6 +97,34 @@ defmodule Elidactyl do
   """
   @spec create_user(params) :: {:ok, User.t()} | {:error, Error.t()}
   defdelegate create_user(params), to: Users, as: :create
+
+
+  @doc ~S"""
+  Get user by given external Id.
+
+  ## Examples
+      iex> Elidactyl.get_user_by_external_id("test@mail.com")
+      {
+        :ok,
+        %Elidactyl.Schemas.User{
+          external_id: "test@mail.com",
+          password: nil,
+          "2fa": false,
+          created_at:  NaiveDateTime.from_iso8601!("2018-03-18T15:15:17+00:00"),
+          email: "test@mail.com",
+          first_name: "John",
+          id: 2,
+          language: "en",
+          last_name: "Doe",
+          root_admin: false,
+          updated_at:  NaiveDateTime.from_iso8601!("2018-10-16T21:51:21+00:00"),
+          username: "example",
+          uuid: "c4022c6c-9bf1-4a23-bff9-519cceb38335"
+        }
+      }
+  """
+  @spec get_user_by_external_id(external_id) :: {:ok, User.t()} | {:error, Error.t()}
+  defdelegate get_user_by_external_id(external_id), to: Users, as: :get_by_external_id
 
   @doc ~S"""
   Update user using pterodactyl internal user id and params.

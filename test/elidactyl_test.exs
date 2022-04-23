@@ -6,6 +6,7 @@ defmodule ElidactylTest do
       create_server: 1,
       update_server_details: 2,
       create_user: 1,
+      get_user_by_external_id: 1,
       create_node: 1,
       get_server: 1
     ]
