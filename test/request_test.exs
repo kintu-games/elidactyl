@@ -20,7 +20,7 @@ defmodule Elidactyl.RequestTest do
     assert {:error,
             %Error{
               type: :http_request_failed,
-              details: %{code: 404, body: "error", url: url},
+              details: [%{code: 404, body: "error", url: url}],
               message: msg
             }} = Request.request(:get, "/test_not_found", "", [])
 

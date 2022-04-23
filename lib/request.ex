@@ -98,7 +98,7 @@ defmodule Elidactyl.Request do
       %Error{
         type: :http_request_failed,
         message: "Request to #{url} returned #{code}",
-        details: %{code: code, body: body, url: url}
+        details: [%{code: code, body: body, url: url}]
       }
     }
   end

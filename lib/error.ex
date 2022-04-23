@@ -6,7 +6,7 @@ defmodule Elidactyl.Error do
   @type t :: %__MODULE__{
           type: atom | nil,
           message: String.t() | nil,
-          details: [any]
+          details: [map]
         }
 
   defstruct type: nil, message: nil, details: []
