@@ -48,10 +48,6 @@ defmodule Elidactyl.Schemas.Server do
     field(:description, :string)
     field(:suspended, :boolean)
     field(:is_installing, :boolean)
-    field(:is_suspended, :boolean)
-    field(:is_transferring, :boolean)
-    field(:internal_id, :integer)
-    field(:invocation, :string)
 
     embeds_one(:limits, Limits)
     embeds_one(:feature_limits, FeatureLimits)
@@ -81,6 +77,7 @@ defmodule Elidactyl.Schemas.Server do
       |> parse_container()
       |> parse_relationships()
       |> Map.drop(~w[relationships])
+      |> Map.drop(~w[egg_features sftp_details is_suspended is_transferring internal_id invocation])
       |> Utils.keys_to_atoms(~w[container])
       |> Utils.parse_timestamps()
 

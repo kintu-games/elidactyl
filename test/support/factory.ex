@@ -114,11 +114,7 @@ defmodule Elidactyl.Factory do
       egg: build(:id),
       pack: nil,
       container: build(:container),
-      internal_id: build(:id),
-      is_installing: build(:boolean),
-      is_suspended: build(:boolean),
-      is_transferring: build(:boolean),
-      invocation: "./server.exe"
+      is_installing: build(:boolean)
     }
     |> add_timestamps()
   end
