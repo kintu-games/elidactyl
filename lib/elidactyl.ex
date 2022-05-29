@@ -3,7 +3,6 @@ defmodule Elidactyl do
   API for Pterodactyl panel
   """
   alias Elidactyl.Application.Nodes
-  alias Elidactyl.Application.Nodes
   alias Elidactyl.Application.Servers
   alias Elidactyl.Client
   alias Elidactyl.Application.Users
