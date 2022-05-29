@@ -28,10 +28,10 @@ defmodule Elidactyl.Client.Servers do
              use_client_api: true
            ),
          result <- Response.parse_response(resp) do
-      {:ok, %{result | is_installing: false}}
+      {:ok, result}
     else
       {:error, :installation_in_progress} ->
-        {:ok, %Stats{is_installing: true}}
+        {:ok, %Stats{current_state: "installing"}}
 
       {:error, _} = error ->
         error

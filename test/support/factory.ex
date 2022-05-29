@@ -329,7 +329,7 @@ defmodule Elidactyl.Factory do
   def defaults(:stats) do
     %{
       id: build(:id),
-      current_state: build(:server_state),
+      current_state: build(:server_state) |> Atom.to_string(),
       is_suspended: build(:boolean),
       is_installing: build(:boolean),
       resources: build(:stats_resources),

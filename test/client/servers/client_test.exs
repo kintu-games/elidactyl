@@ -11,14 +11,14 @@ defmodule Elidactyl.Client.Server.ClientTest do
       MockedServer.put(:stats, %{server: server.id})
 
       assert {:ok, result} = Client.get_server_stats(server.id)
-      assert false == result.is_installing
+      refute "installing" == result.current_state
     end
 
     test "get usage stats for an installing server" do
       %{attributes: server} = MockedServer.put(:server, is_installing: true)
 
       assert {:ok, result} = Client.get_server_stats(server.id)
-      assert true == result.is_installing
+      assert "installing" == result.current_state
     end
   end
 end
