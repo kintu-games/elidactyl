@@ -34,6 +34,7 @@ defmodule Elidactyl.Utils do
       Resources,
       User
     ]
+
     Enum.each(modules, &Code.ensure_loaded?/1)
     exclude = normalize_exclude(exclude)
     Map.new(attributes, &reduce_keys_to_atoms(&1, exclude))

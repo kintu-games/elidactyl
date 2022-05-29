@@ -47,6 +47,11 @@ defmodule Elidactyl.Schemas.Server do
     field(:name, :string)
     field(:description, :string)
     field(:suspended, :boolean)
+    field(:is_installing, :boolean)
+    field(:is_suspended, :boolean)
+    field(:is_transferring, :boolean)
+    field(:internal_id, :integer)
+    field(:invocation, :string)
 
     embeds_one(:limits, Limits)
     embeds_one(:feature_limits, FeatureLimits)

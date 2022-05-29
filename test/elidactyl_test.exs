@@ -45,7 +45,12 @@ defmodule ElidactylTest do
       suspended: false,
       updated_at: "2020-06-13T04:20:53+00:00",
       user: 1,
-      uuid: "1a7ce997-259b-452e-8b4e-cecc464142ca"
+      uuid: "1a7ce997-259b-452e-8b4e-cecc464142ca",
+      internal_id: 5,
+      is_installing: false,
+      is_suspended: false,
+      is_transferring: false,
+      invocation: "start.exe"
     )
 
     MockedServer.put(:database,

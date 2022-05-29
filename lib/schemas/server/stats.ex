@@ -20,27 +20,21 @@ defmodule Elidactyl.Schemas.Server.Stats do
   @type t :: %__MODULE__{
           current_state: binary | nil,
           is_suspended: boolean | nil,
+          is_installing: boolean | nil,
           resources: Resources.t() | nil
         }
 
   @primary_key false
   embedded_schema do
     field(:current_state, :binary)
-    field(:is_suspended, :integer)
+    field(:is_suspended, :boolean)
+    field(:is_installing, :boolean)
 
     embeds_one(:resources, Resources)
   end
 
   @spec parse(map) :: t()
   def parse(%{"object" => "stats", "attributes" => attributes}) do
-    %Resources{
-      memory_bytes: nil,
-      cpu_absolute: nil,
-      disk_bytes: nil,
-      network_rx_bytes: nil,
-      network_tx_bytes: nil
-    }
-
     struct(__MODULE__, attributes |> Utils.keys_to_atoms() |> Utils.parse_timestamps())
   end
 end

@@ -97,7 +97,6 @@ defmodule Elidactyl do
   @spec create_user(params) :: {:ok, User.t()} | {:error, Error.t()}
   defdelegate create_user(params), to: Users, as: :create
 
-
   @doc ~S"""
   Get user by given external Id.
 
@@ -221,6 +220,11 @@ defmodule Elidactyl do
             feature_limits: %{allocations: 5, databases: 5, backups: 2},
             id: 5,
             identifier: "1a7ce997",
+            internal_id: 5,
+            invocation: "start.exe",
+            is_installing: false,
+            is_suspended: false,
+            is_transferring: false,
             limits: %{cpu: 0, disk: 200, io: 500, memory: 512, swap: 0, threads: nil},
             name: "Wuhu Island",
             nest: 1,

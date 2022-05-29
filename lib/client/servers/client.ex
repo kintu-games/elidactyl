@@ -2,38 +2,17 @@ defmodule Elidactyl.Client do
   @moduledoc false
 
   alias Elidactyl.Client.Servers.Subusers
+  alias Elidactyl.Client.Servers
   alias Elidactyl.Error
-  alias Elidactyl.Request
-  alias Elidactyl.Response
   alias Elidactyl.Schemas.Server
   alias Elidactyl.Schemas.Server.Stats
   alias Elidactyl.Schemas.Server.SubuserV1
 
   @spec list_all_servers :: {:ok, [Server.t()]} | {:error, Error.t()}
-  def list_all_servers do
-    with {:ok, resp} <-
-           Request.request(:get, "/api/client", "", [], use_client_api: true),
-         result when is_list(result) <- Response.parse_response(resp) do
-      {:ok, result}
-    else
-      {:error, _} = error -> error
-      _ -> {:error, Error.invalid_response()}
-    end
-  end
+  defdelegate list_all_servers, to: Servers
 
   @spec get_server_stats(Elidactyl.wings_identifier()) :: {:ok, Stats.t()} | {:error, Error.t()}
-  def get_server_stats(server_identifier) do
-    with {:ok, resp} <-
-           Request.request(:get, "/api/client/servers/#{server_identifier}/resources", "", [],
-             use_client_api: true
-           ),
-         result <- Response.parse_response(resp) do
-      {:ok, result}
-    else
-      {:error, _} = error -> error
-      _ -> {:error, Error.invalid_response()}
-    end
-  end
+  defdelegate get_server_stats(server_identifier), to: Servers
 
   @spec list_all_server_subusers(Elidactyl.uuid()) :: {:ok, [SubuserV1.t()]} | {:error, Error.t()}
   defdelegate list_all_server_subusers(server_uuid), to: Subusers, as: :all

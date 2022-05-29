@@ -2,8 +2,12 @@ defmodule Elidactyl.MockedServer.Router.Client do
   @moduledoc false
 
   use Plug.Router
+
   import Elidactyl.MockedServer.Router.Utils
 
+  alias Elidactyl.MockedServer
+  alias Elidactyl.MockedServer.ExternalSchema.NullResource
+  alias Elidactyl.MockedServer.Factory
   plug(
     Plug.Parsers,
     parsers: [:json],
@@ -55,22 +59,56 @@ defmodule Elidactyl.MockedServer.Router.Client do
     success(conn, Jason.encode!(servers))
   end
 
-  get "/api/client/servers/:server_id/resources" do
-    resp = %{
-      "object" => "stats",
-      "attributes" => %{
-        "current_state" => "starting",
-        "is_suspended" => false,
-        "resources" => %{
-          "memory_bytes" => 588_701_696,
-          "cpu_absolute" => 0,
-          "disk_bytes" => 130_156_361,
-          "network_rx_bytes" => 694_220,
-          "network_tx_bytes" => 337_090
-        }
-      }
-    }
+#  get "/api/client/servers/:server_id/resources" do
+#    resp = %{
+#      "object" => "stats",
+#      "attributes" => %{
+#        "current_state" => "starting",
+#        "is_suspended" => false,
+#        "resources" => %{
+#          "memory_bytes" => 588_701_696,
+#          "cpu_absolute" => 0,
+#          "disk_bytes" => 130_156_361,
+#          "network_rx_bytes" => 694_220,
+#          "network_tx_bytes" => 337_090
+#        }
+#      }
+#    }
+#
+#    success(conn, resp)
+#  end
 
-    success(conn, resp)
+  defp serialize_stats(stats) do
+    %{stats | attributes: Map.drop(stats.attributes, ~w[server]a)}
+  end
+
+  get "/api/client/servers/:server_id" do
+    {server_id, ""} = Integer.parse(server_id)
+
+    case MockedServer.get(:server, server_id) do
+      %NullResource{} ->
+        failure(conn, 404, "not found server #{server_id}")
+
+      server ->
+        success(conn, server)
+    end
+  end
+
+  get "/api/client/servers/:server_id/resources" do
+    {server_id, ""} = Integer.parse(server_id)
+
+    %{data: stats_list} = MockedServer.list(:stats)
+
+    stats_list =
+      stats_list
+      |> Enum.filter(&match?(%{attributes: %{server: ^server_id}}, &1))
+      |> Enum.map(&serialize_stats/1)
+
+    case stats_list do
+      [stats] ->
+        success(conn, stats)
+      [] ->
+        failure(conn, 404, "not found stats for server #{server_id}")
+    end
   end
 end
