@@ -20,6 +20,5 @@ defmodule Elidactyl.Client.Server.ClientTest do
       assert {:ok, result} = Client.get_server_stats(server.id)
       assert true == result.is_installing
     end
-
   end
 end

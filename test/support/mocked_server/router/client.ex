@@ -8,6 +8,7 @@ defmodule Elidactyl.MockedServer.Router.Client do
   alias Elidactyl.MockedServer
   alias Elidactyl.MockedServer.ExternalSchema.NullResource
   alias Elidactyl.MockedServer.Factory
+
   plug(
     Plug.Parsers,
     parsers: [:json],
@@ -59,24 +60,24 @@ defmodule Elidactyl.MockedServer.Router.Client do
     success(conn, Jason.encode!(servers))
   end
 
-#  get "/api/client/servers/:server_id/resources" do
-#    resp = %{
-#      "object" => "stats",
-#      "attributes" => %{
-#        "current_state" => "starting",
-#        "is_suspended" => false,
-#        "resources" => %{
-#          "memory_bytes" => 588_701_696,
-#          "cpu_absolute" => 0,
-#          "disk_bytes" => 130_156_361,
-#          "network_rx_bytes" => 694_220,
-#          "network_tx_bytes" => 337_090
-#        }
-#      }
-#    }
-#
-#    success(conn, resp)
-#  end
+  #  get "/api/client/servers/:server_id/resources" do
+  #    resp = %{
+  #      "object" => "stats",
+  #      "attributes" => %{
+  #        "current_state" => "starting",
+  #        "is_suspended" => false,
+  #        "resources" => %{
+  #          "memory_bytes" => 588_701_696,
+  #          "cpu_absolute" => 0,
+  #          "disk_bytes" => 130_156_361,
+  #          "network_rx_bytes" => 694_220,
+  #          "network_tx_bytes" => 337_090
+  #        }
+  #      }
+  #    }
+  #
+  #    success(conn, resp)
+  #  end
 
   defp serialize_stats(stats) do
     %{stats | attributes: Map.drop(stats.attributes, ~w[server]a)}
@@ -107,6 +108,7 @@ defmodule Elidactyl.MockedServer.Router.Client do
     case stats_list do
       [stats] ->
         success(conn, stats)
+
       [] ->
         failure(conn, 404, "not found stats for server #{server_id}")
     end

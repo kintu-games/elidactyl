@@ -33,8 +33,11 @@ defmodule Elidactyl.Client.Servers do
       {:error, :installation_in_progress} ->
         {:ok, %Stats{is_installing: true}}
 
-      {:error, _} = error -> error
-      _ -> {:error, Error.invalid_response()}
+      {:error, _} = error ->
+        error
+
+      _ ->
+        {:error, Error.invalid_response()}
     end
   end
 
