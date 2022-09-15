@@ -9,6 +9,8 @@ You can find documentation here https://hexdocs.pm/elidactyl/Elidactyl.html
 
 ## Installation
 
+=)
+
 Add `elidactyl` to your list of dependencies in `mix.exs`:
 
 ```elixir
@@ -20,6 +22,7 @@ end
 ```
 
 ## Configuration
+
 ```elixir
 config :elidactyl, :pterodactyl_url, "<pterodactyl_ip:port>"
 config :elidactyl, :pterodactyl_server_auth_token, "<pterodactyl_global_auth_token>"
@@ -30,6 +33,7 @@ config :elidactyl, :pterodactyl_server_auth_token, "<pterodactyl_global_auth_tok
 ## How to use
 
 ### List available servers
+
 ```elixir
 iex> Elidactyl.list_all_servers()
 {:ok,
@@ -84,8 +88,9 @@ iex> Elidactyl.get_all_users()
 ```
 
 ### Create new User
+
 ```elixir
-iex(2)> params = 
+iex(2)> params =
   %{
     email: "example@example.com",
     first_name: "John",
